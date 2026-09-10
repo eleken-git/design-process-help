@@ -378,7 +378,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
   <p class="lead">Ти вже робиш дизайн у коді: кажеш Claude, що потрібно, він пише код, ти дивишся результат у браузері. Далі — як організувати це на двох і більше людей: один репозиторій на GitHub, гілка на кожну задачу і Pull Request замість «скинув файл у чат». Плюс тренувальний проєкт, на якому можна все спробувати без ризику.</p>
   <div class="facts">
     <div class="fact"><svg class="icon"><use href="#i-repo"/></svg><div><span class="k">репозиторій</span><span class="v">Один. Екрани, компоненти й токени лежать разом, але в різних папках із чіткими межами.</span></div></div>
-    <div class="fact"><svg class="icon"><use href="#i-branch"/></svg><div><span class="k">гілки</span><span class="v">Одна задача = одна гілка = один Pull Request. Гілка живе 1–3 дні і зникає після merge.</span></div></div>
+    <div class="fact"><svg class="icon"><use href="#i-branch"/></svg><div><span class="k">гілки</span><span class="v">Одна задача = одна гілка = один Pull Request. Гілка живе 1–3 дні і зникає після злиття в main.</span></div></div>
     <div class="fact"><svg class="icon"><use href="#i-chat"/></svg><div><span class="k">claude</span><span class="v">Твої руки в коді. Git-команди він виконує сам, правила читає з файлу CLAUDE.md у репозиторії.</span></div></div>
   </div>
 </section>
@@ -387,19 +387,20 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <section class="slide" id="s2">
   <div class="eyebrow"><span class="num">02</span><span>словник</span><span>·</span><span>Figma → GitHub</span></div>
   <h2>Усе це ти вже робив у Figma — просто називається інакше</h2>
-  <p class="lead">Десять слів, яких вистачить на всю презентацію і на роботу далі. Лівий стовпчик — те, що ти знаєш. Правий — як це називається в коді та на GitHub.</p>
+  <p class="lead">Кілька слів, яких вистачить на всю презентацію і на роботу далі. Лівий стовпчик — те, що ти знаєш. Правий — як це називається в коді та на GitHub.</p>
   <div class="tbl-wrap">
     <table class="tbl glossary">
       <thead><tr><th>У Figma</th><th>У коді / на GitHub</th><th>Що це для тебе</th></tr></thead>
       <tbody>
         <tr><td>Файл</td><td>Репозиторій, repo</td><td>Одна папка з усім кодом продукту. Живе на GitHub, копія — у тебе на компʼютері.</td></tr>
+        <tr><td>Main file, з якого створюють гілки</td><td><code>main</code> — основна гілка</td><td>Робоча версія продукту. Змінюється тільки через Pull Request, напряму в неї ніхто не пише.</td></tr>
         <tr><td>Create branch</td><td>Гілка, branch</td><td>Твоя копія коду для однієї задачі. У <code>main</code> її не видно, доки ти не злив.</td></tr>
         <tr><td>Version history</td><td>Коміт, commit</td><td>Збережена точка з підписом «що зроблено». Claude робить це за тебе.</td></tr>
         <tr><td>Синхронізація з хмарою</td><td>Push</td><td>Відправити свої коміти з компʼютера на GitHub.</td></tr>
-        <tr><td>Review and merge branch</td><td>Pull Request, PR</td><td>«Перевір і злий мої зміни у <code>main</code>». Скриншоти, обговорення, кнопка merge.</td></tr>
-        <tr><td>Publish library</td><td>Merge гілки <code>ds/</code> у <code>main</code></td><td>Оновлений компонент або токен став доступним усім екранам.</td></tr>
+        <tr><td>Review and merge branch</td><td>Pull Request, PR</td><td>«Перевір і злий мої зміни у <code>main</code>». Скриншоти, обговорення і кнопка Merge — «злити».</td></tr>
+        <tr><td>Publish library</td><td>Злиття гілки зі спільним кодом (<code>ds/</code>) у <code>main</code></td><td>Оновлений компонент або токен став доступним усім екранам.</td></tr>
         <tr><td>Variables, Styles</td><td>Токени, <code>src/tokens</code></td><td>Кольори, відступи, шрифти як змінні: <code>var(--color-action)</code>.</td></tr>
-        <tr><td>Main component + properties</td><td>Спільний компонент + пропси, <code>src/components</code></td><td><code>&lt;Button variant="secondary" size="sm"&gt;</code> — instance з обраними властивостями.</td></tr>
+        <tr><td>Main component + properties</td><td>Спільний компонент + пропси (властивості), <code>src/components</code></td><td><code>&lt;Button variant="secondary" size="sm"&gt;</code> — instance з обраними властивостями.</td></tr>
         <tr><td>Page</td><td>Екран, <code>src/screens</code></td><td>Одна папка на екран: Dashboard, Settings.</td></tr>
         <tr><td>Resolve conflicts при merge</td><td>Конфлікт</td><td>Двоє змінили той самий рядок. Обираєш, чия версія лишається.</td></tr>
       </tbody>
@@ -411,19 +412,19 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <section class="slide" id="s3">
   <div class="eyebrow"><span class="num">03</span><span>три питання, три відповіді</span></div>
   <h2>Що тебе турбувало — і що ми з цим робимо</h2>
-  <p class="lead">Жодне з питань не вимагає нової інфраструктури. Досить домовленостей, трьох файлів у репозиторії і галочок у налаштуваннях GitHub.</p>
+  <p class="lead">Жодне з питань не вимагає нової інфраструктури. Досить домовленостей, кількох файлів у репозиторії і галочок у налаштуваннях GitHub.</p>
   <div class="qa">
     <div class="qa-row">
       <div class="qa-q"><span class="who">питання 1</span>Чи треба розділяти продукт, компоненти й дизайн-систему на різні репозиторії?</div>
-      <div class="qa-a"><span class="badge badge-red">ні</span>Один репозиторій, три папки: <code>tokens → components → screens</code>. Окремий пакет означає версії, публікацію й оновлення залежностей — як окремий Figma-файл бібліотеки, який треба публікувати і приймати оновлення. Для маленької команди це зайва робота.</div>
+      <div class="qa-a"><span class="badge badge-red">ні</span>Один репозиторій, три папки: <code>tokens → components → screens</code>. Окремий репозиторій для дизайн-системи — це як окремий Figma-файл бібліотеки: кожну зміну треба публікувати, а в продукті приймати оновлення. Для маленької команди це подвійна робота.</div>
     </div>
     <div class="qa-row">
       <div class="qa-q"><span class="who">питання 2</span>Як контролювати зміни?</div>
-      <div class="qa-a"><span class="badge badge-blue">PR</span><code>main</code> захищений. Кожна зміна: гілка → Pull Request → ревʼю → squash merge. У PR лишається історія: хто, що, чому, зі скриншотами «до / після». Плюс автоматична перевірка «проєкт збирається».</div>
+      <div class="qa-a"><span class="badge badge-blue">PR</span><code>main</code> захищений. Кожна зміна: гілка → Pull Request → перевірка колегою → злиття. У PR лишається історія: хто, що, чому, зі скриншотами «до / після». Плюс автоматична перевірка «проєкт збирається».</div>
     </div>
     <div class="qa-row">
       <div class="qa-q"><span class="who">питання 3</span>Як зміна спільного компонента не зламає інші екрани?</div>
-      <div class="qa-a"><span class="badge badge-greenfg">ds/</span>Спільний код змінюємо окремим маленьким PR, який ревʼюють обидва. Правило: <strong>додавай варіант, не змінюй дефолт</strong>. Перевірка — екран <code>#/ui-kit</code>, де видно всі компоненти в усіх станах.</div>
+      <div class="qa-a"><span class="badge badge-greenfg">ds/</span>Спільний код змінюємо окремим маленьким PR у гілці <code>ds/</code> (design system), який перевіряють обидва. Правило: <strong>додавай варіант, не змінюй дефолт</strong>. Перевірка — екран <code>#/ui-kit</code>, де видно всі компоненти в усіх станах.</div>
     </div>
   </div>
 </section>
@@ -431,7 +432,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <!-- 4 -->
 <section class="slide" id="s4">
   <div class="eyebrow"><span class="num">04</span><span>src/</span><span>·</span><span>три шари</span></div>
-  <h2>Один репозиторій, три шари, залежності тільки вниз</h2>
+  <h2>Один репозиторій, три шари, стрілки тільки вниз</h2>
   <p class="lead">Екран може використовувати компонент, компонент — токен. Навпаки — ніколи. Тому зміна екрана фізично не може зачепити інший екран.</p>
   <div class="grid cols-2-wide">
     <div>
@@ -440,19 +441,20 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
         <div><div class="name">Екрани</div><div class="desc">Dashboard, Settings, UI kit. Одна папка = один екран = одна гілка. Локальні компоненти екрана живуть усередині.</div><div class="figma">у Figma: pages</div></div>
         <span class="badge badge-blue">feat/</span>
       </div>
-      <div class="layer-arrow"><svg viewBox="0 0 16 22"><path d="M8 1v18"/><path d="M3 15l5 5 5-5"/></svg>імпортує</div>
+      <div class="layer-arrow"><svg viewBox="0 0 16 22"><path d="M8 1v18"/><path d="M3 15l5 5 5-5"/></svg>використовує</div>
       <div class="layer">
         <span class="path">src/components/</span>
         <div><div class="name">Спільні компоненти</div><div class="desc">Button, Card, Badge, Toggle. Сюди потрапляє те, що потрібне двом і більше екранам. Стилі тільки через токени.</div><div class="figma">у Figma: main components у бібліотеці</div></div>
         <span class="badge badge-greenfg">ds/ · обидва</span>
       </div>
-      <div class="layer-arrow"><svg viewBox="0 0 16 22"><path d="M8 1v18"/><path d="M3 15l5 5 5-5"/></svg>імпортує</div>
+      <div class="layer-arrow"><svg viewBox="0 0 16 22"><path d="M8 1v18"/><path d="M3 15l5 5 5-5"/></svg>використовує</div>
       <div class="layer">
         <span class="path">src/tokens/</span>
         <div><div class="name">Токени</div><div class="desc">Кольори, відступи, радіуси, шрифти. Тільки значення, жодної логіки. Не імпортують нічого.</div><div class="figma">у Figma: variables і styles</div></div>
         <span class="badge badge-greenfg">ds/ · обидва</span>
       </div>
-      <div class="rule-x"><svg class="icon"><use href="#i-x"/></svg>components → screens, screens/dashboard → screens/settings — так не робимо</div>
+      <div class="rule-x"><svg class="icon"><use href="#i-x"/></svg>Стрілка вгору заборонена: компонент не залежить від екрана, екран не бере нічого з іншого екрана</div>
+      <p class="muted" style="margin-top:12px;font-size:13px"><code>feat/</code> і <code>ds/</code> на бейджах — з чого починається назва гілки, у якій змінюють цей шар. Детально — на наступному слайді.</p>
       <p class="muted" style="margin-top:14px;font-size:13px"><strong style="color:var(--text)">Правило двох.</strong> Компонент, потрібний одному екрану, лежить у <code>screens/&lt;екран&gt;/components/</code>. Знадобився другому — переїжджає в <code>src/components</code> окремим PR. Як «publish to library» для локального компонента.</p>
     </div>
     <div class="box">
@@ -543,11 +545,11 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
   <div class="grid cols-2" style="margin-top:16px">
     <div class="tbl-wrap">
       <table class="tbl">
-        <thead><tr><th>Префікс</th><th>Для чого</th><th>Приклад</th><th>Ревʼю</th></tr></thead>
+        <thead><tr><th>Початок назви</th><th>Що змінюємо</th><th>Приклад</th><th>Хто схвалює PR</th></tr></thead>
         <tbody>
-          <tr><td><code>feat/</code></td><td>екран або фіча</td><td><code>feat/dashboard-redesign</code></td><td>1 апрув другого</td></tr>
-          <tr><td><code>ds/</code></td><td><code>src/tokens</code>, <code>src/components</code></td><td><code>ds/button-size-sm</code></td><td>апрув обох</td></tr>
-          <tr><td><code>fix/</code></td><td>виправлення</td><td><code>fix/settings-save-button</code></td><td>1 апрув другого</td></tr>
+          <tr><td><code>feat/</code></td><td>один екран</td><td><code>feat/dashboard-redesign</code></td><td>другий учасник</td></tr>
+          <tr><td><code>ds/</code></td><td>спільне: <code>src/tokens</code>, <code>src/components</code></td><td><code>ds/button-size-sm</code></td><td>обидва</td></tr>
+          <tr><td><code>fix/</code></td><td>виправлення помилки</td><td><code>fix/settings-save-button</code></td><td>другий учасник</td></tr>
         </tbody>
       </table>
     </div>
@@ -638,9 +640,9 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
       <li><strong><code>main</code> завжди робочий.</strong> Напряму в нього ніхто не пушить — GitHub це блокує, Claude це знає.</li>
       <li><strong>Одна задача = одна гілка = один PR.</strong> «Заодно поправив ще…» — окремий PR.</li>
       <li><strong>PR маленький.</strong> До ~300 рядків, опис і скриншоти «до / після». Великий PR ніхто не читає уважно.</li>
-      <li><strong>Екрани</strong> — 1 апрув другого учасника. <strong><code>tokens</code> і <code>components</code></strong> — апрув обох, CODEOWNERS додає ревʼюера сам.</li>
+      <li><strong>Екрани</strong> схвалює (Approve) другий учасник. <strong><code>tokens</code> і <code>components</code></strong> — обидва: файл CODEOWNERS у репозиторії сам додає другого ревʼюером.</li>
       <li><strong>Зелений check «build» обовʼязковий.</strong> Проєкт не збирається — PR не зливається. Це страховка від «у мене працювало».</li>
-      <li><strong>Merge — тільки Squash and merge.</strong> Один PR = один запис в історії <code>main</code>. Гілка видаляється.</li>
+      <li><strong>Зливаємо кнопкою Squash and merge.</strong> Усі коміти гілки склеюються в один запис в історії <code>main</code>. Гілка після цього видаляється.</li>
       <li><strong>Спільний код — окремий PR</strong>, а не частина PR екрана. Тоді його можна злити за 15 хвилин, не чекаючи весь екран.</li>
       <li><strong>Ревʼю — протягом робочого дня.</strong> Маленький <code>ds/</code> PR — за 15 хвилин, бо на нього чекає інша гілка.</li>
     </ol>
@@ -681,7 +683,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
       </div>
     </div>
     <ol class="rules">
-      <li><strong>Новий проп або токен — з дефолтом, що дорівнює поточній поведінці.</strong> Потрібна менша кнопка — <code>size="sm"</code>, а не менший <code>padding</code> у <code>.button</code>. Claude знає це правило з <code>CLAUDE.md</code>.</li>
+      <li><strong>Новий проп (властивість компонента) або токен — з дефолтом, що дорівнює поточній поведінці.</strong> Потрібна менша кнопка — <code>size="sm"</code>, а не менший <code>padding</code> у <code>.button</code>. Claude знає це правило з <code>CLAUDE.md</code>.</li>
       <li><strong>Перед зміною знайди всі використання.</strong> Claude шукає <code>&lt;Button</code> по проєкту, ти дивишся <code>#/ui-kit</code>: там кожен компонент у всіх станах. Скриншот <code>#/ui-kit</code> — у PR.</li>
       <li><strong>Треба змінити дефолт, перейменувати або видалити проп?</strong> Це breaking change. Спершу пишеш у чат колезі → окремий PR <code>ds/…</code> → у ньому ж Claude оновлює всі екрани → ревʼю обох. Так можна, просто не мовчки.</li>
     </ol>
@@ -705,7 +707,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
     <div class="cell r"><div class="say">Почни нову задачу: гілка feat/settings-notifications від свіжого main</div></div>
 
     <div class="step">2</div>
-    <div class="cell d">Працюєш лише в <code>src/screens/dashboard/</code>.<div class="say">Закоміть і запуш. Відкрий Draft PR, щоб було видно прогрес</div></div>
+    <div class="cell d">Працюєш лише в <code>src/screens/dashboard/</code>.<div class="say">Закоміть і запуш. Відкрий Draft PR, щоб було видно прогрес</div><span class="muted">Draft — чернетка PR: видно, над чим працюєш, але зливати ще не можна.</span></div>
     <div class="mainc"></div>
     <div class="cell r">Працює лише в <code>src/screens/settings/</code>. Різні папки — конфліктів не буде.</div>
 
@@ -822,7 +824,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <section class="slide" id="s12">
   <div class="eyebrow"><span class="num">12</span><span>тренувальний проєкт</span><span>·</span><span>Nimbus</span></div>
   <h2>Проєкт, на якому можна все зламати і нічого не втратити</h2>
-  <p class="lead">У цьому ж репозиторії — маленький застосунок у стилі GitHub Dark із тією самою архітектурою: три екрани, пʼять спільних компонентів, токени. Унизу кожного екрана — підказка, де лежить його код і як назвати гілку. Вправи — у <code>PRACTICE.md</code>, на 1–2 години вдвох.</p>
+  <p class="lead">У цьому ж репозиторії — маленький застосунок у стилі GitHub Dark із тією самою архітектурою: три екрани, пʼять спільних компонентів, токени. Унизу кожного екрана — підказка, де лежить його код і як назвати гілку. Вправи — у <code>PRACTICE.md</code>, на 1–2 години вдвох: A і B — двоє учасників, наприклад ти і другий дизайнер.</p>
   <div class="grid cols-2-wide">
     <div class="box">
       <div class="box-head"><svg class="icon"><use href="#i-play"/></svg>Запустити</div>
@@ -883,8 +885,8 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
         <thead><tr><th>Не зараз</th><th>Чому</th><th>Коли повернемось</th></tr></thead>
         <tbody>
           <tr><td>Окремий репозиторій або npm-пакет для дизайн-системи</td><td>Версії, публікація, оновлення залежностей — зайва робота для маленької команди</td><td>Другий продукт використовує ті самі компоненти</td></tr>
-          <tr><td>Storybook, візуальні регресійні тести</td><td>Ще одна інфраструктура; <code>#/ui-kit</code> і скриншоти в PR закривають потребу</td><td>Понад 20 компонентів або понад 3 людей у коді</td></tr>
-          <tr><td>Семантичні версії компонентів</td><td>Без пакета не мають сенсу</td><td>Разом із пакетом</td></tr>
+          <tr><td>Storybook (окремий каталог компонентів), візуальні регресійні тести (автоматичне порівняння скриншотів)</td><td>Ще одна інфраструктура; <code>#/ui-kit</code> і скриншоти в PR закривають потребу</td><td>Понад 20 компонентів або понад 3 людей у коді</td></tr>
+          <tr><td>Версії компонентів (Button 1.2 → 2.0)</td><td>Без пакета не мають сенсу</td><td>Разом із пакетом</td></tr>
         </tbody>
       </table>
     </div>
