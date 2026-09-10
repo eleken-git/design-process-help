@@ -27,7 +27,7 @@ window.EPISODES.push({
         cap: 'Файл <b>CODEOWNERS</b> каже: усе в <b>src/components</b> і <b>src/tokens</b> схвалюють обидва. Зміна Ані торкається лише екрана, тому ворота пропускають одразу. Якби вона зачепила Button — чекала б на другий Approve. Рятує від зламаних спільних компонентів.',
         term: [{ x: '# .github/CODEOWNERS', c: 'c' }, { x: '/src/components/   @bohdan @anya' }, { x: '/src/tokens/       @bohdan @anya' }, { x: 'PR #23 торкається тільки src/screens → пропущено', c: 'ok' }] },
       { id: 'g4', t0: 59.5, t1: 70.5, num: '06', ttl: 'Правило 4 · зелений check: проєкт збирається',
-        cap: 'Робот бере гілку, встановлює залежності й збирає проєкт. Червоний build — і кнопка merge сіра, скільки б Approve не було. Рятує від «у мене все працювало»: те, що збирається на ноутбуку, має зібратись і на сервері.',
+        cap: '<b>GitHub Actions</b> — автоперевірка з файлу ci.yml у репозиторії — бере гілку, встановлює залежності й збирає проєкт на сервері. Червоний build — і кнопка merge сіра, скільки б Approve не було. Рятує від «у мене все працювало».',
         term: [{ x: 'GitHub Actions · check' }, { x: 'npm ci && npm run typecheck && npm run build', c: 'c' }, { x: '● running… → ✓ build passed', c: 'ok' }] },
       { id: 'merge', t0: 70.5, t1: 81.5, num: '07', ttl: 'Усі ворота зелені — і щит на історії',
         cap: 'Squash and merge: зміна потрапляє в <b>main</b> одним записом. І останнє правило — <b>заборона force push</b>: ніхто не може переписати історію main, навіть випадково. Рятує від зникнення чужих комітів.',
@@ -133,7 +133,7 @@ window.EPISODES.push({
     // «пакет» зміни, що подорожує
     const pkt = mk.commit(-6.6, Y_B, C.blue, 0.24); pkt.g.position.z = 0.35;
 
-    hud.outro(['Require a pull request — зміни лише через PR.', '1 approval + Code Owners — друга пара очей, для спільного коду дві.', 'Status checks + Block force pushes — робот збирає, історію не переписати.']);
+    hud.outro(['Require a pull request — зміни лише через PR.', '1 approval + Code Owners — друга пара очей, для спільного коду дві.', 'Status checks + Block force pushes — GitHub Actions збирає проєкт, історію не переписати.']);
 
     const ep = { BEATS, DUR, CAM, dim: 1 };
     const setOp = (mat, v) => { mat.opacity = clamp01(v) * ep.dim; };
