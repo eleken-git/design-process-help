@@ -73,8 +73,9 @@ canvas{display:block;width:100%;height:100%}
 .titlecard .repo{margin-top:6px;font:13px var(--mono);color:var(--faint)}
 
 /* ---------- панель керування ---------- */
-.controls{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:5;display:flex;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);align-items:center;gap:8px;transition:opacity .25s;
+.controls{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;max-width:calc(100vw - 24px);transition:opacity .25s;
   background:rgba(22,27,34,.95);border:1px solid var(--border);border-radius:10px;padding:8px 12px;backdrop-filter:blur(8px)}
+.controls .row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px}
 .controls button{height:32px;min-width:32px;padding:0 11px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font:600 13px var(--sans);cursor:pointer}
 .controls button:hover{border-color:var(--faint)}
 .controls button.on{border-color:var(--orange);color:var(--orange)}
@@ -133,19 +134,22 @@ body.capture .controls,body.capture .pop{display:none}
 <div class="pop" id="eplist" hidden></div>
 <div class="pop chips" id="chips" hidden></div>
 <div class="controls">
-  <button id="btnHome" title="На головну · design-process-help">🏠</button>
-  <span class="sep"></span>
-  <button id="btnEp" title="Обрати епізод">Епізоди ▾</button>
-  <span class="sep"></span>
-  <button id="btnPlay" title="Пауза / грати · Space або K · клік по відео">❚❚</button>
-  <button id="btnBack" title="−5 с · ← (J: −10 с)">−5</button>
-  <button id="btnFwd" title="+5 с · → (L: +10 с)">+5</button>
-  <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Час">
-  <span class="time" id="tlabel">0:00 / 0:00</span>
-  <button id="btnRestart" title="Спочатку">↺</button>
-  <button id="btnChapters" title="Розділи цього епізоду">Розділи</button>
-  <button id="btnMusic" title="Музика · M">♪ Музика</button>
-  <button id="btnFull" title="На весь екран · F або двічі клікнути по відео">⛶</button>
+  <div class="row row-play">
+    <button id="btnPlay" title="Пауза / грати · Space або K · клік по відео">❚❚</button>
+    <button id="btnBack" title="−5 с · ← (J: −10 с)">−5</button>
+    <button id="btnFwd" title="+5 с · → (L: +10 с)">+5</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Час">
+    <span class="time" id="tlabel">0:00 / 0:00</span>
+    <button id="btnRestart" title="Спочатку">↺</button>
+  </div>
+  <div class="row row-nav">
+    <button id="btnHome" title="На головну · design-process-help">🏠</button>
+    <span class="sep"></span>
+    <button id="btnEp" title="Обрати епізод">Епізоди ▾</button>
+    <button id="btnChapters" title="Розділи цього епізоду">Розділи</button>
+    <button id="btnMusic" title="Музика · M">♪ Музика</button>
+    <button id="btnFull" title="На весь екран · F або двічі клікнути по відео">⛶</button>
+  </div>
 </div>
 <audio id="bgm" preload="auto"></audio>
 
