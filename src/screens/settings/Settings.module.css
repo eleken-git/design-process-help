@@ -1,0 +1,19 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  background: var(--color-bg);
+}
+
+.title {
+  margin: 0;
+  font: var(--font-heading-lg);
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}

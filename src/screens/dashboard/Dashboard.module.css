@@ -1,0 +1,24 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  background: var(--color-bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+  font: var(--font-heading-lg);
+  color: var(--color-text);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}

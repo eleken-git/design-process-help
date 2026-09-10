@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дизайн у коді</title>
+<meta name="description" content="Один репозиторій, гілки на кожну задачу, PR у main: як дизайнер і розробник працюють паралельно і не ламають одне одного.">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--inset:#010409;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --green:#238636;--green-fg:#3FB950;--green-bg:rgba(46,160,67,.15);
+  --blue:#58A6FF;--blue-bg:rgba(56,139,253,.15);
+  --red:#F85149;--red-bg:rgba(248,81,73,.15);
+  --purple:#A371F7;--purple-bg:rgba(163,113,247,.15);
+  --orange:#DB6D28;--yellow:#D29922;--tab:#F78166;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --r:6px;--r-lg:8px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{font-weight:600;margin:0}
+h1{font-size:34px;line-height:1.2;letter-spacing:-.01em;text-wrap:balance;max-width:24ch;margin-bottom:16px}
+h2{font-size:26px;line-height:1.25;text-wrap:balance;margin-bottom:8px}
+h3{font-size:15px;line-height:1.4}
+p{margin:0 0 10px}
+ul,ol{margin:0;padding-left:20px}
+li{margin:0 0 6px}
+li:last-child{margin-bottom:0}
+code,kbd,.mono{font-family:var(--mono);font-size:12px}
+code{background:rgba(110,118,129,.35);padding:.15em .4em;border-radius:var(--r);color:var(--text)}
+strong{font-weight:600}
+.muted{color:var(--muted)}
+.icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:48px}
+.repo{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--text)}
+.repo .owner{color:var(--muted)}
+.repo .sep{color:var(--faint)}
+.tabs{display:flex;gap:0;margin-left:auto;overflow-x:auto;scrollbar-width:none;height:48px}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{color:var(--muted);padding:0 10px;height:48px;display:flex;align-items:center;border-bottom:2px solid transparent;font-size:13px;white-space:nowrap}
+.tabs a:hover{color:var(--text);text-decoration:none}
+.tabs a.active{color:var(--text);border-bottom-color:var(--tab)}
+.counter{color:var(--muted);font:12px var(--mono);white-space:nowrap}
+.kbd-hint{color:var(--faint);font:11px var(--mono);white-space:nowrap}
+.kbd-hint kbd{border:1px solid var(--border);border-radius:4px;padding:0 4px;color:var(--muted)}
+@media (max-width:900px){.kbd-hint{display:none}}
+
+/* slides */
+.page{max-width:1200px;margin:0 auto;padding:0 24px}
+.slide{padding:56px 0 64px;border-bottom:1px solid var(--border-muted);scroll-margin-top:56px}
+.slide:last-of-type{border-bottom:0}
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--muted);font:12px var(--mono);margin-bottom:14px}
+.eyebrow .num{color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1px 7px}
+.lead{color:var(--muted);font-size:16px;max-width:64ch;margin:0 0 28px}
+.grid{display:grid;gap:16px}
+.cols-2{grid-template-columns:1fr 1fr}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+.cols-2-wide{grid-template-columns:1.2fr 1fr}
+@media (max-width:900px){.cols-2,.cols-3,.cols-2-wide{grid-template-columns:1fr}}
+
+/* boxes */
+.box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);min-width:0}
+.box-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:13px}
+.box-head .right{margin-left:auto;display:flex;gap:6px}
+.box-body{padding:16px}
+.box-body>:last-child{margin-bottom:0}
+.box.ok{border-color:rgba(63,185,80,.5)}
+.box.bad{border-color:rgba(248,81,73,.5)}
+.box.ok .box-head{color:var(--green-fg)}
+.box.bad .box-head{color:var(--red)}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:0 7px;height:20px;border-radius:999px;font:12px/20px var(--mono);border:1px solid var(--border);color:var(--muted);white-space:nowrap;vertical-align:middle}
+.badge-green{background:var(--green);border-color:transparent;color:#fff}
+.badge-purple{background:var(--purple-bg);border-color:rgba(163,113,247,.45);color:var(--purple)}
+.badge-blue{background:var(--blue-bg);border-color:rgba(56,139,253,.45);color:var(--blue)}
+.badge-red{background:var(--red-bg);border-color:rgba(248,81,73,.45);color:var(--red)}
+.badge-orange{border-color:rgba(219,109,40,.55);color:var(--orange)}
+.badge-greenfg{background:var(--green-bg);border-color:rgba(63,185,80,.45);color:var(--green-fg)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* code */
+pre.code{margin:0;background:var(--inset);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;font:12px/1.65 var(--mono);color:var(--text);overflow-x:auto;white-space:pre}
+pre.code .c{color:var(--muted)}
+pre.code .k{color:#FF7B72}
+pre.code .s{color:#A5D6FF}
+pre.code .f{color:#D2A8FF}
+pre.code .p{color:#79C0FF}
+
+/* facts row */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.facts{grid-template-columns:1fr}}
+.fact{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.fact .icon{margin-top:2px;color:var(--muted)}
+.fact .k{display:block;color:var(--muted);font:12px var(--mono);margin-bottom:4px}
+.fact .v{font-size:14px;font-weight:600;line-height:1.4}
+
+/* q & a */
+.qa{border-top:1px solid var(--border)}
+.qa-row{display:grid;grid-template-columns:1fr 1.5fr;gap:24px;padding:18px 0;border-bottom:1px solid var(--border)}
+@media (max-width:900px){.qa-row{grid-template-columns:1fr;gap:8px}}
+.qa-q{color:var(--muted);font-size:15px}
+.qa-q .who{display:block;font:11px var(--mono);color:var(--faint);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}
+.qa-a{font-size:15px}
+.qa-a .badge{margin-right:8px;position:relative;top:-1px}
+
+/* layers */
+.layers{display:grid;gap:0}
+.layer{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.layer .path{font:12px var(--mono);color:var(--blue);background:var(--inset);border:1px solid var(--border);border-radius:var(--r);padding:3px 8px;white-space:nowrap}
+.layer .name{font-weight:600}
+.layer .desc{color:var(--muted);font-size:13px}
+.layer-arrow{display:flex;align-items:center;gap:8px;padding:6px 0 6px 28px;color:var(--muted);font:12px var(--mono)}
+.layer-arrow svg{width:16px;height:22px;stroke:var(--muted);fill:none;stroke-width:1.5}
+.rule-x{display:flex;align-items:center;gap:8px;color:var(--red);font:12px var(--mono);margin-top:14px}
+
+/* file tree */
+.tree{font:12px/1.7 var(--mono)}
+.tree .row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:4px 16px;border-bottom:1px solid var(--border-muted)}
+.tree .row:last-child{border-bottom:0}
+.tree .row:hover{background:rgba(110,118,129,.08)}
+.tree .name{display:flex;align-items:center;gap:8px;color:var(--text);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tree .name .icon{color:var(--muted)}
+.tree .dir .icon{color:#7D8590}
+.tree .name.dir{color:var(--text)}
+.tree .cm{color:var(--muted);font-family:var(--sans);font-size:12px;text-align:right;white-space:nowrap}
+.tree .d1{padding-left:24px}.tree .d2{padding-left:48px}.tree .d3{padding-left:72px}
+@media (max-width:640px){.tree .cm{display:none}}
+
+/* git graph */
+.graph-wrap{overflow-x:auto;padding:8px 0 0}
+.graph{min-width:760px;width:100%;height:auto;display:block}
+.g-main{stroke:var(--text);stroke-width:3;fill:none}
+.g-blue{stroke:var(--blue);stroke-width:2.5;fill:none}
+.g-green{stroke:var(--green-fg);stroke-width:2.5;fill:none}
+.g-orange{stroke:var(--orange);stroke-width:2.5;fill:none}
+.g-dash{stroke:var(--muted);stroke-width:1.5;fill:none;stroke-dasharray:4 4}
+.c-main{fill:var(--text);stroke:var(--bg);stroke-width:2}
+.c-blue{fill:var(--blue);stroke:var(--bg);stroke-width:2}
+.c-green{fill:var(--green-fg);stroke:var(--bg);stroke-width:2}
+.c-orange{fill:var(--orange);stroke:var(--bg);stroke-width:2}
+.c-merge{fill:var(--purple);stroke:var(--bg);stroke-width:2}
+.c-hollow-blue{fill:var(--bg);stroke:var(--blue);stroke-width:2.5}
+.c-hollow-orange{fill:var(--bg);stroke:var(--orange);stroke-width:2.5}
+.t{font:11px var(--mono);fill:var(--muted)}
+.t-blue{fill:var(--blue)}.t-green{fill:var(--green-fg)}.t-orange{fill:var(--orange)}.t-text{fill:var(--text)}.t-purple{fill:var(--purple)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;color:var(--muted);font:12px var(--mono);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%}
+.legend i.hollow{background:transparent;border:2px solid var(--blue)}
+.legend i.dash{width:22px;height:0;border-top:2px dashed var(--muted);border-radius:0}
+
+/* tables */
+table.tbl{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;font-size:13px}
+.tbl th{background:var(--surface);text-align:left;font-weight:600;padding:8px 12px;border-bottom:1px solid var(--border);color:var(--muted);font-size:12px}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--border-muted);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl code{white-space:nowrap}
+.tbl-wrap{overflow-x:auto}
+
+/* rules list */
+.rules{counter-reset:r;list-style:none;padding:0;display:grid;gap:8px}
+.rules li{counter-increment:r;display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg)}
+.rules li::before{content:counter(r,decimal-leading-zero);font:12px/22px var(--mono);color:var(--muted);text-align:center;border:1px solid var(--border);border-radius:var(--r);height:22px}
+
+/* PR mock */
+.pr-title{padding:14px 16px 10px;font-size:18px;font-weight:600;line-height:1.3}
+.pr-title .n{color:var(--muted);font-weight:400}
+.pr-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 16px 12px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--border)}
+.pr-body{padding:14px 16px;display:grid;gap:12px;border-bottom:1px solid var(--border)}
+.pr-body h4{margin:0 0 4px;font-size:13px;font-weight:600}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shot{border:1px dashed var(--border);border-radius:var(--r);padding:12px;color:var(--muted);font:11px var(--mono);text-align:center;background:var(--inset);display:flex;flex-direction:column;gap:8px;align-items:center}
+.shot .btns{display:flex;gap:6px;align-items:center}
+.shot .b{border-radius:4px;background:#2563eb;color:#fff;font:600 10px var(--sans);padding:0 8px;display:inline-flex;align-items:center}
+.shot .b.md{height:22px}.shot .b.sm{height:17px;font-size:9px}
+.check{list-style:none;padding:0;display:grid;gap:6px}
+.check li{display:flex;gap:8px;align-items:flex-start}
+.check .cb{width:14px;height:14px;border-radius:3px;border:1px solid var(--border);background:var(--inset);flex:none;margin-top:3px;display:flex;align-items:center;justify-content:center;color:var(--green-fg)}
+.check .cb svg{width:10px;height:10px;stroke-width:2.2}
+.pr-side{padding:12px 16px;display:grid;gap:8px;font-size:13px;border-bottom:1px solid var(--border)}
+.pr-side .kv{display:flex;justify-content:space-between;gap:12px;color:var(--muted)}
+.pr-side .kv b{color:var(--text);font-weight:500}
+.pr-merge{padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:var(--r);font-size:13px;font-weight:600;border:1px solid rgba(240,246,252,.1)}
+.btn-green{background:var(--green);color:#fff}
+
+/* diff */
+.diff{width:100%;border-collapse:collapse;font:12px/1.65 var(--mono)}
+.diff td{padding:0 10px;white-space:pre;vertical-align:top}
+.diff .ln{width:34px;color:var(--faint);text-align:right;user-select:none;background:var(--inset)}
+.diff .add{background:var(--green-bg)}
+.diff .add .ln{background:rgba(46,160,67,.3);color:var(--text)}
+.diff .del{background:var(--red-bg)}
+.diff .del .ln{background:rgba(248,81,73,.3);color:var(--text)}
+.diff .hunk td{background:var(--blue-bg);color:var(--muted);padding:2px 10px}
+.diff-wrap{overflow-x:auto}
+
+/* swimlanes */
+.lanes{display:grid;grid-template-columns:36px 1fr 200px 1fr;gap:8px 12px;align-items:stretch}
+.lanes .hd{font:12px var(--mono);color:var(--muted);padding:0 0 6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;min-width:0}
+.lanes .hd b{color:var(--text);font-family:var(--sans);font-size:13px}
+.lanes .step{font:12px/1.4 var(--mono);color:var(--muted);text-align:center;padding-top:10px}
+.lanes .cell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:13px;min-width:0}
+.lanes .cell.d{border-left:3px solid var(--blue)}
+.lanes .cell.r{border-left:3px solid var(--orange)}
+.lanes .cell code{display:inline-block;margin:1px 0}
+.lanes .empty{border:1px dashed var(--border-muted);border-radius:var(--r);opacity:.7}
+.lanes .mainc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;font-size:12px;color:var(--muted);position:relative}
+.lanes .mainc::before{content:"";position:absolute;left:50%;top:-8px;bottom:-8px;border-left:2px solid var(--border);z-index:0}
+.lanes .mainc>*{position:relative;z-index:1;background:var(--bg)}
+.lanes .mainc .m{padding:2px 6px}
+.lanes .mainc .badge{margin:0;background:var(--bg)}
+@media (max-width:900px){
+  .lanes{grid-template-columns:28px 1fr}
+  .lanes .hd.m,.lanes .mainc,.lanes .hd.r{grid-column:2}
+  .lanes .mainc{padding:6px 0}
+  .lanes .mainc::before{display:none}
+}
+
+/* two paths */
+.steps{list-style:none;padding:0;display:grid;gap:8px;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:13px}
+.steps li::before{content:counter(s);font:11px/20px var(--mono);color:var(--muted);text-align:center;border:1px solid var(--border);border-radius:50%;height:20px;width:20px}
+.result{margin-top:14px;padding:10px 12px;border-radius:var(--r);font-size:13px;display:flex;gap:8px;align-items:flex-start}
+.result .icon{margin-top:2px}
+.result.bad{background:var(--red-bg);color:var(--text)}
+.result.ok{background:var(--green-bg);color:var(--text)}
+.result.bad .icon{color:var(--red)}
+.result.ok .icon{color:var(--green-fg)}
+
+/* not-now + setup */
+.todo{list-style:none;padding:0;display:grid;gap:8px}
+.todo li{display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:13px;align-items:start}
+.todo .cb{width:16px;height:16px;border-radius:3px;border:1px solid var(--border);background:var(--inset);margin-top:2px}
+
+footer{max-width:1200px;margin:0 auto;padding:24px 24px 48px;color:var(--faint);font:12px var(--mono);display:flex;flex-wrap:wrap;gap:8px 24px;border-top:1px solid var(--border-muted)}
+@media print{
+  .topbar{position:static}
+  .slide{break-after:page;border-bottom:0}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-repo" viewBox="0 0 16 16"><path d="M3.5 1.5h9v11H5.5a2 2 0 0 0-2 2z"/><path d="M5.5 12.5v2"/><path d="M6 4.5h4"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 16 16"><path d="M1.5 3.5h4l1.5 1.5h7.5v8h-13z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 16 16"><path d="M3.5 1.5h6l3 3v10h-9z"/><path d="M9.5 1.5v3h3"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 16 16"><circle cx="4" cy="3" r="1.5"/><circle cx="4" cy="13" r="1.5"/><circle cx="12" cy="5" r="1.5"/><path d="M4 4.5v7"/><path d="M12 6.5c0 2.5-2.5 3.5-5 3.5H6"/></symbol>
+    <symbol id="i-pr" viewBox="0 0 16 16"><circle cx="4" cy="3" r="1.5"/><circle cx="4" cy="13" r="1.5"/><circle cx="12" cy="13" r="1.5"/><path d="M4 4.5v7"/><path d="M12 11.5V6.5L9.5 4"/><path d="M11.5 4H9.5v2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7"/></symbol>
+    <symbol id="i-x" viewBox="0 0 16 16"><path d="M4 4l8 8"/><path d="M12 4l-8 8"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 16 16"><path d="M8 2l6 3-6 3-6-3z"/><path d="M2 8l6 3 6-3"/><path d="M2 11l6 3 6-3"/></symbol>
+    <symbol id="i-merge" viewBox="0 0 16 16"><circle cx="4" cy="3" r="1.5"/><circle cx="4" cy="13" r="1.5"/><circle cx="12" cy="8" r="1.5"/><path d="M4 4.5v7"/><path d="M4.5 6.5c2 1.5 4 1.5 6 1.5"/></symbol>
+    <symbol id="i-people" viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><path d="M11 3.5a2.5 2.5 0 0 1 0 4.5"/><path d="M12.5 9.7c1.3.6 2 1.8 2 3.8"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="repo"><svg class="icon"><use href="#i-repo"/></svg><span class="owner">eleken-git</span><span class="sep">/</span><strong>design-process-help</strong></span>
+    <span class="badge"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>Private</span>
+    <nav class="tabs" aria-label="Розділи">
+      <a href="#s1">Старт</a>
+      <a href="#s2">Питання</a>
+      <a href="#s3">Структура</a>
+      <a href="#s4">Гілки</a>
+      <a href="#s5">Pull Request</a>
+      <a href="#s6">Компоненти</a>
+      <a href="#s7">Сценарій</a>
+      <a href="#s8">Кнопка</a>
+      <a href="#s9">Git</a>
+      <a href="#s10">Далі</a>
+    </nav>
+    <span class="kbd-hint"><kbd>←</kbd> <kbd>→</kbd> між слайдами</span>
+    <span class="counter" id="counter">01 / 10</span>
+  </div>
+</header>
+
+<main class="page">
+
+<!-- 1 -->
+<section class="slide" id="s1">
+  <div class="eyebrow"><span class="num">01</span><span>README.md</span><span>·</span><span>розробник → дизайнеру</span></div>
+  <h1>Дизайн у коді: працюємо паралельно, нічого не ламаємо</h1>
+  <p class="lead">Один репозиторій на GitHub. Окрема гілка на кожну задачу. Зміни потрапляють у <code>main</code> тільки через Pull Request. Далі — як це виглядає на практиці, коли ти робиш Dashboard, а я паралельно Settings.</p>
+  <div class="facts">
+    <div class="fact"><svg class="icon"><use href="#i-repo"/></svg><div><span class="k">репозиторій</span><span class="v">Один. Продукт, компоненти й токени лежать разом, але в різних папках із чіткими межами.</span></div></div>
+    <div class="fact"><svg class="icon"><use href="#i-branch"/></svg><div><span class="k">гілки</span><span class="v">Одна задача = одна гілка = один PR. Гілка живе 1–3 дні і зникає після merge.</span></div></div>
+    <div class="fact"><svg class="icon"><use href="#i-lock"/></svg><div><span class="k">main</span><span class="v">Захищений. Напряму в нього ніхто не пушить. Спільний код ревʼюють обидва.</span></div></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide" id="s2">
+  <div class="eyebrow"><span class="num">02</span><span>три питання, три відповіді</span></div>
+  <h2>Що тебе турбувало — і що ми з цим робимо</h2>
+  <p class="lead">Жодне з питань не вимагає нової інфраструктури. Досить домовленостей і трьох файлів у репозиторії.</p>
+  <div class="qa">
+    <div class="qa-row">
+      <div class="qa-q"><span class="who">питання 1</span>Чи треба розділяти продукт, компоненти й дизайн-систему на різні репозиторії?</div>
+      <div class="qa-a"><span class="badge badge-red">ні</span>Один репозиторій, три папки: <code>tokens → components → screens</code>. Окремий пакет означає версії, публікацію й оновлення залежностей — для двох людей це зайва робота. Повернемось до цього, коли компоненти знадобляться другому продукту.</div>
+    </div>
+    <div class="qa-row">
+      <div class="qa-q"><span class="who">питання 2</span>Як контролювати зміни?</div>
+      <div class="qa-a"><span class="badge badge-blue">PR</span><code>main</code> захищений. Кожна зміна: гілка → Pull Request → ревʼю → squash merge. У PR лишається історія: хто, що, чому, зі скриншотами «до / після».</div>
+    </div>
+    <div class="qa-row">
+      <div class="qa-q"><span class="who">питання 3</span>Як зміна спільного компонента не зламає інші екрани?</div>
+      <div class="qa-a"><span class="badge badge-greenfg">ds/</span>Спільний код змінюємо окремим маленьким PR, який ревʼюють обидва. Правило: <strong>додавай варіант, не змінюй дефолт</strong>. Перевірка — екран <code>/ui-kit</code>, де видно всі компоненти в усіх станах.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide" id="s3">
+  <div class="eyebrow"><span class="num">03</span><span>src/</span><span>·</span><span>три шари</span></div>
+  <h2>Один репозиторій, три шари, залежності тільки вниз</h2>
+  <p class="lead">Екран може використовувати компонент, компонент — токен. Навпаки — ніколи. Тому зміна екрана фізично не може зачепити інший екран.</p>
+  <div class="grid cols-2-wide">
+    <div>
+      <div class="layers">
+        <div class="layer">
+          <span class="path">src/screens/</span>
+          <div><div class="name">Екрани</div><div class="desc">Dashboard, Settings, ui-kit. Одна папка = один екран = одна гілка. Локальні компоненти екрана живуть усередині.</div></div>
+          <span class="badge badge-blue">feat/</span>
+        </div>
+        <div class="layer-arrow"><svg viewBox="0 0 16 22"><path d="M8 1v18"/><path d="M3 15l5 5 5-5"/></svg>імпортує</div>
+        <div class="layer">
+          <span class="path">src/components/</span>
+          <div><div class="name">Спільні компоненти</div><div class="desc">Button, Card. Сюди потрапляє те, що потрібне двом і більше екранам. Стилі тільки через токени.</div></div>
+          <span class="badge badge-greenfg">ds/ · обидва</span>
+        </div>
+        <div class="layer-arrow"><svg viewBox="0 0 16 22"><path d="M8 1v18"/><path d="M3 15l5 5 5-5"/></svg>імпортує</div>
+        <div class="layer">
+          <span class="path">src/tokens/</span>
+          <div><div class="name">Токени</div><div class="desc">Кольори, відступи, радіуси, шрифти. Тільки значення, жодної логіки. Не імпортують нічого.</div></div>
+          <span class="badge badge-greenfg">ds/ · обидва</span>
+        </div>
+      </div>
+      <div class="rule-x"><svg class="icon"><use href="#i-x"/></svg>components → screens, screens/dashboard → screens/settings — так не робимо</div>
+      <p class="muted" style="margin-top:14px;font-size:13px"><strong style="color:var(--text)">Правило двох.</strong> Компонент, потрібний одному екрану, лежить у <code>screens/&lt;екран&gt;/components/</code>. Знадобився другому — переїжджає в <code>src/components</code> окремим PR.</p>
+    </div>
+    <div class="box">
+      <div class="box-head"><svg class="icon"><use href="#i-branch"/></svg><span class="mono">main</span><span class="right"><span class="badge">25 files</span></span></div>
+      <div class="tree">
+        <div class="row"><span class="name dir"><svg class="icon"><use href="#i-folder"/></svg>.github/</span><span class="cm">правила ревʼю</span></div>
+        <div class="row"><span class="name d1"><svg class="icon"><use href="#i-file"/></svg>CODEOWNERS</span><span class="cm">хто ревʼює спільний код</span></div>
+        <div class="row"><span class="name d1"><svg class="icon"><use href="#i-file"/></svg>PULL_REQUEST_TEMPLATE.md</span><span class="cm">чекліст кожного PR</span></div>
+        <div class="row"><span class="name dir"><svg class="icon"><use href="#i-folder"/></svg>docs/</span><span class="cm">ця презентація</span></div>
+        <div class="row"><span class="name dir"><svg class="icon"><use href="#i-folder"/></svg>src/</span><span class="cm"></span></div>
+        <div class="row"><span class="name dir d1"><svg class="icon"><use href="#i-folder"/></svg>tokens/</span><span class="cm">1 · значення</span></div>
+        <div class="row"><span class="name d2"><svg class="icon"><use href="#i-file"/></svg>colors.css</span><span class="cm">палітра + семантичні кольори</span></div>
+        <div class="row"><span class="name d2"><svg class="icon"><use href="#i-file"/></svg>spacing.css</span><span class="cm">відступи, радіуси</span></div>
+        <div class="row"><span class="name d2"><svg class="icon"><use href="#i-file"/></svg>typography.css</span><span class="cm">шрифти</span></div>
+        <div class="row"><span class="name dir d1"><svg class="icon"><use href="#i-folder"/></svg>components/</span><span class="cm">2 · спільні компоненти</span></div>
+        <div class="row"><span class="name dir d2"><svg class="icon"><use href="#i-folder"/></svg>Button/</span><span class="cm">Button.tsx · Button.module.css</span></div>
+        <div class="row"><span class="name dir d2"><svg class="icon"><use href="#i-folder"/></svg>Card/</span><span class="cm"></span></div>
+        <div class="row"><span class="name d2"><svg class="icon"><use href="#i-file"/></svg>index.ts</span><span class="cm">import { Button } from '@/components'</span></div>
+        <div class="row"><span class="name dir d1"><svg class="icon"><use href="#i-folder"/></svg>screens/</span><span class="cm">3 · екрани</span></div>
+        <div class="row"><span class="name dir d2"><svg class="icon"><use href="#i-folder"/></svg>dashboard/</span><span class="cm">твоя гілка feat/dashboard-…</span></div>
+        <div class="row"><span class="name d3"><svg class="icon"><use href="#i-file"/></svg>Dashboard.tsx</span><span class="cm"></span></div>
+        <div class="row"><span class="name dir d3"><svg class="icon"><use href="#i-folder"/></svg>components/StatCard.tsx</span><span class="cm">локальний компонент екрана</span></div>
+        <div class="row"><span class="name dir d2"><svg class="icon"><use href="#i-folder"/></svg>settings/</span><span class="cm">моя гілка feat/settings-…</span></div>
+        <div class="row"><span class="name dir d2"><svg class="icon"><use href="#i-folder"/></svg>ui-kit/</span><span class="cm">галерея компонентів для ревʼю</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide" id="s4">
+  <div class="eyebrow"><span class="num">04</span><span>git</span><span>·</span><span>гілки</span></div>
+  <h2>Гілки: кожен працює у своїй, зустрічаємось у main</h2>
+  <p class="lead">Так виглядає наш приклад у часі: ти в <code>feat/dashboard-redesign</code>, я в <code>feat/settings-notifications</code>, і одна коротка гілка <code>ds/button-size-sm</code> для спільної кнопки.</p>
+  <div class="box">
+    <div class="box-head"><svg class="icon"><use href="#i-branch"/></svg>Network graph<span class="right"><span class="badge badge-purple">3 PR</span><span class="badge">3 гілки</span></span></div>
+    <div class="box-body">
+      <figure style="margin:0">
+        <div class="graph-wrap">
+          <svg class="graph" viewBox="0 0 1000 300" role="img" aria-label="Дві довгі гілки екранів і одна коротка гілка спільного компонента зливаються в main трьома pull request-ами; після кожного merge гілки підтягують main">
+            <defs>
+              <marker id="arr-main" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#E6EDF3"/></marker>
+              <marker id="arr-dash" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8B949E"/></marker>
+            </defs>
+            <!-- main -->
+            <line class="g-main" x1="80" y1="190" x2="955" y2="190" marker-end="url(#arr-main)"/>
+            <!-- designer: feat/dashboard-redesign -->
+            <path class="g-blue" d="M80 190 C80 120 90 70 140 70 L800 70 C840 70 860 130 860 190"/>
+            <!-- developer: feat/settings-notifications -->
+            <path class="g-orange" d="M80 190 C80 230 90 250 130 250 L590 250 C620 250 640 220 640 190"/>
+            <!-- ds/button-size-sm -->
+            <path class="g-green" d="M280 190 C280 155 290 130 315 130 L365 130 C390 130 400 155 400 190"/>
+            <!-- merge main into branches -->
+            <path class="g-dash" d="M400 190 C430 190 445 70 462 70" marker-end="url(#arr-dash)"/>
+            <path class="g-dash" d="M640 190 C670 190 690 70 702 70" marker-end="url(#arr-dash)"/>
+            <path class="g-dash" d="M400 190 C430 190 445 250 462 250" marker-end="url(#arr-dash)"/>
+            <!-- commits -->
+            <circle class="c-main" cx="80" cy="190" r="6"/>
+            <circle class="c-blue" cx="180" cy="70" r="6"/>
+            <circle class="c-blue" cx="260" cy="70" r="6"/>
+            <circle class="c-hollow-blue" cx="470" cy="70" r="6"/>
+            <circle class="c-blue" cx="560" cy="70" r="6"/>
+            <circle class="c-hollow-blue" cx="710" cy="70" r="6"/>
+            <circle class="c-blue" cx="780" cy="70" r="6"/>
+            <circle class="c-green" cx="340" cy="130" r="6"/>
+            <circle class="c-orange" cx="200" cy="250" r="6"/>
+            <circle class="c-orange" cx="300" cy="250" r="6"/>
+            <circle class="c-hollow-orange" cx="470" cy="250" r="6"/>
+            <circle class="c-orange" cx="540" cy="250" r="6"/>
+            <circle class="c-merge" cx="400" cy="190" r="7"/>
+            <circle class="c-merge" cx="640" cy="190" r="7"/>
+            <circle class="c-merge" cx="860" cy="190" r="7"/>
+            <!-- labels -->
+            <text class="t t-text" x="20" y="194">main</text>
+            <text class="t t-blue" x="150" y="56">feat/dashboard-redesign · дизайнер</text>
+            <text class="t t-green" x="300" y="116">ds/button-size-sm</text>
+            <text class="t t-orange" x="140" y="278">feat/settings-notifications · розробник</text>
+            <text class="t t-purple" x="400" y="216" text-anchor="middle">PR #12 · Button sm</text>
+            <text class="t t-purple" x="640" y="216" text-anchor="middle">PR #13 · Settings</text>
+            <text class="t t-purple" x="860" y="216" text-anchor="middle">PR #14 · Dashboard</text>
+            <text class="t" x="185" y="172" text-anchor="middle">обидві гілки від одного коміту</text>
+            <text class="t" x="478" y="112">merge main</text>
+            <text class="t" x="718" y="112">merge main</text>
+          </svg>
+        </div>
+        <figcaption class="legend">
+          <span><i style="background:var(--blue)"></i>коміт дизайнера</span>
+          <span><i style="background:var(--orange)"></i>коміт розробника</span>
+          <span><i style="background:var(--green-fg)"></i>спільний код, ds/</span>
+          <span><i style="background:var(--purple)"></i>squash merge у main</span>
+          <span><i class="hollow"></i>підтягнув main у гілку</span>
+          <span><i class="dash"></i>git merge main</span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Префікс</th><th>Для чого</th><th>Приклад</th><th>Ревʼю</th></tr></thead>
+        <tbody>
+          <tr><td><code>feat/</code></td><td>екран або фіча</td><td><code>feat/dashboard-redesign</code></td><td>1 апрув другого</td></tr>
+          <tr><td><code>ds/</code></td><td><code>src/tokens</code>, <code>src/components</code></td><td><code>ds/button-size-sm</code></td><td>апрув обох</td></tr>
+          <tr><td><code>fix/</code></td><td>виправлення</td><td><code>fix/settings-save-button</code></td><td>1 апрув другого</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ol class="rules">
+      <li>Гілку створюємо від свіжого <code>main</code>: <code>git switch main &amp;&amp; git pull &amp;&amp; git switch -c feat/…</code></li>
+      <li>Гілка живе 1–3 дні. Довше — задача завелика, розбиваємо.</li>
+      <li>Щодня підтягуємо <code>main</code> у свою гілку: <code>git merge main</code>. Так конфлікти маленькі, а не «раз на два тижні».</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide" id="s5">
+  <div class="eyebrow"><span class="num">05</span><span>pull request</span><span>·</span><span>правила</span></div>
+  <h2>Pull Request: єдиний шлях у main</h2>
+  <p class="lead">PR — це і ревʼю, і документація, і кнопка merge. Шаблон у <code>.github/PULL_REQUEST_TEMPLATE.md</code> підставляє чекліст автоматично.</p>
+  <div class="grid cols-2">
+    <div class="box" aria-label="Приклад pull request">
+      <div class="pr-title">ds: Button — розмір <code>sm</code> <span class="n">#12</span></div>
+      <div class="pr-meta"><span class="badge badge-green"><svg class="icon" style="width:12px;height:12px"><use href="#i-pr"/></svg>Open</span><span>designer хоче злити 1 коміт у <code>main</code> з <code>ds/button-size-sm</code></span></div>
+      <div class="pr-body">
+        <div><h4>Що зроблено</h4><p style="margin:0;color:var(--muted)">Новий проп <code>size: 'md' | 'sm'</code>. Дефолт <code>md</code> — існуючі кнопки виглядають так само. Варіант додано в <code>/ui-kit</code>.</p></div>
+        <div><h4>Скриншоти</h4>
+          <div class="shots">
+            <div class="shot">/ui-kit · до<div class="btns"><span class="b md">Primary</span><span class="b md" style="background:#fff;color:#0f172a;border:1px solid #e2e8f0">Secondary</span></div></div>
+            <div class="shot">/ui-kit · після<div class="btns"><span class="b md">md</span><span class="b sm">sm</span><span class="b md" style="background:#fff;color:#0f172a;border:1px solid #e2e8f0">md</span><span class="b sm" style="background:#fff;color:#0f172a;border:1px solid #e2e8f0">sm</span></div></div>
+          </div>
+        </div>
+        <div><h4>Чекліст</h4>
+          <ul class="check">
+            <li><span class="cb"><svg class="icon"><use href="#i-check"/></svg></span><span>Гілка від свіжого <code>main</code></span></li>
+            <li><span class="cb"><svg class="icon"><use href="#i-check"/></svg></span><span>Один PR — одна задача</span></li>
+            <li><span class="cb"><svg class="icon"><use href="#i-check"/></svg></span><span>Новий проп має дефолт, попередній вигляд не змінився</span></li>
+            <li><span class="cb"><svg class="icon"><use href="#i-check"/></svg></span><span>Знайдено всі <code>&lt;Button</code> у проєкті, перевірено</span></li>
+            <li><span class="cb"><svg class="icon"><use href="#i-check"/></svg></span><span>Скриншот <code>/ui-kit</code> додано</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pr-side">
+        <div class="kv"><span>Reviewers</span><b>developer · Code owner · <span style="color:var(--green-fg)">Approved</span></b></div>
+        <div class="kv"><span>Files changed</span><b>3</b></div>
+        <div class="kv"><span>Diff</span><b><span style="color:var(--green-fg)">+14</span> <span style="color:var(--red)">−1</span></b></div>
+      </div>
+      <div class="pr-merge"><span class="btn btn-green"><svg class="icon" style="width:14px;height:14px"><use href="#i-merge"/></svg>Squash and merge</span><span class="muted" style="font-size:13px">→ гілку видалено автоматично</span></div>
+    </div>
+    <ol class="rules">
+      <li><strong><code>main</code> завжди робочий.</strong> Напряму в нього ніхто не пушить — GitHub це блокує.</li>
+      <li><strong>Одна задача = одна гілка = один PR.</strong> «Заодно поправив ще…» — окремий PR.</li>
+      <li><strong>PR маленький.</strong> До ~300 рядків, опис і скриншоти «до / після». Великий PR ніхто не читає уважно.</li>
+      <li><strong>Екрани</strong> — 1 апрув другого учасника. <strong><code>tokens</code> і <code>components</code></strong> — апрув обох, CODEOWNERS додає ревʼюера сам.</li>
+      <li><strong>Merge — тільки Squash and merge.</strong> Один PR = один коміт у <code>main</code>. Гілка видаляється.</li>
+      <li><strong>Спільний код — окремий PR</strong>, а не частина PR екрана. Тоді його можна злити за 15 хвилин, не чекаючи весь екран.</li>
+      <li><strong>Ревʼю — протягом робочого дня.</strong> Маленький <code>ds/</code> PR — за 15 хвилин, бо на нього чекає інша гілка.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="slide" id="s6">
+  <div class="eyebrow"><span class="num">06</span><span>src/components</span><span>·</span><span>src/tokens</span></div>
+  <h2>Спільний компонент: додавай варіант, не змінюй дефолт</h2>
+  <p class="lead">Кнопка стоїть на п’яти екранах. Якщо змінити її <code>padding</code>, зміняться всі п’ять. Якщо додати <code>size="sm"</code> з дефолтом <code>md</code> — зміниться тільки той екран, який попросить.</p>
+  <div class="grid cols-2-wide">
+    <div class="grid" style="gap:12px">
+      <div class="box">
+        <div class="box-head"><svg class="icon"><use href="#i-file"/></svg><span class="mono">src/components/Button/Button.tsx</span><span class="right"><span class="badge badge-greenfg">+3</span><span class="badge badge-red">−1</span></span></div>
+        <div class="diff-wrap"><table class="diff">
+          <tr class="hunk"><td colspan="3">@@ ButtonProps @@</td></tr>
+          <tr><td class="ln">4</td><td class="ln">4</td><td>   variant?: 'primary' | 'secondary';</td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">5</td><td>+  /** Дефолт 'md' = попередня поведінка. Settings не змінюється. */</td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">6</td><td>+  size?: 'md' | 'sm';</td></tr>
+          <tr><td class="ln">5</td><td class="ln">7</td><td>   children: ReactNode;</td></tr>
+          <tr><td class="ln">6</td><td class="ln">8</td><td> };</td></tr>
+          <tr class="hunk"><td colspan="3">@@ Button @@</td></tr>
+          <tr class="del"><td class="ln">8</td><td class="ln"></td><td>-export function Button({ variant = 'primary', children }: ButtonProps) {</td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">10</td><td>+export function Button({ variant = 'primary', size = 'md', children }: ButtonProps) {</td></tr>
+        </table></div>
+      </div>
+      <div class="box">
+        <div class="box-head"><svg class="icon"><use href="#i-file"/></svg><span class="mono">src/components/Button/Button.module.css</span><span class="right"><span class="badge badge-greenfg">+5</span></span></div>
+        <div class="diff-wrap"><table class="diff">
+          <tr><td class="ln">28</td><td class="ln">28</td><td> .md { min-height: 40px; padding: var(--space-2) var(--space-4); }  <span style="color:var(--muted)">/* не чіпаємо */</span></td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">29</td><td>+</td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">30</td><td>+.sm {</td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">31</td><td>+  min-height: 32px;</td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">32</td><td>+  padding: var(--space-1) var(--space-3);</td></tr>
+          <tr class="add"><td class="ln"></td><td class="ln">33</td><td>+}</td></tr>
+        </table></div>
+      </div>
+    </div>
+    <ol class="rules">
+      <li><strong>Новий проп або токен — з дефолтом, що дорівнює поточній поведінці.</strong> Потрібна менша кнопка — <code>size="sm"</code>, а не менший <code>padding</code> у <code>.button</code>.</li>
+      <li><strong>Перед зміною знайди всі використання.</strong> Пошук <code>&lt;Button</code> по проєкту, потім екран <code>/ui-kit</code>: там кожен компонент у всіх станах. Скриншот <code>/ui-kit</code> — у PR.</li>
+      <li><strong>Треба змінити дефолт, перейменувати або видалити проп?</strong> Це breaking change. Спершу пишеш у чат → окремий PR <code>ds/…</code> → у ньому ж оновлюєш усі екрани → ревʼю обох. Так можна, просто не мовчки.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide" id="s7">
+  <div class="eyebrow"><span class="num">07</span><span>сценарій</span><span>·</span><span>10 кроків</span></div>
+  <h2>Ти робиш Dashboard, я — Settings. Паралельно</h2>
+  <p class="lead">Три дні роботи, три PR. Ти жодного разу не чекаєш мене, я — тебе. Єдина точка синхронізації — 15-хвилинне ревʼю кнопки.</p>
+  <div class="lanes">
+    <div class="hd"></div>
+    <div class="hd"><span class="dot" style="color:var(--blue)"></span><b>Дизайнер</b>feat/dashboard-redesign</div>
+    <div class="hd m"><svg class="icon" style="color:var(--muted)"><use href="#i-branch"/></svg><b>main</b></div>
+    <div class="hd r"><span class="dot" style="color:var(--orange)"></span><b>Розробник</b>feat/settings-notifications</div>
+
+    <div class="step">1</div>
+    <div class="cell d"><code>git switch main &amp;&amp; git pull</code><br><code>git switch -c feat/dashboard-redesign</code></div>
+    <div class="mainc"><span class="m">● обидві гілки від одного коміту</span></div>
+    <div class="cell r"><code>git switch main &amp;&amp; git pull</code><br><code>git switch -c feat/settings-notifications</code></div>
+
+    <div class="step">2</div>
+    <div class="cell d">Працюєш лише в <code>src/screens/dashboard/</code>. Коміт → <code>git push -u origin feat/dashboard-redesign</code>. Можна одразу відкрити Draft PR — так видно прогрес.</div>
+    <div class="mainc"></div>
+    <div class="cell r">Працюю лише в <code>src/screens/settings/</code>. Коміт → push. Різні папки — конфліктів не буде.</div>
+
+    <div class="step">3</div>
+    <div class="cell d">Потрібна менша кнопка. Button у своїй гілці <strong>не чіпаєш</strong>: коміт поточного → <code>git switch main &amp;&amp; git pull</code> → <code>git switch -c ds/button-size-sm</code></div>
+    <div class="mainc"></div>
+    <div class="cell r">Продовжую Settings.</div>
+
+    <div class="step">4</div>
+    <div class="cell d">Додаєш <code>size</code> з дефолтом <code>md</code>, <code>.sm</code> у CSS, варіант у <code>/ui-kit</code>. Відкриваєш <strong>PR #12</strong> зі скриншотом <code>/ui-kit</code>.</div>
+    <div class="mainc"></div>
+    <div class="cell r">Ревʼюю PR #12 за 15 хвилин: дефолт не змінився, <code>/ui-kit</code> в порядку → <span style="color:var(--green-fg)">Approve</span>.</div>
+
+    <div class="step">5</div>
+    <div class="cell empty"></div>
+    <div class="mainc"><span class="badge badge-purple">PR #12 merged</span><span class="m">Button має <code>size="sm"</code></span></div>
+    <div class="cell empty"></div>
+
+    <div class="step">6</div>
+    <div class="cell d"><code>git switch feat/dashboard-redesign</code><br><code>git merge main</code> → тепер <code>&lt;Button size="sm"&gt;</code> доступний у Dashboard.</div>
+    <div class="mainc"></div>
+    <div class="cell r"><code>git merge main</code> → Settings виглядає так само: дефолт <code>md</code> ніхто не міняв.</div>
+
+    <div class="step">7</div>
+    <div class="cell empty"></div>
+    <div class="mainc"></div>
+    <div class="cell r">Settings готовий → <strong>PR #13</strong> зі скриншотами «до / після».</div>
+
+    <div class="step">8</div>
+    <div class="cell d">Ревʼюєш PR #13: дивишся скриншоти, за потреби відкриваєш гілку → <span style="color:var(--green-fg)">Approve</span>.</div>
+    <div class="mainc"><span class="badge badge-purple">PR #13 merged</span><span class="m">гілку видалено</span></div>
+    <div class="cell empty"></div>
+
+    <div class="step">9</div>
+    <div class="cell d"><code>git merge main</code> — підтягнув Settings, конфліктів немає: інші папки. Відкриваєш <strong>PR #14</strong>.</div>
+    <div class="mainc"></div>
+    <div class="cell r">Ревʼюю PR #14 → <span style="color:var(--green-fg)">Approve</span>.</div>
+
+    <div class="step">10</div>
+    <div class="cell empty"></div>
+    <div class="mainc"><span class="badge badge-purple">PR #14 merged</span><span class="m">Dashboard + Settings + Button sm. Нічого не зламалось.</span></div>
+    <div class="cell empty"></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide" id="s8">
+  <div class="eyebrow"><span class="num">08</span><span>крок 3 детально</span><span>·</span><span>Button</span></div>
+  <h2>Кнопка: два шляхи до меншої кнопки</h2>
+  <p class="lead">Однакова мета, різниця в одній гілці. Ліворуч — як ламаються чужі екрани. Праворуч — як ми домовились робити.</p>
+  <div class="grid cols-2">
+    <div class="box bad">
+      <div class="box-head"><svg class="icon"><use href="#i-x"/></svg>Правлю Button у гілці Dashboard</div>
+      <div class="box-body">
+        <ol class="steps">
+          <li>У <code>feat/dashboard-redesign</code> зменшуєш <code>padding</code> у <code>.button</code> — на Dashboard стало добре.</li>
+          <li>PR Dashboard великий: 40 файлів, серед них <code>Button.module.css</code>. Ревʼюер дивиться на екран, не на кнопку.</li>
+          <li>PR злитий. Усі кнопки в Settings — і на решті екранів — стали меншими.</li>
+          <li>Я дізнаюсь після релізу: у моєму PR цих файлів не було, у моїй гілці кнопки були нормальні.</li>
+        </ol>
+        <div class="result bad"><svg class="icon"><use href="#i-x"/></svg><span>Спільний код змінився «за компанію». Ніхто не перевірив інші екрани, бо ніхто не знав, що треба.</span></div>
+      </div>
+    </div>
+    <div class="box ok">
+      <div class="box-head"><svg class="icon"><use href="#i-check"/></svg>Окремий PR ds/button-size-sm</div>
+      <div class="box-body">
+        <ol class="steps">
+          <li>Комітиш поточне в <code>feat/dashboard-redesign</code>. <code>git switch main &amp;&amp; git pull</code>, <code>git switch -c ds/button-size-sm</code>.</li>
+          <li>Додаєш <code>size?: 'md' | 'sm'</code> з дефолтом <code>md</code> і клас <code>.sm</code>. <code>.md</code> не чіпаєш. Варіант — у <code>/ui-kit</code>.</li>
+          <li>PR #12: 3 файли, скриншот <code>/ui-kit</code>. CODEOWNERS додає мене ревʼюером. 15 хвилин → Approve → Squash and merge.</li>
+          <li>Обидва робимо <code>git merge main</code>. Dashboard пише <code>&lt;Button size="sm"&gt;</code>. Settings не змінився.</li>
+        </ol>
+        <div class="result ok"><svg class="icon"><use href="#i-check"/></svg><span>Зміна спільного коду маленька, видима і перевірена тим, чиї екрани вона могла зачепити.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="slide" id="s9">
+  <div class="eyebrow"><span class="num">09</span><span>git</span><span>·</span><span>конфлікти і команди</span></div>
+  <h2>Конфлікти трапляються рідко і лікуються за 5 хвилин</h2>
+  <p class="lead">Конфлікт — це лише коли ми обоє змінили ті самі рядки одного файлу. Різні екрани в різних папках цього не дають. Типові місця: роутинг, <code>components/index.ts</code>, файли токенів.</p>
+  <div class="grid cols-2">
+    <div class="box">
+      <div class="box-head"><svg class="icon"><use href="#i-merge"/></svg>Якщо git написав CONFLICT</div>
+      <div class="box-body">
+<pre class="code"><span class="f">git</span> switch feat/dashboard-redesign
+<span class="f">git</span> merge main                 <span class="c"># git пише CONFLICT і назву файлу</span>
+<span class="c"># відкрити файл у VS Code → Accept Current / Incoming / Both → зберегти</span>
+<span class="f">git</span> add -A <span class="k">&amp;&amp;</span> <span class="f">git</span> commit       <span class="c"># завершити злиття</span>
+<span class="f">git</span> push</pre>
+        <p class="muted" style="margin-top:12px;font-size:13px">Не впевнений, що обрати — поклич мене, це 5 хвилин. Профілактика: маленькі PR, щоденний <code>git merge main</code>, спільний код окремими PR.</p>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Дія</th><th>Термінал</th><th>GitHub Desktop</th></tr></thead>
+        <tbody>
+          <tr><td>Оновити <code>main</code></td><td><code>git switch main &amp;&amp; git pull</code></td><td>Current branch → main → Fetch origin → Pull</td></tr>
+          <tr><td>Нова гілка</td><td><code>git switch -c feat/dashboard-redesign</code></td><td>Branch → New branch (from main)</td></tr>
+          <tr><td>Зберегти роботу</td><td><code>git add -A &amp;&amp; git commit -m "…"</code></td><td>Summary → Commit to feat/…</td></tr>
+          <tr><td>Відправити на GitHub</td><td><code>git push -u origin feat/dashboard-redesign</code></td><td>Publish branch / Push origin</td></tr>
+          <tr><td>Підтягнути <code>main</code></td><td><code>git merge main</code></td><td>Branch → Update from main</td></tr>
+          <tr><td>Відкрити PR</td><td>Compare &amp; pull request на GitHub</td><td>Branch → Create Pull Request</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" id="s10">
+  <div class="eyebrow"><span class="num">10</span><span>далі</span></div>
+  <h2>Що я налаштую один раз, і чого ми свідомо не робимо</h2>
+  <p class="lead">Уся «інфраструктура» — три файли в репозиторії і кілька галочок у налаштуваннях GitHub.</p>
+  <div class="grid cols-2">
+    <div class="box">
+      <div class="box-head"><svg class="icon"><use href="#i-lock"/></svg>Налаштувати один раз · розробник</div>
+      <div class="box-body">
+        <ul class="todo">
+          <li><span class="cb"></span><span>Settings → Rules → ruleset для <code>main</code>: Require a pull request (1 approval) · Require review from Code Owners · Block force pushes.</span></li>
+          <li><span class="cb"></span><span>Settings → General → Pull Requests: лише <strong>Allow squash merging</strong>, увімкнути <strong>Automatically delete head branches</strong>.</span></li>
+          <li><span class="cb"></span><span>Вписати реальні GitHub-логіни в <code>.github/CODEOWNERS</code>.</span></li>
+          <li><span class="cb"></span><span>За бажанням: Settings → Pages → Deploy from a branch → <code>main</code> / <code>docs</code> — ця презентація відкриється за посиланням.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Не зараз</th><th>Чому</th><th>Коли повернемось</th></tr></thead>
+        <tbody>
+          <tr><td>Окремий репозиторій або npm-пакет для дизайн-системи</td><td>Версії, публікація, оновлення залежностей — зайва робота для двох людей</td><td>Другий продукт використовує ті самі компоненти</td></tr>
+          <tr><td>Storybook, візуальні регресійні тести</td><td>Ще одна інфраструктура; <code>/ui-kit</code> і скриншоти в PR закривають потребу</td><td>Понад 20 компонентів або понад 3 людей у коді</td></tr>
+          <tr><td>Семантичні версії компонентів</td><td>Без пакета не мають сенсу</td><td>Разом із пакетом</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span>github.com/eleken-git/design-process-help</span>
+  <span>README.md — той самий план текстом</span>
+  <span>питання → у PR або в чаті</span>
+</footer>
+
+<script>
+(function () {
+  var slides = [].slice.call(document.querySelectorAll('.slide'));
+  var tabs = [].slice.call(document.querySelectorAll('.tabs a'));
+  var counter = document.getElementById('counter');
+  var current = 0;
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function setActive(i) {
+    current = i;
+    counter.textContent = pad(i + 1) + ' / ' + pad(slides.length);
+    tabs.forEach(function (t, j) { t.classList.toggle('active', j === i); });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) setActive(slides.indexOf(e.target)); });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    slides.forEach(function (s) { io.observe(s); });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    var next = null;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') next = Math.min(current + 1, slides.length - 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') next = Math.max(current - 1, 0);
+    if (next === null) return;
+    e.preventDefault();
+    slides[next].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  setActive(0);
+})();
+</script>
+</body>
+</html>

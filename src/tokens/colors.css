@@ -1,0 +1,26 @@
+/* Палітра — «сирі» кольори. Використовуються лише тут, для семантичних токенів нижче. */
+:root {
+  --palette-white: #ffffff;
+  --palette-gray-50: #f8fafc;
+  --palette-gray-200: #e2e8f0;
+  --palette-gray-500: #64748b;
+  --palette-gray-900: #0f172a;
+  --palette-blue-600: #2563eb;
+  --palette-blue-700: #1d4ed8;
+  --palette-red-600: #dc2626;
+  --palette-green-600: #16a34a;
+}
+
+/* Семантичні токени — саме їх використовують компоненти й екрани. */
+:root {
+  --color-bg: var(--palette-gray-50);
+  --color-surface: var(--palette-white);
+  --color-border: var(--palette-gray-200);
+  --color-text: var(--palette-gray-900);
+  --color-text-muted: var(--palette-gray-500);
+  --color-action: var(--palette-blue-600);
+  --color-action-hover: var(--palette-blue-700);
+  --color-on-action: var(--palette-white);
+  --color-danger: var(--palette-red-600);
+  --color-success: var(--palette-green-600);
+}

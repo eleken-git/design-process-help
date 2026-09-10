@@ -1,0 +1,12 @@
+.page {
+  display: grid;
+  gap: var(--space-8);
+  padding: var(--space-8);
+  background: var(--color-bg);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

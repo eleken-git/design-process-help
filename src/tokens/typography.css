@@ -1,0 +1,9 @@
+:root {
+  --font-family-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --font-body-sm: 500 13px/20px var(--font-family-sans);
+  --font-body-md: 500 14px/20px var(--font-family-sans);
+  --font-heading-md: 600 20px/28px var(--font-family-sans);
+  --font-heading-lg: 600 28px/36px var(--font-family-sans);
+}
