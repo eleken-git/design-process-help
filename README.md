@@ -1,58 +1,83 @@
-# Дизайн у коді: один репозиторій, паралельна робота, нічого не ламається
+# Дизайн у коді з Claude: один репозиторій, паралельна робота, нічого не ламається
 
-Практичний план для команди «дизайнер + розробник», яка робить продукт для клієнта одразу в коді.
-Презентація для дизайнера — [`docs/index.html`](docs/index.html): відкрийте файл у браузері або увімкніть GitHub Pages з папки `/docs`.
+Для UX/UI дизайнера, який робить дизайн у коді через Claude і пушить на GitHub. Тут — правила гри для команди з двох і більше людей, тренувальний проєкт «Nimbus» у стилі GitHub Dark і вправи, щоб закріпити.
+
+| Що | Де |
+|---|---|
+| Презентація (10 хвилин, слайди) | [`docs/index.html`](docs/index.html) — відкрий у браузері або через GitHub Pages з папки `/docs` |
+| Тренувальний проєкт | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
+| Вправи для двох | [`PRACTICE.md`](PRACTICE.md) |
+| Правила, які Claude виконує сам | [`CLAUDE.md`](CLAUDE.md) |
+
+## Швидкий старт
+
+Скажи Claude: «Клонуй `https://github.com/eleken-git/design-process-help.git`, встанови залежності і запусти проєкт». Або вручну:
+
+```bash
+git clone https://github.com/eleken-git/design-process-help.git
+cd design-process-help
+npm install
+npm run dev        # http://localhost:5173
+```
+
+Унизу кожного екрана — підказка, де лежить його код і як назвати гілку.
+
+## Словник: Figma → GitHub
+
+| У Figma | У коді | Що це для тебе |
+|---|---|---|
+| Файл | Репозиторій (repo) | Одна папка з усім кодом продукту. Живе на GitHub, копія — у тебе |
+| Create branch | Гілка (branch) | Твоя копія коду для однієї задачі. У `main` її не видно, доки не злив |
+| Version history | Коміт (commit) | Збережена точка з підписом «що зроблено». Claude робить це за тебе |
+| Синхронізація з хмарою | Push | Відправити коміти на GitHub |
+| Review and merge | Pull Request (PR) | «Перевір і злий мої зміни у `main`»: скриншоти, обговорення, кнопка merge |
+| Publish library | Merge гілки `ds/` у `main` | Оновлений компонент став доступним усім екранам |
+| Variables / Styles | Токени, `src/tokens` | Кольори, відступи, шрифти як `var(--color-action)` |
+| Main component + properties | Спільний компонент + пропси, `src/components` | `<Button variant="secondary" size="sm">` — instance з обраними властивостями |
+| Page | Екран, `src/screens` | Одна папка на екран |
+| Resolve conflicts | Конфлікт | Двоє змінили той самий рядок. Обираєш, чия версія лишається |
 
 ## Рішення за 30 секунд
 
 | Питання | Відповідь |
 |---|---|
-| Розділяти продукт, компоненти й дизайн-систему на окремі репозиторії? | **Ні.** Один репозиторій, три папки з чіткими межами: `tokens → components → screens`. Окремий пакет — це версії, публікація, оновлення залежностей. Для двох людей це зайва робота. |
-| Як контролювати зміни? | `main` захищений. Будь-яка зміна: гілка → Pull Request → ревʼю → squash merge. Історія змін живе в PR: хто, що, чому, зі скриншотами. |
-| Як зміна спільного компонента не зламає інші екрани? | Спільний код (`src/tokens`, `src/components`) змінюється **окремим маленьким PR**, який ревʼюють обидва (CODEOWNERS). Правило: додавай варіант, не змінюй дефолт. Перевірка — екран `/ui-kit`. |
+| Розділяти продукт, компоненти й дизайн-систему на окремі репозиторії? | **Ні.** Один репозиторій, три папки з чіткими межами: `tokens → components → screens`. Окремий пакет — це версії, публікація, оновлення залежностей. Для маленької команди це зайва робота. |
+| Як контролювати зміни? | `main` захищений. Будь-яка зміна: гілка → Pull Request → ревʼю → squash merge. Історія живе в PR: хто, що, чому, зі скриншотами. |
+| Як зміна спільного компонента не зламає інші екрани? | Спільний код (`src/tokens`, `src/components`) змінюється **окремим маленьким PR**, який ревʼюють обидва (CODEOWNERS). Правило: додавай варіант, не змінюй дефолт. Перевірка — екран `#/ui-kit`. |
 
-## 1. Структура папок
+## 1. Структура
 
 ```
 .
-├── README.md                      ← цей план
-├── docs/index.html                ← презентація для дизайнера
+├── README.md, PRACTICE.md, CLAUDE.md
+├── docs/index.html                ← презентація
 ├── .github/
 │   ├── CODEOWNERS                 ← хто обовʼязково ревʼює спільний код
-│   └── PULL_REQUEST_TEMPLATE.md   ← чекліст для кожного PR
+│   ├── PULL_REQUEST_TEMPLATE.md   ← чекліст кожного PR
+│   └── workflows/ci.yml           ← перевірка «проєкт збирається»
+├── index.html, package.json, vite.config.ts, tsconfig.json
 └── src/
-    ├── tokens/                    ← 1. значення: кольори, відступи, шрифти
-    │   ├── colors.css
-    │   ├── spacing.css
-    │   ├── typography.css
-    │   └── index.css
-    ├── components/                ← 2. спільні компоненти («правило двох»)
-    │   ├── Button/
-    │   │   ├── Button.tsx
-    │   │   ├── Button.module.css
-    │   │   └── index.ts
-    │   ├── Card/
-    │   └── index.ts
+    ├── main.tsx, App.tsx          ← оболонка: верхня панель, перемикання екранів
+    ├── tokens/                    ← 1. значення: кольори, відступи, шрифти (як Variables)
+    ├── components/                ← 2. спільні компоненти: Button, Card, Badge, Toggle, CodeHint
+    │   └── Button/
+    │       ├── Button.tsx
+    │       ├── Button.module.css
+    │       └── index.ts
     └── screens/                   ← 3. екрани: одна папка = один екран = одна гілка
         ├── dashboard/
         │   ├── Dashboard.tsx
-        │   ├── Dashboard.module.css
-        │   └── components/StatCard.tsx          ← локальний компонент екрана
+        │   └── components/StatCard.tsx      ← локальний компонент екрана
         ├── settings/
-        │   ├── Settings.tsx
-        │   └── components/NotificationRow.tsx
-        └── ui-kit/UiKit.tsx                     ← галерея компонентів для ревʼю
+        │   └── components/SettingRow.tsx
+        └── ui-kit/                          ← галерея компонентів для ревʼю
 ```
 
 Три шари, залежності тільки вниз: `screens → components → tokens`.
 
-- `tokens` не імпортують нічого.
-- `components` використовують лише `tokens` і не знають про екрани.
-- `screens` використовують `components` і `tokens`; один екран не імпортує інший.
-- Компонент, потрібний одному екрану, лежить у `screens/<екран>/components/`. Стає спільним, коли знадобився другому екрану («правило двох»).
-- Стилі — тільки через `var(--…)`. Жодних «сирих» `#2563eb` і `14px` поза `src/tokens`.
-
-Стек у прикладах — React + CSS Modules, `@/` = `src/`. Це шаблон структури без збірки: перенесіть папки у ваш codebase.
+- `tokens` не імпортують нічого. `components` використовують лише `tokens`. `screens` використовують `components` і `tokens`; один екран не імпортує інший.
+- Компонент, потрібний одному екрану, лежить у `screens/<екран>/components/`. Стає спільним, коли знадобився другому («правило двох»).
+- Стилі — тільки через `var(--…)`. Жодних «сирих» `#238636` і `14px` поза `src/tokens`.
 
 ## 2. Гілки
 
@@ -67,7 +92,7 @@ main ●────────────●───────────
      │
      └─●────●──(⇐ main)──●────(⇐ main)──●─────────────────────────┘ feat/dashboard-redesign
 
-(⇐ main) = git merge main: підтягнути свіжий main у свою гілку
+(⇐ main) = «підтягни main у мою гілку»
 ```
 
 | Префікс | Для чого | Приклад | Ревʼю |
@@ -76,27 +101,39 @@ main ●────────────●───────────
 | `ds/` | зміни в `src/tokens` або `src/components` | `ds/button-size-sm` | апрув обох (CODEOWNERS) |
 | `fix/` | виправлення | `fix/settings-save-button` | 1 апрув |
 
-- Гілку створюємо від свіжого `main`: `git switch main && git pull && git switch -c feat/…`.
+- Гілка створюється від свіжого `main`. Claude робить це, коли ти кажеш «почни нову задачу».
 - Гілка живе 1–3 дні. Довше — розбиваємо задачу.
-- Щодня підтягуємо `main` у свою гілку: `git merge main`.
+- Щодня: «підтягни `main` у мою гілку».
 
-## 3. Правила Pull Request
+## 3. Що казати Claude
+
+| Хочу | Кажу Claude | Що він робить |
+|---|---|---|
+| Почати задачу | «Почни нову задачу: гілка `feat/dashboard-cards` від свіжого `main`» | `git switch main && git pull && git switch -c feat/dashboard-cards` |
+| Зробити зміну | «На Dashboard додай картку “Відтік”. Стилі — тільки через токени» | редагує `src/screens/dashboard/`, показує в браузері |
+| Зберегти й відправити | «Закоміть як `dashboard: картка відтоку` і запуш» | `git add -A && git commit -m … && git push -u origin …` |
+| Віддати на ревʼю | «Відкрий PR за шаблоном, додай скриншоти до/після» | `gh pr create` з чеклістом |
+| Оновитись | «Підтягни `main` у мою гілку» | `git merge main`, при конфлікті — питає тебе |
+| Зорієнтуватись | «На якій я гілці, що змінено, що не запушено?» | `git status`, `git log` простими словами |
+
+Правила з `CLAUDE.md` Claude читає сам на старті кожної сесії: не комітить у `main`, не чіпає `src/components` у `feat/` гілках, додає пропси з дефолтами, перевіряє збірку перед PR, не зливає PR сам.
+
+## 4. Правила Pull Request
 
 1. `main` завжди робочий. У `main` ніхто не пушить напряму (branch protection).
 2. Одна задача = одна гілка = один PR.
 3. PR маленький: до ~300 рядків, опис і скриншоти «до / після» за шаблоном.
 4. Екрани ревʼює другий учасник (1 апрув). `src/tokens` і `src/components` — апрув обох.
-5. Merge — тільки **Squash and merge**. Гілка після merge видаляється.
-6. Спільний код — окремий PR, а не частина PR екрана.
-7. Ревʼю — протягом робочого дня. Маленький `ds/` PR — за 15 хвилин.
+5. Зелений check «build» обовʼязковий: якщо проєкт не збирається, PR не зливається.
+6. Merge — тільки **Squash and merge**. Гілка після merge видаляється.
+7. Спільний код — окремий PR, а не частина PR екрана.
+8. Ревʼю — протягом робочого дня. Маленький `ds/` PR — за 15 хвилин.
 
-## 4. Спільні компоненти й токени: три правила
+## 5. Спільні компоненти й токени: три правила
 
-1. **Додавай варіант, не змінюй дефолт.** Новий проп або токен має дефолт, що дорівнює поточній поведінці. Потрібна менша кнопка — `size="sm"`, а не менший `padding` у `.button`.
-2. **Знайди всі використання** перед зміною: пошук `<Button` по проєкту, потім екран `/ui-kit`, де кожен компонент показаний у всіх станах.
+1. **Додавай варіант, не змінюй дефолт.** У Figma: додати variant property, а не правити main component, бо зміняться всі instances. У коді: новий проп із дефолтом, що дорівнює поточній поведінці. Потрібна менша кнопка — `size="sm"`, а не менший `padding` у `.button`.
+2. **Знайди всі використання** перед зміною: пошук `<Button` по проєкту, потім екран `#/ui-kit`, де кожен компонент показаний у всіх станах.
 3. **Breaking change — окрема історія.** Змінити дефолт, перейменувати або видалити проп можна: спершу написати в чаті → окремий PR `ds/…` → у тому ж PR оновити всі екрани → ревʼю обох.
-
-Диф із прикладу нижче:
 
 ```diff
  type ButtonProps = {
@@ -110,63 +147,57 @@ main ●────────────●───────────
 +export function Button({ variant = 'primary', size = 'md', children }: ButtonProps) {
 ```
 
-## 5. Приклад: дизайнер робить Dashboard, розробник — Settings
+## 6. Приклад: ти робиш Dashboard, колега — Settings
 
-| # | Дизайнер — `feat/dashboard-redesign` | `main` | Розробник — `feat/settings-notifications` |
+| # | Ти — `feat/dashboard-redesign` | `main` | Колега — `feat/settings-notifications` |
 |---|---|---|---|
-| 1 | `git switch main && git pull`<br>`git switch -c feat/dashboard-redesign` | ● обидві гілки від одного коміту | `git switch main && git pull`<br>`git switch -c feat/settings-notifications` |
-| 2 | Працює лише в `src/screens/dashboard/`. Коміт → `git push -u origin feat/dashboard-redesign`. Можна одразу відкрити Draft PR | | Працює лише в `src/screens/settings/`. Коміт → push |
-| 3 | Потрібна менша кнопка. Button у своїй гілці **не** чіпає: коміт → `git switch main && git pull` → `git switch -c ds/button-size-sm` | | Продовжує Settings |
-| 4 | Додає `size` з дефолтом `md`, `.sm` у CSS, варіант у `/ui-kit`. Відкриває **PR #12** зі скриншотом `/ui-kit` | | Ревʼює PR #12 (15 хв): дефолт не змінився, `/ui-kit` в порядку → Approve |
+| 1 | «Почни нову задачу: гілка `feat/dashboard-redesign` від свіжого `main`» | ● обидві гілки від одного коміту | «Почни нову задачу: гілка `feat/settings-notifications`» |
+| 2 | Працюєш лише в `src/screens/dashboard/`. «Закоміть і запуш». Можна одразу відкрити Draft PR | | Працює лише в `src/screens/settings/`. Комітить, пушить |
+| 3 | Потрібна менша кнопка. Button у своїй гілці **не чіпаєш**: «Закоміть поточне. Почни гілку `ds/button-size-sm` від свіжого `main`» | | Продовжує Settings |
+| 4 | «Додай у Button `size` з дефолтом `md` і варіант `sm`, покажи на `#/ui-kit`, відкрий PR зі скриншотом» → **PR #12** | | Ревʼює PR #12 (15 хв): дефолт не змінився, `#/ui-kit` в порядку → Approve |
 | 5 | | **PR #12 → Squash and merge.** Button має `size="sm"` | |
-| 6 | `git switch feat/dashboard-redesign` → `git merge main` → використовує `<Button size="sm">` | | `git merge main` → Settings виглядає так само, дефолт `md` |
+| 6 | «Повернись у `feat/dashboard-redesign` і підтягни `main`» → використовуєш `<Button size="sm">` | | «Підтягни `main`» → Settings виглядає так само, дефолт `md` |
 | 7 | | | Settings готовий → **PR #13** зі скриншотами до / після |
-| 8 | Ревʼює PR #13 → Approve | **PR #13 → Squash and merge**, гілку видалено | |
-| 9 | `git merge main` — конфліктів немає, інші папки → **PR #14** | | Ревʼює PR #14 → Approve |
+| 8 | Ревʼюєш PR #13 → Approve | **PR #13 → Squash and merge**, гілку видалено | |
+| 9 | «Підтягни `main`» — конфліктів немає, інші папки → **PR #14** | | Ревʼює PR #14 → Approve |
 | 10 | | **PR #14 → Squash and merge** | |
 
 Результат: у `main` — новий Dashboard, нові Settings і Button із `size="sm"`. Жоден екран не зламався, ніхто не чекав на іншого.
 
 ### Що було б без правила про окремий PR
 
-Дизайнер зменшує `padding` у `.button` прямо в `feat/dashboard-redesign`. PR Dashboard зливається — і всі кнопки в Settings стають меншими. Розробник помічає це після релізу, бо в його PR цих файлів не було.
+Зменшити `padding` у `.button` прямо в `feat/dashboard-redesign`. PR Dashboard зливається — і всі кнопки в Settings стають меншими. Колега помічає це після релізу, бо в його PR цих файлів не було.
 
-## 6. Конфлікти
+## 7. Конфлікти
 
-Конфлікт буває лише коли обидва змінили ті самі рядки одного файлу. Типові місця: роутинг, `src/components/index.ts`, файли токенів. Різні екрани — різні папки — конфліктів немає.
+Конфлікт буває лише коли обоє змінили ті самі рядки одного файлу. Типові місця: `src/App.tsx`, `src/components/index.ts`, файли токенів. Різні екрани — різні папки — конфліктів немає.
+
+Кажеш: «Підтягни `main` у мою гілку». Claude повідомляє про конфлікт, показує обидві версії рядка простими словами і питає, яку лишити. Під капотом:
 
 ```bash
-git switch feat/dashboard-redesign
 git merge main                 # git пише CONFLICT і назву файлу
-# відкрити файл у VS Code → Accept Current / Incoming / Both → зберегти
+# обрати версію рядка → зберегти
 git add -A && git commit       # завершити злиття
 git push
 ```
 
-Не впевнений, що обрати — поклич другого учасника, це 5 хвилин.
+Не впевнений, що обрати — поклич колегу, це 5 хвилин.
 
-## 7. Налаштувати один раз (розробник)
+## 8. Тренування
 
-1. GitHub → Settings → Rules → New branch ruleset для `main`: Require a pull request (1 approval) · Require review from Code Owners · Block force pushes.
+Чотири вправи для двох людей у [`PRACTICE.md`](PRACTICE.md): паралельні екрани без конфліктів → спільний компонент правильно → конфлікт навмисно → breaking change за процедурою.
+
+## 9. Налаштувати один раз (розробник)
+
+1. GitHub → Settings → Rules → New branch ruleset для `main`: Require a pull request (1 approval) · Require review from Code Owners · Require status checks: `build` · Block force pushes.
 2. Settings → General → Pull Requests: залишити лише **Allow squash merging**, увімкнути **Automatically delete head branches**.
 3. У `.github/CODEOWNERS` вписати реальні GitHub-логіни.
 4. За бажанням: Settings → Pages → Deploy from a branch → `main` / `docs` — презентація відкриється за посиланням.
 
-## 8. Шпаргалка для дизайнера
-
-| Дія | Термінал | GitHub Desktop |
-|---|---|---|
-| Оновити `main` | `git switch main && git pull` | Current branch → `main` → Fetch origin → Pull |
-| Нова гілка | `git switch -c feat/dashboard-redesign` | Branch → New branch (from `main`) |
-| Зберегти роботу | `git add -A && git commit -m "Dashboard: картки статистики"` | Summary → Commit to feat/… |
-| Відправити на GitHub | `git push -u origin feat/dashboard-redesign` | Publish branch / Push origin |
-| Підтягнути `main` у гілку | `git merge main` | Branch → Update from main |
-| Відкрити PR | кнопка **Compare & pull request** на GitHub | Branch → Create Pull Request |
-
-## 9. Чого не робимо зараз
+## 10. Чого не робимо зараз
 
 | Що | Чому не зараз | Коли повернемось |
 |---|---|---|
-| Окремий репозиторій або npm-пакет для дизайн-системи | Версії, публікація, оновлення залежностей — зайва робота для двох людей | Другий продукт починає використовувати ті самі компоненти |
-| Storybook, візуальні регресійні тести | Ще одна інфраструктура; `/ui-kit` і скриншоти в PR закривають потребу | Понад 20 компонентів або понад 3 людей у коді |
+| Окремий репозиторій або npm-пакет для дизайн-системи | Версії, публікація, оновлення залежностей — зайва робота для маленької команди | Другий продукт використовує ті самі компоненти |
+| Storybook, візуальні регресійні тести | Ще одна інфраструктура; `#/ui-kit` і скриншоти в PR закривають потребу | Понад 20 компонентів або понад 3 людей у коді |
 | Семантичні версії компонентів | Без пакета не мають сенсу | Разом із пакетом |

@@ -1,26 +1,44 @@
-/* Палітра — «сирі» кольори. Використовуються лише тут, для семантичних токенів нижче. */
+/* Палітра — «сирі» кольори GitHub Dark. Використовуються лише тут, для семантичних токенів нижче. */
 :root {
+  --palette-gray-0: #010409;
+  --palette-gray-1: #0d1117;
+  --palette-gray-2: #161b22;
+  --palette-gray-3: #21262d;
+  --palette-gray-4: #30363d;
+  --palette-gray-5: #6e7681;
+  --palette-gray-6: #8b949e;
+  --palette-gray-7: #e6edf3;
   --palette-white: #ffffff;
-  --palette-gray-50: #f8fafc;
-  --palette-gray-200: #e2e8f0;
-  --palette-gray-500: #64748b;
-  --palette-gray-900: #0f172a;
-  --palette-blue-600: #2563eb;
-  --palette-blue-700: #1d4ed8;
-  --palette-red-600: #dc2626;
-  --palette-green-600: #16a34a;
+  --palette-green-5: #238636;
+  --palette-green-4: #2ea043;
+  --palette-green-3: #3fb950;
+  --palette-blue-3: #58a6ff;
+  --palette-red-3: #f85149;
+  --palette-yellow-3: #d29922;
+  --palette-purple-3: #a371f7;
+  --palette-orange-3: #f78166;
 }
 
 /* Семантичні токени — саме їх використовують компоненти й екрани. */
 :root {
-  --color-bg: var(--palette-gray-50);
-  --color-surface: var(--palette-white);
-  --color-border: var(--palette-gray-200);
-  --color-text: var(--palette-gray-900);
-  --color-text-muted: var(--palette-gray-500);
-  --color-action: var(--palette-blue-600);
-  --color-action-hover: var(--palette-blue-700);
+  --color-bg: var(--palette-gray-1);
+  --color-surface: var(--palette-gray-2);
+  --color-inset: var(--palette-gray-0);
+  --color-border: var(--palette-gray-4);
+  --color-border-muted: var(--palette-gray-3);
+
+  --color-text: var(--palette-gray-7);
+  --color-text-muted: var(--palette-gray-6);
+  --color-text-faint: var(--palette-gray-5);
+
+  --color-action: var(--palette-green-5);
+  --color-action-hover: var(--palette-green-4);
   --color-on-action: var(--palette-white);
-  --color-danger: var(--palette-red-600);
-  --color-success: var(--palette-green-600);
+
+  --color-accent: var(--palette-blue-3);
+  --color-success: var(--palette-green-3);
+  --color-attention: var(--palette-yellow-3);
+  --color-danger: var(--palette-red-3);
+  --color-done: var(--palette-purple-3);
+  --color-tab-active: var(--palette-orange-3);
 }

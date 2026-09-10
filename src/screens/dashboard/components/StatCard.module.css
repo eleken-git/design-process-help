@@ -1,17 +1,23 @@
 .label {
-  margin: 0;
   font: var(--font-body-sm);
   color: var(--color-text-muted);
 }
 
 .value {
   margin: var(--space-1) 0;
-  font: var(--font-heading-lg);
-  color: var(--color-text);
+  font: var(--font-display);
+  font-variant-numeric: tabular-nums;
 }
 
-.delta {
-  margin: 0;
-  font: var(--font-body-sm);
+.up,
+.down {
+  font: var(--font-body-sm-semibold);
+}
+
+.up {
   color: var(--color-success);
+}
+
+.down {
+  color: var(--color-danger);
 }

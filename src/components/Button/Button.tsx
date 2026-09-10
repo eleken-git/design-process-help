@@ -11,9 +11,10 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
 };
 
-export function Button({ variant = 'primary', size = 'md', children, ...rest }: ButtonProps) {
+export function Button({ variant = 'primary', size = 'md', children, className, ...rest }: ButtonProps) {
+  const classes = [styles.button, styles[variant], styles[size], className].filter(Boolean).join(' ');
   return (
-    <button className={`${styles.button} ${styles[variant]} ${styles[size]}`} {...rest}>
+    <button type="button" className={classes} {...rest}>
       {children}
     </button>
   );

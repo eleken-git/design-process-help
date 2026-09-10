@@ -3,14 +3,21 @@ import styles from './Card.module.css';
 
 type CardProps = {
   title?: string;
+  /** Кнопки або бейджі праворуч від заголовка. */
+  actions?: ReactNode;
   children: ReactNode;
 };
 
-export function Card({ title, children }: CardProps) {
+export function Card({ title, actions, children }: CardProps) {
   return (
     <section className={styles.card}>
-      {title && <h2 className={styles.title}>{title}</h2>}
-      {children}
+      {(title || actions) && (
+        <header className={styles.head}>
+          {title && <h2 className={styles.title}>{title}</h2>}
+          {actions && <div className={styles.actions}>{actions}</div>}
+        </header>
+      )}
+      <div className={styles.body}>{children}</div>
     </section>
   );
 }
