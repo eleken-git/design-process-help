@@ -42,7 +42,7 @@ window.EPISODES.push({
     const DUR = 104;
     const CAM = [
       { t: 0.0, p: [0.0, 1.0, 22.0], l: [0.0, -0.4, 0.0] },
-      { t: 6.5, p: [-4.4, 0.0, 11.5], l: [-4.6, -1.3, 0.0] },
+      { t: 6.5, p: [-4.4, 0.1, 11.5], l: [-4.6, -1.15, 0.0] },
       { t: 17.5, p: [0.6, 0.6, 16.5], l: [0.4, -0.2, 0.0] },
       { t: 27.5, p: [-1.4, 0.7, 10.5], l: [-2.2, 0.1, 0.0] },
       { t: 37.5, p: [0.2, 0.7, 10.5], l: [-0.5, 0.1, 0.0] },
@@ -128,7 +128,7 @@ window.EPISODES.push({
     const cFix = mk.commit(-6.6, Y_B, C.blue, 0.22);
     const cMerge = mk.commit(5.6, Y_M, C.purple, 0.28);
     const ring = mk.ring(5.6, Y_M, C.purple, 0.5);
-    const labA = mk.label('Аня', 'fix/dashboard-title', HEX(C.blue), -7.4, Y_B + 1.2, 4.0);
+    const labA = mk.label('Аня', 'fix/dashboard-title', HEX(C.blue), -7.4, Y_B + 0.95, 4.0);
     const labMain = mk.label('main', 'те, що бачить клієнт', HEX(C.text), -8.6, Y_M + 0.85, 4.0);
     // «пакет» зміни, що подорожує
     const pkt = mk.commit(-6.6, Y_B, C.blue, 0.24); pkt.g.position.z = 0.35;
