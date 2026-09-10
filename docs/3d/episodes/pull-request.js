@@ -2,9 +2,9 @@
 window.EPISODES.push({
   id: 'pull-request', order: 2, num: '02',
   title: 'Життєвий цикл Pull Request', kicker: 'Git для дизайнерів · епізод 02',
-  subtitle: 'Від гілки до злиття: як PR живе, збирає коментарі й перетворює їх на коміти в тій самій гілці.',
+  subtitle: 'Від гілки до злиття очима автора: Аня відкриває PR, відповідає на коментар комітом і зливає після Approve.',
   music: 'episodes/pull-request.mp3',
-  legend: [{ color: '#58A6FF', text: 'Аня · автор · feat/dashboard-churn' }, { color: '#F78166', text: 'Богдан · рев’юер' }, { color: '#E6EDF3', text: 'main' }],
+  legend: [{ color: '#58A6FF', text: 'Аня · автор PR · відкриває, відповідає, зливає' }, { color: '#F78166', text: 'Богдан · рев’юер · коментує, схвалює' }, { color: '#E6EDF3', text: 'main' }],
   build(ctx) {
     const { THREE, C, HEX, mk, hud } = ctx;
     const { clamp01, lerp, ease, easeOut, win, pulse } = ctx.u;
@@ -15,28 +15,28 @@ window.EPISODES.push({
         cap: 'Аня працює над карткою «Відтік» у своїй гілці. Два коміти вже на GitHub. Поки що це просто гілка — ніхто не зобов’язаний на неї дивитися.',
         term: [{ x: 'git switch -c feat/dashboard-churn' }, { x: 'git commit -m "dashboard: картка відтоку"' }, { x: 'git push -u origin feat/dashboard-churn' }] },
       { id: 'draft', t0: 16, t1: 26, num: '02', ttl: 'Draft PR: показати роботу без рев’ю',
-        cap: '<b>Pull Request</b> — це Review and merge з Figma, але з розмовою, історією й автоперевіркою. У статусі <b>Draft</b> його видно всім, але злити не можна і рев’ю ще не просять. Відкривай рано.',
+        cap: 'Аня відкриває <b>Pull Request</b> — це Review and merge з Figma, але з розмовою, історією й автоперевіркою. У статусі <b>Draft</b> його видно всім, але злити не можна і рев’ю ще не просять. Відкривати варто рано.',
         term: [{ x: 'gh pr create --draft --title "dashboard: картка відтоку"' }, { x: '→ github.com/eleken-git/design-process-help/pull/21', c: 'c' }] },
       { id: 'ready', t0: 26, t1: 36, num: '03', ttl: 'Ready for review: рев’юер і робот',
-        cap: 'Аня знімає Draft. Богдан отримує запит на рев’ю, а робот запускає збірку. Поки check жовтий — PR чекає; зелений check означає «проєкт збирається».',
+        cap: 'Аня знімає Draft і просить Богдана глянути. Робот одразу запускає збірку. Поки check жовтий — PR чекає; зелений означає «проєкт збирається».',
         term: [{ x: 'gh pr ready 21' }, { x: 'Reviewer: Богдан', c: 'c' }, { x: '● build · pending → ✓ passed', c: 'ok' }] },
-      { id: 'comment', t0: 36, t1: 48, num: '04', ttl: 'Коментар рев’юера — прив’язаний до рядка',
-        cap: 'Богдан дивиться diff і лишає коментар просто на рядку 42. Статус стає <b>Changes requested</b>. Це не відмова: це запит на ще один коміт у ту саму гілку.',
+      { id: 'comment', t0: 36, t1: 48, num: '04', ttl: 'Аня отримує коментар до рядка 42',
+        cap: 'Богдан подивився diff і лишив коментар просто на рядку 42. Аня бачить статус <b>Changes requested</b>. Це не відмова, а запит на ще один коміт у ту саму гілку — м’яч знову в Ані.',
         term: [{ x: 'Богдан · Dashboard.tsx:42', c: 'c' }, { x: '«Кнопка Експорт має бути disabled, поки дані вантажаться»' }, { x: 'Changes requested', c: 'err' }] },
       { id: 'fix', t0: 48, t1: 60, num: '05', ttl: 'Відповідь — новий коміт у ту саму гілку',
         cap: 'Аня просить Claude додати стан disabled і запушити. Новий коміт сам з’являється у PR — нічого не треба перевідкривати. Коментар закривається як <b>Resolved</b>, робот перевіряє збірку ще раз.',
         term: [{ x: 'git commit -m "dashboard: disabled для Експорт"' }, { x: 'git push' }, { x: 'PR #21 · 3 commits · ✓ build passed', c: 'ok' }] },
-      { id: 'approve', t0: 60, t1: 70, num: '06', ttl: 'Approve: кнопка merge стає зеленою',
-        cap: 'Богдан схвалює. Тепер виконані обидві умови захищеного <b>main</b>: є Approve і зелений check. Кнопка <b>Squash and merge</b> активна — і натискає її той, хто ревʼює.',
-        term: [{ x: 'Богдан · Approve ✓', c: 'ok' }, { x: 'Squash and merge — доступно', c: 'ok' }] },
+      { id: 'approve', t0: 60, t1: 70, num: '06', ttl: 'Approve: Аня бачить зелену кнопку',
+        cap: 'Богдан схвалив. Аня бачить, що виконані обидві умови захищеного <b>main</b>: Approve і зелений check. Кнопка <b>Squash and merge</b> стала активною — і натискає її Аня, бо це її PR.',
+        term: [{ x: 'Approve ✓ від Богдана', c: 'ok' }, { x: 'Аня: Squash and merge — доступно', c: 'ok' }] },
       { id: 'merge', t0: 70, t1: 82, num: '07', ttl: 'Squash and merge: три коміти стають одним',
-        cap: 'Уся гілка склеюється в один запис в історії <b>main</b> з назвою PR. Гілка видаляється автоматично. Історія main читається як список задач, а не як чернетки.',
-        term: [{ x: 'Squash and merge' }, { x: 'main ← "dashboard: картка відтоку (#21)"', c: 'p' }, { x: 'гілку feat/dashboard-churn видалено', c: 'c' }] },
+        cap: 'Аня натискає Squash and merge: уся гілка склеюється в один запис в історії <b>main</b> з назвою PR. Гілка видаляється автоматично. Історія main читається як список задач, а не як чернетки.',
+        term: [{ x: 'Аня · Squash and merge' }, { x: 'main ← "dashboard: картка відтоку (#21)"', c: 'p' }, { x: 'гілку feat/dashboard-churn видалено', c: 'c' }] },
       { id: 'roles', t0: 82, t1: 92, num: '08', ttl: 'Що бачить автор, що бачить рев’юер',
-        cap: 'Автор бачить checks, коментарі й сіру кнопку merge, доки немає Approve. Рев’юер бачить Files changed — diff і скриншоти — і кнопки Approve / Request changes. PR — це одна сторінка для обох.',
+        cap: 'Аня як автор бачить checks, коментарі й кнопку merge — сіру, доки немає Approve. Богдан як рев’юер бачить Files changed — diff і скриншоти — і кнопки Approve / Request changes. Сторінка одна, але процесом керує автор.',
         term: [] },
       { id: 'summary', t0: 92, t1: 101, num: '09', ttl: 'Три звички для PR',
-        cap: 'Відкривай PR рано як Draft. Коментар — це наступний коміт у ту саму гілку, а не суперечка. Зливай тільки після Approve і зеленого check — і кнопкою Squash and merge.',
+        cap: 'Відкривай PR рано як Draft. Коментар — це твій наступний коміт у ту саму гілку, а не суперечка. Після Approve і зеленого check натискай Squash and merge сама — це твій PR.',
         term: [] }
     ];
     const DUR = 101;
@@ -89,7 +89,7 @@ window.EPISODES.push({
       pill(g, W - 44 - (g.font = '600 30px ' + MONO, g.measureText(stText).width + 44), 42, stText, stColor, stBg);
       // мета
       g.fillStyle = HEX(C.muted); g.font = '400 30px ' + SANS;
-      g.fillText(o.state === 'merged' ? `Богдан злив ${o.commits} коміти як один у main` : `Аня хоче злити ${o.commits} коміти з feat/dashboard-churn у main`, 44, 132);
+      g.fillText(o.state === 'merged' ? `Аня злила ${o.commits} коміти як один у main` : `Аня хоче злити ${o.commits} коміти з feat/dashboard-churn у main`, 44, 132);
       g.strokeStyle = HEX(C.border); g.lineWidth = 2; g.beginPath(); g.moveTo(24, 172); g.lineTo(W - 24, 172); g.stroke();
       // рядки статусу
       const rows = [
@@ -157,8 +157,8 @@ window.EPISODES.push({
       g.fillStyle = HEX(C.bg); g.font = '700 34px ' + SANS; g.textAlign = 'center'; g.fillText(author ? 'А' : 'Б', 80, 78); g.textAlign = 'left';
       g.fillStyle = HEX(C.text); g.font = '600 40px ' + SANS; g.fillText(author ? 'Аня · автор PR' : 'Богдан · рев’юер', 136, 76);
       const items = author
-        ? [['Conversation', 'коментарі рев’юера, кожен прив’язаний до рядка'], ['Checks', 'чи збирається проєкт після кожного коміту'], ['Merge', 'сіра кнопка, доки немає Approve'], ['Що робити', 'відповідати комітами в ту саму гілку']]
-        : [['Files changed', 'diff і скриншоти до / після'], ['Add comment', 'коментар просто на рядку коду'], ['Review', 'Approve або Request changes'], ['Squash and merge', 'кнопка після Approve і зеленого check']];
+        ? [['Conversation', 'коментарі рев’юера, кожен прив’язаний до рядка'], ['Checks', 'чи збирається проєкт після кожного коміту'], ['Merge', 'сіра, доки немає Approve; після — натискає сама'], ['Що робити', 'відповідати комітами в ту саму гілку']]
+        : [['Files changed', 'diff і скриншоти до / після'], ['Add comment', 'коментар просто на рядку коду'], ['Review', 'Approve або Request changes'], ['Merge', 'не його кнопка: зливає автор після Approve']];
       items.forEach(([k, v], i) => {
         const y = 176 + i * 140;
         g.fillStyle = col; g.font = '600 32px ' + MONO; g.fillText(k, 44, y);
@@ -177,7 +177,7 @@ window.EPISODES.push({
     const cs = [mk.commit(X.c1, Y_B, C.blue), mk.commit(X.c2, Y_B, C.blue), mk.commit(X.c3, Y_B, C.blue)];
     const cMerge = mk.commit(X.merge, Y_M, C.purple, 0.28);
     const ring = mk.ring(X.merge, Y_M, C.purple, 0.5);
-    const labA = mk.label('Аня', 'feat/dashboard-churn', HEX(C.blue), -6.4, Y_B + 1.15, 4.0);
+    const labA = mk.label('Аня · автор', 'feat/dashboard-churn', HEX(C.blue), -6.2, Y_B + 1.15, 4.4);
     const labMain = mk.label('main', null, HEX(C.text), -7.0, Y_M + 0.85, 2.6);
     const labPush = mk.label('на GitHub', 'origin', HEX(C.green), -1.9, Y_B - 0.95, 3.0);
 
@@ -200,7 +200,7 @@ window.EPISODES.push({
 
     hud.outro(['Відкривай PR рано як Draft: видно прогрес, ніхто не зобов’язаний ревʼювати.',
       'Коментар рев’юера — це наступний коміт у ту саму гілку, а не суперечка в чаті.',
-      'Зливай тільки після Approve і зеленого check, кнопкою Squash and merge.']);
+      'Після Approve і зеленого check автор сам натискає Squash and merge.']);
 
     const ep = { BEATS, DUR, CAM, dim: 1 };
     const setOp = (mat, v) => { mat.opacity = clamp01(v) * ep.dim; };
@@ -272,7 +272,7 @@ window.EPISODES.push({
       else if (t >= 30.5 && t < 36.0) hud.badge('✓ build · passed', 'green', win(t, 30.5, 31.2) * (1 - win(t, 35.3, 36.0)));
       else if (t >= 40.5 && t < 48.0) hud.badge('● Changes requested', 'orange', win(t, 40.5, 41.2) * (1 - win(t, 47.3, 48.0)));
       else if (t >= 55.5 && t < 60.0) hud.badge('✓ Resolved · build passed', 'green', win(t, 55.5, 56.2) * (1 - win(t, 59.3, 60.0)));
-      else if (t >= 62.5 && t < 70.0) hud.badge('✓ Approved', 'green', win(t, 62.5, 63.2) * (1 - win(t, 69.3, 70.0)));
+      else if (t >= 62.5 && t < 70.0) hud.badge('✓ Approved від Богдана · хід Ані', 'green', win(t, 62.5, 63.2) * (1 - win(t, 69.3, 70.0)));
       else if (t >= 76.0 && t < 82.0) hud.badge('● PR #21 · merged', 'purple', win(t, 76.0, 76.7) * (1 - win(t, 81.3, 82.0)));
       else hud.badge('', '', 0);
       hud.vignette(0);
