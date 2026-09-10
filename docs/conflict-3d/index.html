@@ -72,6 +72,9 @@ canvas{display:block;width:100%;height:100%}
 .controls button{height:30px;min-width:30px;padding:0 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font:600 12px var(--sans);cursor:pointer}
 .controls button:hover{border-color:var(--faint)}
 .controls button.on{border-color:var(--orange);color:var(--orange)}
+.controls button.muted{color:var(--faint);text-decoration:line-through}
+.controls button.unlock{border-color:var(--green-fg);color:var(--green-fg);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{opacity:.55}}
 .controls .time{font:12px var(--mono);color:var(--muted);min-width:78px;text-align:center}
 .controls input[type=range]{width:min(30vw,300px);accent-color:var(--orange)}
 .chips{position:fixed;right:18px;bottom:74px;z-index:6;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:min(92vw,720px);
@@ -117,6 +120,7 @@ body.capture .controls,body.capture .chips{display:none}
   <div class="progress"><i id="pbar"></i></div>
 </div>
 
+<audio id="bgm" src="ambient.mp3" preload="auto"></audio>
 <div class="chips" id="chips" hidden></div>
 <div class="controls">
   <button id="btnPlay" title="Пауза / грати · Space">❚❚</button>
@@ -126,6 +130,7 @@ body.capture .controls,body.capture .chips{display:none}
   <span class="time" id="tlabel">0:00 / 0:00</span>
   <button id="btnRestart" title="Спочатку">↺</button>
   <button id="btnChapters" title="Список розділів">Розділи</button>
+  <button id="btnMusic" title="Музика">♪ Музика</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -584,7 +589,7 @@ function setTime(t) {
   DIM = clamp(dimK, 0.14, 1);
 
   /* ---------- труби ---------- */
-  revealTo(trunk, lerp(-10, 10, easeOut(win(t, 1.2, 6.2))));
+  revealTo(trunk, lerp(-10, 10, easeOut(win(t, 5.3, 7.3))));   // після титулу, щоб не «перекреслювати» текст
   const aX = t < 25 ? lerp(-6.05, -0.55, easeOut(win(t, 8.2, 11.2))) : lerp(-0.55, X.aTip, win(t, 25, 34));
   revealTo(aWork, aX);
   let bX;
@@ -683,7 +688,7 @@ function setTime(t) {
   /* ---------- атмосфера ---------- */
   dust.rotation.y = t * 0.006; dust.rotation.z = Math.sin(t * 0.05) * 0.02;
   dust.material.opacity = 0.5 * DIM;
-  grid.material.opacity = 0.45 * DIM * (0.4 + 0.6 * win(t, 2, 7));
+  grid.material.opacity = 0.45 * DIM * (0.4 + 0.6 * win(t, 5, 8));
   vign.style.opacity = String(Math.max(pulse(t, 49.0, 54.0) * 0.5, 0));
 
   updateCamera(t);
@@ -759,22 +764,51 @@ BEATS.filter(b => b.id !== 'intro').forEach(b => {
   const btn = document.createElement('button');
   btn.dataset.id = b.id;
   btn.textContent = b.num + (b.id.startsWith('opt') ? ' ' + b.id.slice(3) : '') + ' · ' + b.ttl.replace(/^Варіант [ABC] · /, '');
-  btn.onclick = () => { setTime(b.t0 + 0.05); chips.hidden = true; btnChapters.classList.remove('on'); };
+  btn.onclick = () => { setTime(b.t0 + 0.05); syncAudio(true); chips.hidden = true; btnChapters.classList.remove('on'); };
   chips.appendChild(btn);
 });
 const btnPlay = $('btnPlay'), scrub = $('scrub'), tlabel = $('tlabel'), btnChapters = $('btnChapters');
 btnChapters.onclick = () => { chips.hidden = !chips.hidden; btnChapters.classList.toggle('on', !chips.hidden); };
 const fmt = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
-function setPlaying(v) { state.playing = v; btnPlay.textContent = v ? '❚❚' : '▶'; btnPlay.classList.toggle('on', !v); }
+function setPlaying(v) { state.playing = v; btnPlay.textContent = v ? '❚❚' : '▶'; btnPlay.classList.toggle('on', !v); syncAudio(true); }
+
+/* ---------- музика: іде синхронно з часом сцени, вимикається кнопкою ---------- */
+const bgm = $('bgm'), btnMusic = $('btnMusic');
+let musicOn = true, audioBlocked = false;
+try { musicOn = localStorage.getItem('conflict3d-music') !== 'off'; } catch (e) {}
+bgm.volume = 0.85;
+function updateMusicBtn() {
+  btnMusic.classList.toggle('muted', !musicOn);
+  btnMusic.classList.toggle('unlock', musicOn && audioBlocked);
+  btnMusic.textContent = !musicOn ? '♪ Музика вимкнена' : (audioBlocked ? '♪ Увімкнути звук' : '♪ Музика');
+  btnMusic.title = musicOn ? 'Вимкнути музику' : 'Увімкнути музику';
+}
+function syncAudio(force) {
+  if (CAPTURE) return;
+  if (!musicOn || !state.playing) { if (!bgm.paused) bgm.pause(); updateMusicBtn(); return; }
+  if (force || Math.abs(bgm.currentTime - state.t) > 0.35) { try { bgm.currentTime = Math.min(state.t, Math.max(0, (bgm.duration || 999) - 0.05)); } catch (e) {} }
+  if (bgm.paused) {
+    const p = bgm.play();
+    if (p && p.then) p.then(() => { audioBlocked = false; updateMusicBtn(); }).catch(() => { audioBlocked = true; updateMusicBtn(); });
+  }
+}
+btnMusic.onclick = () => {
+  musicOn = !musicOn; audioBlocked = false;
+  try { localStorage.setItem('conflict3d-music', musicOn ? 'on' : 'off'); } catch (e) {}
+  syncAudio(true); updateMusicBtn();
+};
+// перший клік будь-де на сторінці знімає блокування автоплею
+document.addEventListener('pointerdown', () => { if (musicOn && audioBlocked) syncAudio(true); }, { passive: true });
+updateMusicBtn();
 btnPlay.onclick = () => setPlaying(!state.playing);
-$('btnBack').onclick = () => setTime(state.t - 5);
-$('btnFwd').onclick = () => setTime(state.t + 5);
+$('btnBack').onclick = () => { setTime(state.t - 5); syncAudio(true); };
+$('btnFwd').onclick = () => { setTime(state.t + 5); syncAudio(true); };
 $('btnRestart').onclick = () => { setTime(0); setPlaying(true); };
-scrub.oninput = () => { setPlaying(false); setTime(Number(scrub.value) / 1000 * DUR); };
+scrub.oninput = () => { setPlaying(false); setTime(Number(scrub.value) / 1000 * DUR); syncAudio(true); };
 document.addEventListener('keydown', (e) => {
   if (e.key === ' ') { e.preventDefault(); setPlaying(!state.playing); }
-  else if (e.key === 'ArrowRight') { e.preventDefault(); setTime(state.t + 5); }
-  else if (e.key === 'ArrowLeft') { e.preventDefault(); setTime(state.t - 5); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); setTime(state.t + 5); syncAudio(true); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); setTime(state.t - 5); syncAudio(true); }
 });
 
 /* ============================== цикл ============================== */
@@ -787,13 +821,14 @@ function loop(now) {
     if (nt >= DUR) { nt = DUR; setPlaying(false); }
     setTime(nt);
   }
+  if (state.playing) syncAudio(false);
   scrub.value = String(Math.round(state.t / DUR * 1000));
   tlabel.textContent = fmt(state.t) + ' / ' + fmt(DUR);
   requestAnimationFrame(loop);
 }
 setTime(0);
 if (CAPTURE) { state.playing = false; }
-else requestAnimationFrame(loop);
+else { requestAnimationFrame(loop); syncAudio(true); }
 
 /* API для рендера відео */
 window.__deck = { setTime, DUR, ready: true };
