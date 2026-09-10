@@ -30,7 +30,7 @@ npm run dev        # http://localhost:5173
 | Зберегти | «Закоміть як `dashboard: картка нових підписок` і запуш гілку» | «Закоміть як `settings: картка безпеки` і запуш гілку» |
 | PR | «Відкрий PR за шаблоном, додай скриншоти до/після» | те саме |
 | Ревʼю | ревʼює PR B на GitHub → Approve | ревʼює PR A → Approve |
-| Merge | після Approve автор сам натискає **Squash and merge** | те саме |
+| Merge | той, хто ревʼює, натискає **Squash and merge** після Approve | те саме |
 
 Перевір себе: у `main` обидві зміни, `npm run dev` показує і нову картку, і нову секцію. Конфліктів не було, бо `src/screens/dashboard/` і `src/screens/settings/` не перетинаються.
 
@@ -47,7 +47,7 @@ A:
 2. «Додай у `Badge` новий `tone="attention"` на основі токена `--color-attention`. Дефолт `neutral` не змінюй. Покажи новий варіант на `#/ui-kit`»
 3. «Перевір `npm run typecheck && npm run build`, закоміть як `badge: tone attention`, запуш і відкрий PR зі скриншотом `#/ui-kit`»
 
-B: ревʼює PR за 15 хвилин. Питання, на які треба відповісти «так»: дефолт не змінився? інші tone виглядають так само? новий варіант є на `#/ui-kit`? → Approve. A натискає Squash and merge.
+B: ревʼює PR за 15 хвилин. Питання, на які треба відповісти «так»: дефолт не змінився? інші tone виглядають так само? новий варіант є на `#/ui-kit`? → Approve → Squash and merge.
 
 Обоє: «Підтягни `main` у мою гілку». A використовує `<Badge tone="attention">` на Dashboard. У B на Settings нічого не змінилося.
 

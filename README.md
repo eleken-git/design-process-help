@@ -194,7 +194,7 @@ git push
 |---|---|---|
 | 00 · Конфлікт у Git | дві гілки, той самий рядок, CONFLICT і три способи його розв'язати | 1:46 |
 | 01 · Три стани файлу | робоча папка → кошик → коміт → GitHub; що можна втратити, а що ні | 1:32 |
-| 02 · Життєвий цикл Pull Request | Draft → Ready → коментар до рядка → коміт-відповідь → Approve → Squash and merge | 1:41 |
+| 02 · Життєвий цикл Pull Request | очима рев'юерки: Draft → Ready → коментар до рядка → коміт-відповідь → Approve → Squash and merge | 1:41 |
 
 Код епізодів — у [`docs/3d/episodes/`](docs/3d/episodes/), спільний рушій — [`docs/3d/engine.js`](docs/3d/engine.js). Наступні теми — у [`ANIMATIONS.md`](ANIMATIONS.md), обирай номер.
 
