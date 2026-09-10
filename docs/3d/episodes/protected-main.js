@@ -44,11 +44,11 @@ window.EPISODES.push({
       { t: 0.0, p: [0.0, 1.0, 22.0], l: [0.0, -0.4, 0.0] },
       { t: 6.5, p: [-4.4, 0.1, 11.5], l: [-4.6, -1.15, 0.0] },
       { t: 17.5, p: [0.6, 0.6, 16.5], l: [0.4, -0.2, 0.0] },
-      { t: 27.5, p: [-1.4, 0.7, 10.5], l: [-2.2, 0.1, 0.0] },
-      { t: 37.5, p: [0.2, 0.7, 10.5], l: [-0.5, 0.1, 0.0] },
-      { t: 48.5, p: [2.0, 0.7, 10.5], l: [1.3, 0.1, 0.0] },
-      { t: 59.5, p: [3.8, 0.7, 10.5], l: [3.1, 0.1, 0.0] },
-      { t: 70.5, p: [4.6, 0.2, 12.0], l: [4.0, -0.6, 0.0] },
+      { t: 27.5, p: [-3.4, 1.1, 10.5], l: [-4.1, 0.5, 0.0] },
+      { t: 37.5, p: [-0.8, 1.1, 10.5], l: [-1.5, 0.5, 0.0] },
+      { t: 48.5, p: [1.8, 1.1, 10.5], l: [1.1, 0.5, 0.0] },
+      { t: 59.5, p: [4.4, 1.1, 10.5], l: [3.7, 0.5, 0.0] },
+      { t: 70.5, p: [5.6, 0.5, 12.0], l: [5.0, -0.3, 0.0] },
       { t: 81.5, p: [0.6, 0.8, 17.0], l: [0.4, -0.2, 0.0] },
       { t: 92.5, p: [0.6, 1.0, 18.5], l: [0.4, -0.2, 0.0] },
       { t: 104, p: [0.6, 1.0, 18.5], l: [0.4, -0.2, 0.0] }
@@ -72,27 +72,32 @@ window.EPISODES.push({
       g.fillStyle = HEX(C.surface); rr(g, 10, 10, W - 20, H - 20, 34); g.fill();
       g.fillStyle = bg; rr(g, 10, 10, W - 20, H - 20, 34); g.fill();
       g.strokeStyle = col; g.lineWidth = 8; rr(g, 10, 10, W - 20, H - 20, 34); g.stroke();
-      g.textBaseline = 'middle'; g.textAlign = 'center';
-      g.fillStyle = col; g.font = '700 44px ' + MONO; g.fillText('ПРАВИЛО ' + o.n, W / 2, 92);
-      g.fillStyle = col; g.font = '700 180px ' + SANS; g.fillText(o.glyph, W / 2, 300);
-      g.fillStyle = HEX(C.text); g.font = '600 56px ' + SANS; wrap(g, o.title, W / 2, 470, W - 120, 66);
-      g.fillStyle = HEX(C.muted); g.font = '600 30px ' + MONO; g.fillText('РЯТУЄ ВІД', W / 2, 640);
-      g.fillStyle = HEX(C.text); g.font = '400 40px ' + SANS; wrap(g, o.saves, W / 2, 700, W - 120, 50);
-      // стан
-      g.font = '600 34px ' + MONO; const sw = g.measureText(word).width + 56;
-      g.fillStyle = col; rr(g, W / 2 - sw / 2, H - 132, sw, 64, 32); g.fill();
-      g.fillStyle = HEX(C.bg); g.fillText(word, W / 2, H - 100);
+      g.textBaseline = 'middle';
+      // шапка: номер зліва, стан справа
+      g.textAlign = 'left'; g.fillStyle = col; g.font = '700 42px ' + MONO; g.fillText('ПРАВИЛО ' + o.n, 60, 92);
+      g.font = '600 32px ' + MONO; const sw = g.measureText(word).width + 52;
+      g.fillStyle = col; rr(g, W - 60 - sw, 60, sw, 64, 32); g.fill();
+      g.fillStyle = HEX(C.bg); g.textAlign = 'center'; g.fillText(word, W - 60 - sw / 2, 93);
+      // гліф і назва
+      g.fillStyle = col; g.font = '700 160px ' + SANS; g.fillText(o.glyph, W / 2, 270);
+      g.fillStyle = HEX(C.text); g.font = '600 52px ' + SANS; wrap(g, o.title, W / 2, 420, W - 140, 62);
+      // від чого рятує
+      g.fillStyle = HEX(C.muted); g.font = '600 28px ' + MONO; g.fillText('РЯТУЄ ВІД', W / 2, 590);
+      g.fillStyle = HEX(C.text); g.font = '400 38px ' + SANS; wrap(g, o.saves, W / 2, 645, W - 140, 48);
+      // проріз унизу — крізь нього проходить гілка
+      g.fillStyle = 'rgba(1,4,9,.72)'; rr(g, 110, 820, W - 220, 170, 26); g.fill();
+      g.strokeStyle = col; g.lineWidth = 4; g.setLineDash([18, 14]); rr(g, 110, 820, W - 220, 170, 26); g.stroke(); g.setLineDash([]);
       return T(el);
     }
     const GATES = [
-      { n: 1, glyph: 'PR', title: 'Тільки через Pull Request', saves: 'змін нізвідки: без опису, скриншота й історії', x: -2.6 },
-      { n: 2, glyph: '1✓', title: 'Хоча б один Approve', saves: 'помилок, які автор уже не бачить', x: -0.8 },
-      { n: 3, glyph: 'CO', title: 'Code Owners для спільного коду', saves: 'зламаного Button на всіх екранах', x: 1.0 },
-      { n: 4, glyph: '⚙', title: 'Зелений check: build', saves: '«у мене все працювало»', x: 2.8 }
+      { n: 1, glyph: 'PR', title: 'Тільки через Pull Request', saves: 'змін нізвідки: без опису, скриншота й історії', x: -3.6 },
+      { n: 2, glyph: '1✓', title: 'Хоча б один Approve', saves: 'помилок, які автор уже не бачить', x: -1.0 },
+      { n: 3, glyph: 'CO', title: 'Code Owners для спільного коду', saves: 'зламаного Button на всіх екранах', x: 1.6 },
+      { n: 4, glyph: '⚙', title: 'Зелений check: build', saves: '«у мене все працювало»', x: 4.2 }
     ];
     const gateTexes = GATES.map(gt => ({ wait: gateTex(gt, 'wait'), check: gateTex(gt, 'check'), pass: gateTex(gt, 'pass'), block: gateTex(gt, 'block') }));
     const Y_B = 0.6, Y_M = -1.8;
-    const gates = GATES.map((gt, i) => { const m = mk.card(gateTexes[i].wait, gt.x, Y_B + 0.55, 2.3, 1); m.position.z = 0; return m; });
+    const gates = GATES.map((gt, i) => { const m = mk.card(gateTexes[i].wait, gt.x, Y_B + 0.92, 2.3, 1); m.position.z = 0.12; m.userData.base.z = 0.12; return m; });
 
     /* стіна прямого пушу */
     function wallTex() {
@@ -118,16 +123,16 @@ window.EPISODES.push({
       g.fillStyle = HEX(C.muted); g.font = '400 34px ' + SANS; g.fillText('рятує від зникнення чужих комітів', W / 2, 220);
       return T(el);
     }
-    const shield = mk.card(shieldTex(), 5.6, Y_M + 1.15, 4.4, 300 / 1024);
+    const shield = mk.card(shieldTex(), 6.8, Y_M + 1.15, 4.4, 300 / 1024);
 
     /* ---------- граф ---------- */
     const trunk = mk.tube([[-34, Y_M, 0], [-10, Y_M, 0], [10, Y_M, 0], [34, Y_M, 0]], C.text, 0.085);
-    const branch = mk.tube([[-8.0, Y_B, 0], [-2, Y_B, 0], [4.4, Y_B, 0], [4.9, Y_B - 1.2, 0], [5.6, Y_M, 0]], C.blue);
+    const branch = mk.tube([[-8.0, Y_B, 0], [-2, Y_B, 0], [5.6, Y_B, 0], [6.1, Y_B - 1.2, 0], [6.8, Y_M, 0]], C.blue);
     const direct = mk.tube([[-5.2, Y_B, 0], [-5.2, -0.3, 0]], C.red, 0.06);
     const cBase = mk.commit(-7.0, Y_M, C.text, 0.2);
     const cFix = mk.commit(-6.6, Y_B, C.blue, 0.22);
-    const cMerge = mk.commit(5.6, Y_M, C.purple, 0.28);
-    const ring = mk.ring(5.6, Y_M, C.purple, 0.5);
+    const cMerge = mk.commit(6.8, Y_M, C.purple, 0.28);
+    const ring = mk.ring(6.8, Y_M, C.purple, 0.5);
     const labA = mk.label('Аня', 'fix/dashboard-title', HEX(C.blue), -7.4, Y_B + 0.95, 4.0);
     const labMain = mk.label('main', 'те, що бачить клієнт', HEX(C.text), -8.6, Y_M + 0.85, 4.0);
     // «пакет» зміни, що подорожує
@@ -150,7 +155,7 @@ window.EPISODES.push({
     ep.update = function (t) {
       ep.dim = 1 - 0.65 * win(t, 93.0, 94.5);
       mk.revealTo(trunk, lerp(-34, 34, easeOut(win(t, 6.0, 8.0))));
-      mk.revealTo(branch, t < 27.5 ? lerp(-8.05, -5.6, easeOut(win(t, 8.0, 9.5))) : lerp(-5.6, 5.65, win(t, 27.5, 74.0)));
+      mk.revealTo(branch, t < 27.5 ? lerp(-8.05, -5.6, easeOut(win(t, 8.0, 9.5))) : lerp(-5.6, 6.85, win(t, 27.5, 74.0)));
       setOp(trunk.material, 0.92); setOp(branch.material, win(t, 7.8, 8.4));
       // пряма спроба: червоний відрізок вниз до стіни
       // вертикальна труба відкривається зверху вниз: нормаль +y лишає точки з y >= -constant
@@ -172,7 +177,7 @@ window.EPISODES.push({
         px = -6.6 + 1.4 * ease(win(t, 9.2, 9.9)); py = lerp(Y_B, -0.35, down) + 0.95 * back * (1 - 0.0);
         if (t > 11.6) { px = -5.2 + (-6.6 + 5.2) * ease(win(t, 12.0, 13.5)); py = Y_B; }
       } else {
-        const stops = [-6.6, GATES[0].x, GATES[1].x, GATES[2].x, GATES[3].x, 4.6, 5.6];
+        const stops = [-6.6, GATES[0].x, GATES[1].x, GATES[2].x, GATES[3].x, 5.8, 6.8];
         const times = [27.5, 29.5, 37.5, 39.0, 48.5, 50.0, 59.5, 61.0, 70.5, 72.5, 73.5, 74.5];
         // рух між зупинками у вікнах [times[2k], times[2k+1]]
         px = stops[0];
@@ -180,7 +185,7 @@ window.EPISODES.push({
         py = t < 73.5 ? Y_B : lerp(Y_B, Y_M, ease(win(t, 73.5, 74.5)));
         pop = 1 - win(t, 74.4, 74.9);
       }
-      pkt.g.position.set(px, py, 0.35); pkt.g.scale.setScalar(pop * (1 + 0.08 * Math.sin(t * 3)));
+      pkt.g.position.set(px, py, 0.45); pkt.g.scale.setScalar(pop * (1 + 0.08 * Math.sin(t * 3))); pkt.glow.scale.setScalar(1.7);
       setOp(pkt.core.material, pop); setOp(pkt.shell.material, 0.38 * pop); setOp(pkt.glow.material, 0.6 * pop);
       // ворота
       gates.forEach((m, i) => {
