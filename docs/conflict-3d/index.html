@@ -589,7 +589,7 @@ function setTime(t) {
   DIM = clamp(dimK, 0.14, 1);
 
   /* ---------- труби ---------- */
-  revealTo(trunk, lerp(-34, 34, easeOut(win(t, 5.3, 7.6))));   // після титулу, щоб не «перекреслювати» текст
+  revealTo(trunk, lerp(-34, 34, easeOut(win(t, 6.0, 8.0))));   // титул уже майже зник   // після титулу, щоб не «перекреслювати» текст
   const aX = t < 25 ? lerp(-6.05, -0.55, easeOut(win(t, 8.2, 11.2))) : lerp(-0.55, X.aTip, win(t, 25, 34));
   revealTo(aWork, aX);
   let bX;
