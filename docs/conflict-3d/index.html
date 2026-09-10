@@ -375,7 +375,7 @@ function makeTube(points, color, radius) {
 /** відкриває трубу до координати x */
 const revealTo = (tube, x) => { tube.userData.plane.constant = x; };
 
-const trunk = makeTube([[-10, 0, 0], [-2, 0, 0], [4, 0, 0], [10, 0, 0]], C.text, 0.085);
+const trunk = makeTube([[-34, 0, 0], [-10, 0, 0], [10, 0, 0], [34, 0, 0]], C.text, 0.085);   // довша за будь-який кадр
 const aWork = makeTube([[X.base, 0, 0], [-5.5, 1.0, 0], [-4.9, Y_A, 0], [-2, Y_A, 0], [X.aTip, Y_A, 0]], C.blue);
 const aMerge = makeTube([[X.aTip, Y_A, 0], [2.5, Y_A, 0], [3.05, 1.1, 0], [X.mergeA, 0, 0]], C.blue);
 const bWork = makeTube([[X.base, 0, 0], [-5.5, -1.0, 0], [-4.9, Y_B, 0], [-2, Y_B, 0], [X.bTip, Y_B, 0]], C.orange);
@@ -589,7 +589,7 @@ function setTime(t) {
   DIM = clamp(dimK, 0.14, 1);
 
   /* ---------- труби ---------- */
-  revealTo(trunk, lerp(-10, 10, easeOut(win(t, 5.3, 7.3))));   // після титулу, щоб не «перекреслювати» текст
+  revealTo(trunk, lerp(-34, 34, easeOut(win(t, 5.3, 7.6))));   // після титулу, щоб не «перекреслювати» текст
   const aX = t < 25 ? lerp(-6.05, -0.55, easeOut(win(t, 8.2, 11.2))) : lerp(-0.55, X.aTip, win(t, 25, 34));
   revealTo(aWork, aX);
   let bX;
