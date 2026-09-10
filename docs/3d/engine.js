@@ -303,11 +303,50 @@ function loadEpisode(id, autoplay) {
 
 /* ============================== керування ============================== */
 const btnPlay = $('btnPlay'), scrub = $('scrub'), tlabel = $('tlabel'), btnChapters = $('btnChapters'), btnEp = $('btnEp'), eplist = $('eplist'), chips = $('chips');
+const stage = $('stage'), flash = $('flash'), toast = $('toast'), btnFull = $('btnFull'), controls = document.querySelector('.controls');
 const fmt = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
-function setPlaying(v) { state.playing = v; btnPlay.textContent = v ? '❚❚' : '▶'; btnPlay.classList.toggle('on', !v); syncAudio(true); }
-btnPlay.onclick = () => setPlaying(!state.playing);
-$('btnBack').onclick = () => { setTime(state.t - 5); syncAudio(true); };
-$('btnFwd').onclick = () => { setTime(state.t + 5); syncAudio(true); };
+
+// панель ховається через 2.6 с без руху миші, поки епізод грає (як у YouTube); пауза, меню або наведення повертають її
+let idleTimer = 0, controlsHover = false;
+function wake() {
+  document.body.classList.remove('idle'); clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => { if (state.playing && eplist.hidden && chips.hidden && !controlsHover) document.body.classList.add('idle'); }, 2600);
+}
+['pointermove', 'pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, wake, { passive: true }));
+controls.addEventListener('pointerenter', () => { controlsHover = true; wake(); });
+controls.addEventListener('pointerleave', () => { controlsHover = false; wake(); });
+
+function setPlaying(v) { state.playing = v; btnPlay.textContent = v ? '❚❚' : '▶'; btnPlay.classList.toggle('on', !v); syncAudio(true); wake(); }
+function flashIcon(txt, small) { flash.textContent = txt; flash.classList.toggle('sm', !!small); flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
+function togglePlay(show) { setPlaying(!state.playing); if (show) flashIcon(state.playing ? '▶' : '❚❚'); }
+function seek(d, show) { setTime(state.t + d); syncAudio(true); if (show) flashIcon((d > 0 ? '+' : '−') + Math.abs(d) + ' с', true); }
+function closePops() { eplist.hidden = true; chips.hidden = true; btnEp.classList.remove('on'); btnChapters.classList.remove('on'); }
+let toastTimer = 0;
+function showToast(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2800); }
+
+// повний екран: кнопка, F, подвійний клік по відео
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+function toggleFullscreen() {
+  const root = document.documentElement;
+  if (fsEl()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  const req = root.requestFullscreen || root.webkitRequestFullscreen;
+  const fail = () => showToast('Повний екран тут недоступний — відкрий плеєр окремою вкладкою браузера');
+  if (!req) { fail(); return; }
+  try { const p = req.call(root); if (p && p.catch) p.catch(fail); } catch (e) { fail(); }
+}
+function onFsChange() { const on = !!fsEl(); btnFull.classList.toggle('on', on); btnFull.title = on ? 'Вийти з повного екрана · F або Esc' : 'На весь екран · F або двічі клікнути по відео'; document.body.classList.toggle('fs', on); wake(); }
+document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
+btnFull.onclick = toggleFullscreen;
+
+// клік по відео — пауза/плей; подвійний — повний екран (два кліки повертають стан гри, як у YouTube)
+if (!CAPTURE) {
+  stage.addEventListener('click', () => { if (!eplist.hidden || !chips.hidden) { closePops(); return; } togglePlay(true); });
+  stage.addEventListener('dblclick', (e) => { e.preventDefault(); flash.classList.remove('go'); toggleFullscreen(); });
+}
+
+btnPlay.onclick = () => togglePlay(false);
+$('btnBack').onclick = () => seek(-5);
+$('btnFwd').onclick = () => seek(5);
 $('btnRestart').onclick = () => { setTime(0); setPlaying(true); };
 scrub.oninput = () => { setPlaying(false); setTime(Number(scrub.value) / 1000 * ep.DUR); syncAudio(true); };
 btnChapters.onclick = () => { chips.hidden = !chips.hidden; eplist.hidden = true; btnEp.classList.remove('on'); btnChapters.classList.toggle('on', !chips.hidden); };
@@ -318,10 +357,21 @@ EPS.forEach(def => {
   b.onclick = () => { eplist.hidden = true; btnEp.classList.remove('on'); loadEpisode(def.id, true); };
   eplist.appendChild(b);
 });
+// клавіші як у YouTube; e.code — щоб працювало і в українській розкладці
 document.addEventListener('keydown', (e) => {
-  if (e.key === ' ') { e.preventDefault(); setPlaying(!state.playing); }
-  else if (e.key === 'ArrowRight') { e.preventDefault(); setTime(state.t + 5); syncAudio(true); }
-  else if (e.key === 'ArrowLeft') { e.preventDefault(); setTime(state.t - 5); syncAudio(true); }
+  if (e.metaKey || e.ctrlKey || e.altKey || !ep) return;
+  const tag = e.target && e.target.tagName, k = e.code;
+  if (tag === 'BUTTON' && (k === 'Space' || k === 'Enter')) return;   // кнопка у фокусі обробляє сама
+  if (k === 'Space' || k === 'KeyK') { e.preventDefault(); togglePlay(true); }
+  else if (k === 'ArrowRight') { e.preventDefault(); seek(5, true); }
+  else if (k === 'ArrowLeft') { e.preventDefault(); seek(-5, true); }
+  else if (k === 'KeyL') seek(10, true);
+  else if (k === 'KeyJ') seek(-10, true);
+  else if (k === 'KeyF') { e.preventDefault(); toggleFullscreen(); }
+  else if (k === 'KeyM') btnMusic.click();
+  else if (k === 'Home' || k === 'Digit0' || k === 'Numpad0') { setTime(0); syncAudio(true); }
+  else if (/^Digit[1-9]$/.test(k)) { setTime(ep.DUR * Number(k.slice(5)) / 10); syncAudio(true); }
+  else if (k === 'Escape') closePops();
 });
 
 /* ============================== музика ============================== */
