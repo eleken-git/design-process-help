@@ -58,11 +58,11 @@ strong{font-weight:600}
 /* layout: left sidebar + content */
 .layout{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
 .sidenav{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto}
-.side-head{padding:16px 16px 12px;border-bottom:1px solid var(--border);display:grid;gap:8px}
-.repo{display:flex;align-items:center;gap:8px;color:var(--text);font-size:13px;min-width:0}
-.repo .owner{color:var(--muted)}
-.repo .sep{color:var(--faint)}
-.repo strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side-head{padding:16px 16px 14px;border-bottom:1px solid var(--border);display:grid;gap:6px;justify-items:start}
+.repo-owner{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;line-height:18px}
+.repo-owner .icon{width:14px;height:14px}
+.repo-name{font-size:15px;line-height:22px;font-weight:600;color:var(--text);overflow-wrap:anywhere}
+.side-head .badge{margin-top:4px}
 .side-nav{display:flex;flex-direction:column;padding:8px;gap:2px;flex:1}
 .side-nav a{display:flex;align-items:center;gap:10px;padding:6px 10px 6px 8px;border-left:2px solid transparent;border-radius:0 var(--r) var(--r) 0;color:var(--muted);font-size:13px;line-height:20px}
 .side-nav a .n{font:11px/18px var(--mono);color:var(--faint);min-width:22px}
@@ -334,8 +334,9 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <div class="layout">
 <aside class="sidenav">
   <div class="side-head">
-    <span class="repo"><svg class="icon"><use href="#i-repo"/></svg><span class="owner">eleken-git</span><span class="sep">/</span><strong>design-process-help</strong></span>
-    <span class="badge" style="justify-self:start"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>Private</span>
+    <span class="repo-owner"><svg class="icon"><use href="#i-repo"/></svg>eleken-git</span>
+    <span class="repo-name">design-process-help</span>
+    <span class="badge"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>Private</span>
   </div>
   <nav class="side-nav" aria-label="Розділи">
       <a href="#s1"><span class="n">01</span>Старт</a>
