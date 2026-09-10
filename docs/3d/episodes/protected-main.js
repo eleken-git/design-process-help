@@ -24,8 +24,8 @@ window.EPISODES.push({
         cap: 'Ворота стоять жовтими, доки друга пара очей не подивиться. Богдан відкриває PR, дивиться скриншот і схвалює. Рятує від помилок, які автор не бачить, бо дивиться на екран уже двадцятий раз.',
         term: [{ x: 'Reviewer: Богдан', c: 'c' }, { x: '● waiting for review → ✓ Approved', c: 'ok' }] },
       { id: 'g3', t0: 48.5, t1: 59.5, num: '05', ttl: 'Правило 3 · Code Owners для спільного коду',
-        cap: 'Файл <b>CODEOWNERS</b> каже: усе в <b>src/components</b> і <b>src/tokens</b> схвалюють обидва. Зміна Ані торкається лише екрана, тому ворота пропускають одразу. Якби вона зачепила Button — чекала б на другий Approve. Рятує від зламаних спільних компонентів.',
-        term: [{ x: '# .github/CODEOWNERS', c: 'c' }, { x: '/src/components/   @bohdan @anya' }, { x: '/src/tokens/       @bohdan @anya' }, { x: 'PR #23 торкається тільки src/screens → пропущено', c: 'ok' }] },
+        cap: 'Файл <b>CODEOWNERS</b> каже: усе в <b>src/components</b> і <b>src/tokens</b> схвалюють обидва. Зміна Ані торкається лише екрана — ворота пропускають одразу. Якби вона зачепила Button, чекала б на другий Approve. Рятує від зламаних спільних компонентів.',
+        term: [{ x: '# .github/CODEOWNERS', c: 'c' }, { x: '/src/components/  /src/tokens/   @bohdan @anya' }, { x: 'PR #23 торкається тільки src/screens → пропущено', c: 'ok' }] },
       { id: 'g4', t0: 59.5, t1: 70.5, num: '06', ttl: 'Правило 4 · зелений check: проєкт збирається',
         cap: '<b>GitHub Actions</b> — автоперевірка з файлу ci.yml у репозиторії — бере гілку, встановлює залежності й збирає проєкт на сервері. Червоний build — і кнопка merge сіра, скільки б Approve не було. Рятує від «у мене все працювало».',
         term: [{ x: 'GitHub Actions · check' }, { x: 'npm ci && npm run typecheck && npm run build', c: 'c' }, { x: '● running… → ✓ build passed', c: 'ok' }] },
@@ -43,12 +43,12 @@ window.EPISODES.push({
     const CAM = [
       { t: 0.0, p: [0.0, 1.0, 22.0], l: [0.0, -0.4, 0.0] },
       { t: 6.5, p: [-4.4, 0.1, 11.5], l: [-4.6, -1.15, 0.0] },
-      { t: 17.5, p: [0.6, 0.6, 16.5], l: [0.4, -0.2, 0.0] },
+      { t: 17.5, p: [0.6, 0.3, 16.5], l: [0.4, -0.5, 0.0] },
       { t: 27.5, p: [-3.4, 1.1, 10.5], l: [-4.1, 0.5, 0.0] },
       { t: 37.5, p: [-0.8, 1.1, 10.5], l: [-1.5, 0.5, 0.0] },
       { t: 48.5, p: [1.8, 1.1, 10.5], l: [1.1, 0.5, 0.0] },
       { t: 59.5, p: [4.4, 1.1, 10.5], l: [3.7, 0.5, 0.0] },
-      { t: 70.5, p: [5.6, -0.1, 14.0], l: [5.0, -0.9, 0.0] },
+      { t: 70.5, p: [5.3, -0.1, 14.0], l: [4.7, -0.9, 0.0] },
       { t: 81.5, p: [0.6, 0.8, 17.0], l: [0.4, -0.2, 0.0] },
       { t: 92.5, p: [0.6, 1.0, 18.5], l: [0.4, -0.2, 0.0] },
       { t: 104, p: [0.6, 1.0, 18.5], l: [0.4, -0.2, 0.0] }
@@ -74,26 +74,23 @@ window.EPISODES.push({
       g.strokeStyle = col; g.lineWidth = 8; rr(g, 10, 10, W - 20, H - 20, 34); g.stroke();
       g.textBaseline = 'middle';
       // шапка: номер зліва, стан справа
-      g.textAlign = 'left'; g.fillStyle = col; g.font = '700 42px ' + MONO; g.fillText('ПРАВИЛО ' + o.n, 60, 92);
-      g.font = '600 32px ' + MONO; const sw = g.measureText(word).width + 52;
-      g.fillStyle = col; rr(g, W - 60 - sw, 60, sw, 64, 32); g.fill();
-      g.fillStyle = HEX(C.bg); g.textAlign = 'center'; g.fillText(word, W - 60 - sw / 2, 93);
-      // гліф і назва
-      g.fillStyle = col; g.font = '700 160px ' + SANS; g.fillText(o.glyph, W / 2, 270);
-      g.fillStyle = HEX(C.text); g.font = '600 52px ' + SANS; wrap(g, o.title, W / 2, 420, W - 140, 62);
-      // від чого рятує
-      g.fillStyle = HEX(C.muted); g.font = '600 28px ' + MONO; g.fillText('РЯТУЄ ВІД', W / 2, 590);
-      g.fillStyle = HEX(C.text); g.font = '400 38px ' + SANS; wrap(g, o.saves, W / 2, 645, W - 140, 48);
+      g.textAlign = 'left'; g.fillStyle = col; g.font = '700 54px ' + MONO; g.fillText('ПРАВИЛО ' + o.n, 60, 98);
+      g.font = '600 42px ' + MONO; const sw = g.measureText(word).width + 60;
+      g.fillStyle = col; rr(g, W - 60 - sw, 58, sw, 80, 40); g.fill();
+      g.fillStyle = HEX(C.bg); g.textAlign = 'center'; g.fillText(word, W - 60 - sw / 2, 99);
+      // гліф і назва; від чого рятує — каже підпис унизу кадру, на картці не дублюємо
+      g.fillStyle = col; g.font = '700 210px ' + SANS; g.fillText(o.glyph, W / 2, 330);
+      g.fillStyle = HEX(C.text); g.font = '600 60px ' + SANS; wrap(g, o.title, W / 2, 560, W - 140, 72);
       // проріз унизу — крізь нього проходить гілка
       g.fillStyle = 'rgba(1,4,9,.72)'; rr(g, 110, 820, W - 220, 170, 26); g.fill();
       g.strokeStyle = col; g.lineWidth = 4; g.setLineDash([18, 14]); rr(g, 110, 820, W - 220, 170, 26); g.stroke(); g.setLineDash([]);
       return T(el);
     }
     const GATES = [
-      { n: 1, glyph: 'PR', title: 'Тільки через Pull Request', saves: 'змін нізвідки: без опису, скриншота й історії', x: -3.6 },
-      { n: 2, glyph: '1✓', title: 'Хоча б один Approve', saves: 'помилок, які автор уже не бачить', x: -1.0 },
-      { n: 3, glyph: 'CO', title: 'Code Owners для спільного коду', saves: 'зламаного Button на всіх екранах', x: 1.6 },
-      { n: 4, glyph: '⚙', title: 'Зелений check: build', saves: '«у мене все працювало»', x: 4.2 }
+      { n: 1, glyph: 'PR', title: 'Тільки через Pull Request', x: -3.6 },
+      { n: 2, glyph: '1✓', title: 'Хоча б один Approve', x: -1.0 },
+      { n: 3, glyph: 'CO', title: 'Code Owners для спільного коду', x: 1.6 },
+      { n: 4, glyph: '⚙', title: 'Зелений check: build', x: 4.2 }
     ];
     const gateTexes = GATES.map(gt => ({ wait: gateTex(gt, 'wait'), check: gateTex(gt, 'check'), pass: gateTex(gt, 'pass'), block: gateTex(gt, 'block') }));
     const Y_B = 0.6, Y_M = -1.8;
@@ -154,15 +151,17 @@ window.EPISODES.push({
 
     ep.update = function (t) {
       ep.dim = 1 - 0.65 * win(t, 93.0, 94.5);
+      // крупні плани воріт (розділи 03–06): main, підписи й легенда сховані — у кадрі лише ворота, гілка і пакет
+      const hideL = win(t, 26.5, 27.5) * (1 - win(t, 70.5, 71.5));
       mk.revealTo(trunk, lerp(-34, 34, easeOut(win(t, 6.0, 8.0))));
       mk.revealTo(branch, t < 27.5 ? lerp(-8.05, -5.6, easeOut(win(t, 8.0, 9.5))) : lerp(-5.6, 6.85, win(t, 27.5, 74.0)));
-      setOp(trunk.material, 0.92); setOp(branch.material, win(t, 7.8, 8.4));
+      setOp(trunk.material, 0.92 * (1 - hideL)); setOp(branch.material, win(t, 7.8, 8.4));
       // пряма спроба: червоний відрізок вниз до стіни
       // вертикальна труба відкривається зверху вниз: нормаль +y лишає точки з y >= -constant
       direct.userData.plane.normal.set(0, 1, 0);
       direct.userData.plane.constant = -lerp(0.65, -0.35, easeOut(win(t, 9.5, 10.8)));
       setOp(direct.material, win(t, 9.4, 9.8) * (1 - win(t, 17.0, 18.5)));
-      mk.pop(cBase, t, 7.0, setOp); mk.pop(cFix, t, 8.6, setOp);
+      mk.pop(cBase, t, 7.0, (m, v) => setOp(m, v * (1 - hideL))); mk.pop(cFix, t, 8.6, setOp);
       // стіна
       const hit = win(t, 10.4, 10.8);
       wall.material.opacity = clamp01(win(t, 10.3, 10.7) * (1 - win(t, 17.0, 18.5))) * ep.dim;
@@ -185,28 +184,30 @@ window.EPISODES.push({
         py = t < 73.5 ? Y_B : lerp(Y_B, Y_M, ease(win(t, 73.5, 74.5)));
         pop = 1 - win(t, 74.4, 74.9);
       }
-      pkt.g.position.set(px, py, 0.45); pkt.g.scale.setScalar(pop * (1 + 0.08 * Math.sin(t * 3))); pkt.glow.scale.setScalar(1.7);
-      setOp(pkt.core.material, pop); setOp(pkt.shell.material, 0.38 * pop); setOp(pkt.glow.material, 0.6 * pop);
+      pkt.g.position.set(px, py, 0.45); pkt.g.scale.setScalar(pop * (1 + 0.08 * Math.sin(t * 3))); pkt.glow.scale.setScalar(1.35);
+      setOp(pkt.core.material, pop); setOp(pkt.shell.material, 0.38 * pop); setOp(pkt.glow.material, 0.42 * pop);
       // ворота
+      const G0 = [27.5, 37.5, 48.5, 59.5], G1 = [37.5, 48.5, 59.5, 70.5];   // розділ кожних воріт
       gates.forEach((m, i) => {
         const st = gateState(i, t);
-        m.material.opacity = st ? clamp01(win(t, 18.0 + i * 0.6, 19.0 + i * 0.6) * (1 - win(t, 92.0, 93.0))) * ep.dim : 0;
+        const act = win(t, G0[i] - 0.6, G0[i] + 0.4) * (1 - win(t, G1[i] - 0.4, G1[i] + 0.6));   // ворота, про які йдеться
+        const focus = lerp(1, 0.28 + 0.72 * act, hideL);   // решта на крупному плані пригасає
+        m.material.opacity = st ? clamp01(win(t, 18.0 + i * 0.6, 19.0 + i * 0.6) * (1 - win(t, 92.0, 93.0))) * focus * ep.dim : 0;
         if (st) m.material.map = gateTexes[i][st];
         m.position.copy(m.userData.base); m.position.y += 0.05 * Math.sin(t * 0.8 + i) + 0.4 * (1 - easeOut(win(t, 18.0 + i * 0.6, 19.2 + i * 0.6)));
         const TP = [30.5, 44.0, 52.0, 66.5][i]; m.scale.setScalar(1 + 0.06 * pulse(t, TP - 0.2, TP + 0.9));
       });
       // злиття і щит
       mk.pop(cMerge, t, 74.6, setOp);
-      { const p = win(t, 74.6, 77.0); ring.scale.setScalar(lerp(0.6, 2.8, easeOut(p))); setOp(ring.material, Math.sin(clamp01(p) * Math.PI) * 0.9); }
+      { const p = win(t, 74.6, 77.0); ring.scale.setScalar(lerp(0.6, 2.3, easeOut(p))); setOp(ring.material, Math.sin(clamp01(p) * Math.PI) * 0.9); }
       shield.material.opacity = clamp01(win(t, 76.0, 77.2) * (1 - win(t, 92.0, 93.0))) * ep.dim;
       shield.position.copy(shield.userData.base); shield.position.y += 0.05 * Math.sin(t * 0.9) + 0.4 * (1 - easeOut(win(t, 76.0, 77.4)));
       shield.scale.setScalar(1 + 0.05 * pulse(t, 78.5, 79.7));
       // підписи
-      const hideL = win(t, 26.5, 27.5) * (1 - win(t, 70.5, 71.5));   // на крупних планах воріт підписи не потрібні
       setOp(labA.material, win(t, 8.8, 9.8) * (1 - hideL) * (1 - win(t, 92.0, 93.0)));
       setOp(labMain.material, win(t, 6.9, 8.0) * (1 - hideL) * (1 - win(t, 92.0, 93.0)));
 
-      hud.legend(win(t, 7.5, 8.6) * (1 - win(t, DUR - 1.5, DUR)));
+      hud.legend(win(t, 7.5, 8.6) * (1 - hideL) * (1 - win(t, DUR - 1.5, DUR)));
       if (t >= 10.6 && t < 17.5) hud.badge('⛔ GH006 · main захищений', 'red', win(t, 10.6, 11.2) * (1 - win(t, 16.8, 17.5)));
       else if (t >= 30.5 && t < 37.0) hud.badge('✓ PR #23 відкрито', 'green', win(t, 30.5, 31.2) * (1 - win(t, 36.3, 37.0)));
       else if (t >= 44.0 && t < 48.0) hud.badge('✓ Approve · Богдан', 'green', win(t, 44.0, 44.7) * (1 - win(t, 47.3, 48.0)));

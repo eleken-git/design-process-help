@@ -14,7 +14,7 @@ window.EPISODES.push({
       { id: 'branch', t0: 6.5, t1: 16, num: '01', ttl: 'Богдан: гілка, два коміти, push',
         cap: 'Богдан робить сповіщення в Settings у своїй гілці. Два коміти вже на GitHub. Аня поки нічого не мусить: гілка сама по собі нікого не зобов’язує.',
         term: [{ x: 'git switch -c feat/settings-notifications' }, { x: 'git commit -m "settings: сповіщення"' }, { x: 'git push -u origin feat/settings-notifications' }] },
-      { id: 'draft', t0: 16, t1: 26, num: '02', ttl: 'Draft PR: Аня бачить роботу, рев’ю ще не просять',
+      { id: 'draft', t0: 16, t1: 26, num: '02', ttl: 'Draft PR: видно, але рев’ю ще не просять',
         cap: 'Богдан відкриває <b>Pull Request</b> як <b>Draft</b>. Це Review and merge з Figma, але з розмовою, історією й автоперевіркою. Аня може заглянути, але злити не можна і запиту на рев’ю ще немає.',
         term: [{ x: 'gh pr create --draft --title "settings: сповіщення"' }, { x: '→ github.com/eleken-git/design-process-help/pull/22', c: 'c' }] },
       { id: 'ready', t0: 26, t1: 36, num: '03', ttl: 'Ready for review: Аню запрошено',
@@ -43,9 +43,9 @@ window.EPISODES.push({
     const CAM = [
       { t: 0.0, p: [0.0, 1.2, 22.0], l: [0.0, 0.0, 0.0] },
       { t: 6.5, p: [-1.4, 0.0, 14.5], l: [-0.8, -0.4, 0.0] },
-      { t: 16.0, p: [0.6, 0.4, 14.5], l: [0.8, 0.2, 0.0] },
-      { t: 26.0, p: [0.6, 0.4, 14.5], l: [0.8, 0.2, 0.0] },
-      { t: 36.0, p: [-0.6, 0.8, 12.5], l: [-0.4, 0.9, 0.0] },
+      { t: 16.0, p: [0.6, -0.1, 14.5], l: [0.8, -0.3, 0.0] },
+      { t: 26.0, p: [0.6, -0.1, 14.5], l: [0.8, -0.3, 0.0] },
+      { t: 36.0, p: [-0.6, 0.35, 12.5], l: [-0.4, 0.45, 0.0] },
       { t: 48.0, p: [0.2, 0.3, 14.5], l: [0.4, 0.0, 0.0] },
       { t: 60.0, p: [0.6, 0.4, 14.5], l: [0.8, 0.2, 0.0] },
       { t: 70.0, p: [0.8, 0.2, 14.5], l: [0.8, -0.2, 0.0] },
@@ -192,7 +192,7 @@ window.EPISODES.push({
       approved: prCard({ state: 'approved', checks: 'passed', commits: 3, conv: 'resolved' }),
       merged: prCard({ state: 'merged', checks: 'passed', commits: 3, conv: 'resolved' })
     };
-    const pr = mk.card(texPR.draft, 2.6, 1.95, 6.2);
+    const pr = mk.card(texPR.draft, 2.6, 1.55, 6.2);
     const texC0 = commentCard(false), texC1 = commentCard(true);
     const cmt = mk.card(texC0, -3.4, 2.7, 3.9);
     const lineToCode = mk.leader(0, 0, 0, C.blue); // замінимо геометрію під час кадру
@@ -216,8 +216,10 @@ window.EPISODES.push({
       mk.revealTo(work, t < 48 ? lerp(-6.05, -2.4, easeOut(win(t, 8.0, 10.5))) : lerp(-2.4, X.tip, win(t, 48, 52)));
       mk.revealTo(mergeT, lerp(X.tip, X.merge + .05, easeOut(win(t, 72.5, 74.5))));
       const gone = win(t, 76.5, 79.5);   // гілку видалено
-      setOp(trunk.material, 0.92);
-      setOp(work.material, win(t, 7.8, 8.4) * (1 - gone));
+      const hideT = win(t, 25.5, 26.5) * (1 - win(t, 47.5, 48.5));   // розділи 03–04: main проходить під текстом — пригасаємо разом із підписом
+      const wDim = 1 - 0.75 * win(t, 35.5, 36.5) * (1 - win(t, 47.5, 48.5));   // розділ 04: камера на коментарі, початок гілки під текстом
+      setOp(trunk.material, 0.92 * (1 - 0.78 * hideT));
+      setOp(work.material, win(t, 7.8, 8.4) * (1 - gone) * wDim);
       setOp(mergeT.material, win(t, 72.3, 72.8) * (1 - gone));
 
       // коміти: c1, c2 рано; c3 після коментаря; на squash усі три стягуються в merge-коміт
@@ -228,14 +230,14 @@ window.EPISODES.push({
         const base = V([X.c1, X.c2, X.c3][i], Y_B);
         cs[i].g.position.lerpVectors(base, V(X.merge, Y_M), squash);
         cs[i].g.scale.multiplyScalar(1 - 0.85 * squash);
-        setOp(cs[i].core.material, (1 - squash)); setOp(cs[i].shell.material, 0.38 * (1 - squash)); setOp(cs[i].glow.material, 0.5 * (1 - squash) + 0.5 * pulse(t, 74.3, 76.8));
+        setOp(cs[i].core.material, (1 - squash) * wDim); setOp(cs[i].shell.material, 0.38 * (1 - squash) * wDim); setOp(cs[i].glow.material, (0.5 * (1 - squash) + 0.5 * pulse(t, 74.3, 76.8)) * wDim);
       });
       mk.pop(cMerge, t, 76.2, setOp);
       { const p = win(t, 76.2, 78.6); ring.scale.setScalar(lerp(0.6, 2.8, easeOut(p))); setOp(ring.material, Math.sin(clamp01(p) * Math.PI) * 0.9); }
 
       // підписи
       setOp(labA.material, win(t, 8.6, 9.6) * (1 - win(t, 34.5, 36)) + win(t, 47.5, 48.5) * (1 - win(t, 80.5, 82)));
-      setOp(labMain.material, win(t, 6.9, 8.0) * (1 - win(t, 35.5, 36.5) * (1 - win(t, 47.5, 48.5))) * (1 - win(t, 80.5, 82)));
+      setOp(labMain.material, win(t, 6.9, 8.0) * (1 - hideT) * (1 - win(t, 80.5, 82)));
       setOp(labPush.material, win(t, 12.0, 13.0) * (1 - win(t, 16.5, 18.0)));
       labPush.position.y = Y_B - 0.95 - 0.5 * (1 - easeOut(win(t, 12.0, 13.2)));
 

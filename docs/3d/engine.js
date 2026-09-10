@@ -298,7 +298,7 @@ function loadEpisode(id, autoplay) {
   try { history.replaceState(null, '', '?ep=' + def.id + (CAPTURE ? '&capture=1' : '')); } catch (e) {}
   setTime(0);
   setPlaying(autoplay !== false && !CAPTURE);
-  window.__deck = { setTime, DUR: ep.DUR, ready: true, episode: def.id, scene, camera, load: (id) => loadEpisode(id, false) };
+  window.__deck = { setTime, DUR: ep.DUR, beats: ep.BEATS, ready: true, episode: def.id, scene, camera, load: (id) => loadEpisode(id, false) };
 }
 
 /* ============================== керування ============================== */

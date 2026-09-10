@@ -47,7 +47,7 @@ window.EPISODES.push({
     const DUR = 106;
     const CAM = [
       { t: 0.0, p: [0.0, 2.2, 26.0], l: [0.0, 1.6, 0.0] }, { t: 6.5, p: [-4.2, 0.2, 17.0], l: [-3.6, -0.6, 0.0] },
-      { t: 15.5, p: [-1.0, 0.2, 18.5], l: [-2.4, -0.2, 0.0] }, { t: 25.5, p: [-1.0, 0.2, 18.2], l: [-2.4, -0.2, 0.0] },
+      { t: 15.5, p: [-1.0, -0.2, 19.5], l: [-2.4, -0.6, 0.0] }, { t: 25.5, p: [-1.0, -0.2, 19.5], l: [-2.4, -0.6, 0.0] },
       { t: 34.5, p: [2.2, 1.5, 12.5], l: [1.4, 0.9, 0.0] }, { t: 44.5, p: [2.8, -0.6, 12.0], l: [2.0, -1.6, 0.0] },
       { t: 55.5, p: [-0.7, -4.5, 9.4], l: [-0.7, -5.1, 2.4] }, { t: 66.0, p: [1.4, 0.2, 19.0], l: [1.0, -1.0, 3.0] },
       { t: 72.5, p: [1.4, 0.2, 19.0], l: [1.0, -1.0, 3.0] }, { t: 79.0, p: [1.4, 0.2, 19.0], l: [1.0, -1.0, 3.0] },
@@ -122,7 +122,7 @@ window.EPISODES.push({
     const V = (x, y, z) => new THREE.Vector3(x, y, z);
 
     ep.update = function (t) {
-      ep.dim = clamp(1 - 0.86 * (win(t, 65.2, 67.0) - win(t, 86.3, 87.6)), 0.14, 1);
+      ep.dim = clamp(1 - 0.86 * (win(t, 65.2, 67.0) - win(t, 86.3, 87.6)) - 0.65 * win(t, 98.6, 100.0), 0.14, 1);   // варіанти і фінальні тези — граф пригасає
       mk.revealTo(trunk, lerp(-34, 34, easeOut(win(t, 6.0, 8.0))));
       mk.revealTo(aWork, t < 25 ? lerp(-6.05, -0.55, easeOut(win(t, 8.2, 11.2))) : lerp(-0.55, X.aTip, win(t, 25, 34)));
       mk.revealTo(bWork, t < 25 ? lerp(-6.05, -0.55, easeOut(win(t, 8.8, 11.8))) : (t < 88 ? lerp(-0.55, X.bPull, win(t, 25, 47)) : lerp(X.bPull, X.bTip, easeOut(win(t, 88, 93)))));
@@ -132,29 +132,30 @@ window.EPISODES.push({
       setOp(trunk.material, 0.92);
       setOp(aWork.material, win(t, 8.0, 8.6) * (1 - 0.55 * win(t, 39.5, 41.5)));
       setOp(aMerge.material, win(t, 36.3, 36.8) * (1 - 0.55 * win(t, 39.5, 41.5)));
-      setOp(bWork.material, win(t, 8.6, 9.2)); setOp(bMerge.material, win(t, 92.4, 92.9));
+      const bDim = 1 - 0.75 * win(t, 34.0, 35.0) * (1 - win(t, 44.0, 45.0));   // розділ 04: гілка Богдана під текстом — пригасаємо
+      setOp(bWork.material, win(t, 8.6, 9.2) * bDim); setOp(bMerge.material, win(t, 92.4, 92.9));
       setOp(pull.material, win(t, 46.8, 47.3) * (0.45 + 0.55 * (1 - win(t, 88, 92))));
 
       mk.pop(cBase, t, 7.0, setOp);
       [11.2, 12.1, 13.0].forEach((tt, i) => mk.pop(cA[i], t, tt, setOp));
-      [11.9, 12.8, 13.7].forEach((tt, i) => mk.pop(cB[i], t, tt, setOp));
+      [11.9, 12.8, 13.7].forEach((tt, i) => mk.pop(cB[i], t, tt, (m, v) => setOp(m, v * bDim)));
       mk.pop(cMergeA, t, 38.6, setOp); mk.pop(cPull, t, 49.2, setOp); mk.pop(cFix, t, 89.6, setOp); mk.pop(cMergeB, t, 94.2, setOp);
       { const alive = win(t, 49.2, 49.8) * (1 - win(t, 88.4, 89.4)), beat = 0.5 + 0.5 * Math.sin(t * 5.0);
         setOp(cPull.glow.material, alive * (0.45 + 0.55 * beat)); cPull.glow.scale.setScalar(2.2 + 0.5 * beat);
         const col = t > 89.0 ? C.green : C.red; cPull.core.material.color.setHex(col); cPull.glow.material.color.setHex(col); }
       ring(t, ringA, 38.6, 41.0, 0.6, 2.6); ring(t, ringB, 94.2, 96.4, 0.6, 2.6); ring(t, shock, 49.2, 52.0, 0.6, 4.2);
 
-      const labHide = win(t, 33.5, 35.0) * (1 - win(t, 95.0, 96.5));
+      const labHide = win(t, 33.5, 35.0);   // з розділу 04 підписи не потрібні: камера близько, лінії впізнавані
       setOp(labA.material, win(t, 8.8, 9.8) * (1 - 0.6 * win(t, 40, 42)) * (1 - labHide));
       setOp(labB.material, win(t, 9.4, 10.4) * (1 - labHide));
-      setOp(labMain.material, win(t, 6.9, 8.0) * (1 - 0.7 * labHide));
+      setOp(labMain.material, win(t, 6.9, 8.0) * (1 - labHide));
 
-      const aIn = win(t, 16.4, 17.4) * (1 - win(t, 39.6, 41.2));
+      const aIn = win(t, 16.4, 17.4) * (1 - win(t, 34.3, 35.3));   // у розділі 04 картка Ані вже не потрібна і стирчала б за верхнім краєм
       cardA.material.opacity = clamp01(aIn) * ep.dim; cardA.material.map = t >= 27.6 ? texA1 : texA0;
       cardA.position.copy(cardA.userData.base); cardA.position.y += 0.10 * Math.sin(t * 0.8) + 0.55 * (1 - easeOut(win(t, 16.4, 17.6)));
       cardA.scale.setScalar(1 + 0.05 * pulse(t, 27.4, 28.6)); setOp(leadA.material, aIn * 0.7);
 
-      const bIn = win(t, 17.2, 18.2) * (1 - win(t, 96.4, 98.0)) * (1 - win(t, 34.6, 35.6) * (1 - win(t, 46.6, 47.6)));
+      const bIn = win(t, 17.2, 18.2) * (1 - win(t, 93.4, 94.6)) * (1 - win(t, 34.6, 35.6) * (1 - win(t, 46.6, 47.6)));   // картка зникає до того, як камера від'їжджає
       cardB.material.map = t >= 88.4 ? texResolved : (t >= 49.4 ? texConflict : (t >= 29.6 ? texB1 : texB0));
       const focus = win(t, 55.6, 57.4) * (1 - win(t, 64.6, 66.2)), kConf = win(t, 47.0, 49.5) * (1 - win(t, 55.6, 57.4));
       cardB.position.copy(cardB.userData.base); cardB.position.lerp(V(4.5, -3.6, 1.2), ease(kConf)); cardB.position.lerp(V(0.9, -4.9, 2.4), ease(focus));
@@ -170,8 +171,8 @@ window.EPISODES.push({
         const shown = win(t, 66.2 + i * 0.45, 67.2 + i * 0.45) * (1 - win(t, 86.4, 87.5));
         const act = (t >= optWin[i][0] - 0.4 && t < optWin[i][1]) ? win(t, optWin[i][0] - 0.4, optWin[i][0] + 0.7) * (1 - win(t, optWin[i][1] - 0.5, optWin[i][1] + 0.3)) : 0;
         const b = m.userData.base;
-        m.position.set(lerp(b.x, 1.6, ease(act)), lerp(b.y, -0.2, ease(act)) + 0.08 * Math.sin(t * 0.7 + i), lerp(b.z, 9.4, ease(act)));
-        m.scale.setScalar(lerp(0.86, 1.0, ease(act)) * lerp(0.9, 1, easeOut(shown))); m.material.opacity = clamp01(shown) * lerp(0.3, 1, act);
+        m.position.set(lerp(b.x, 2.2, ease(act)), lerp(b.y, 0.25, ease(act)) + 0.08 * Math.sin(t * 0.7 + i), lerp(b.z, 9.4, ease(act)));   // активна картка — праворуч і вище тексту
+        m.scale.setScalar(lerp(0.86, 0.94, ease(act)) * lerp(0.9, 1, easeOut(shown))); m.material.opacity = clamp01(shown) * lerp(0.3, 1, act);
       });
 
       hud.vignette(Math.max(pulse(t, 49.0, 54.0) * 0.5, 0));

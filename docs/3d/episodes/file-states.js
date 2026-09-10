@@ -130,7 +130,8 @@ window.EPISODES.push({
       zones.forEach((z, i) => {
         const k = easeOut(win(t, 6.8 + i * 0.35, 7.8 + i * 0.35));
         z.top.material.opacity = 0.35 * k; z.edge.material.opacity = 0.95 * k; z.grp.scale.set(k, 1, k);
-        setOp(zoneLabels[i].material, k * (1 - 0.35 * win(t, 84.5, 86)));
+        const ZT = [6.5, 17.0, 27.0, 39.0][i];   // підпис зони з'являється, коли камера до неї доїжджає — інакше стирчить обрізаний з краю
+        setOp(zoneLabels[i].material, k * win(t, ZT - 0.2, ZT + 0.8) * (1 - 0.35 * win(t, 84.5, 86)));
       });
 
       // Dashboard.tsx: змінено → у кошик → у коміт
