@@ -34,7 +34,7 @@ canvas{display:block;width:100%;height:100%}
 .chapter .num{font:600 12px/20px var(--mono);color:var(--text);border:1px solid var(--border);background:rgba(22,27,34,.8);border-radius:var(--r);padding:1px 8px}
 .chapter .ttl{font:600 26px/1.2 var(--sans);letter-spacing:-.01em;text-wrap:balance}
 
-.bl{left:44px;bottom:40px;display:grid;gap:13px;max-width:660px;align-content:end}
+.bl{left:44px;bottom:40px;display:grid;gap:13px;max-width:min(560px,44vw);align-content:end}
 .caption{font:17px/1.55 var(--sans);color:var(--text);text-wrap:pretty}
 .caption b{color:var(--text)}
 .caption .q{color:var(--muted)}
@@ -49,12 +49,10 @@ canvas{display:block;width:100%;height:100%}
 .legend .row{display:flex;align-items:center;gap:8px;background:rgba(22,27,34,.72);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
 .legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
 
-.badge-big{right:44px;bottom:104px;display:flex;align-items:center;gap:10px;font:600 15px var(--sans);border-radius:999px;padding:7px 16px;border:1px solid var(--border);background:rgba(22,27,34,.9)}
+.badge-big{right:44px;bottom:96px;display:flex;align-items:center;gap:10px;font:600 15px var(--sans);border-radius:999px;padding:7px 16px;border:1px solid var(--border);background:rgba(22,27,34,.9)}
 .badge-big.red{color:var(--red);border-color:rgba(248,81,73,.5)}
 .badge-big.green{color:var(--green-fg);border-color:rgba(63,185,80,.5)}
 .badge-big.purple{color:var(--purple);border-color:rgba(163,113,247,.5)}
-
-.brandline{left:44px;top:36px;font:600 13px var(--mono);color:var(--muted);display:flex;align-items:center;gap:8px}
 
 .progress{left:0;right:0;bottom:0;height:3px;background:rgba(48,54,61,.6)}
 .progress i{display:block;height:100%;background:var(--orange);width:0}
@@ -69,20 +67,20 @@ canvas{display:block;width:100%;height:100%}
 .titlecard .repo{margin-top:6px;font:12px var(--mono);color:var(--faint)}
 
 /* ---------- controls ---------- */
-.controls{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:5;display:flex;align-items:center;gap:10px;
+.controls{position:fixed;right:18px;bottom:18px;z-index:5;display:flex;align-items:center;gap:8px;
   background:rgba(22,27,34,.94);border:1px solid var(--border);border-radius:10px;padding:8px 12px;backdrop-filter:blur(8px)}
 .controls button{height:30px;min-width:30px;padding:0 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font:600 12px var(--sans);cursor:pointer}
 .controls button:hover{border-color:var(--faint)}
 .controls button.on{border-color:var(--orange);color:var(--orange)}
 .controls .time{font:12px var(--mono);color:var(--muted);min-width:78px;text-align:center}
-.controls input[type=range]{width:min(46vw,420px);accent-color:var(--orange)}
-.chips{position:fixed;left:50%;transform:translateX(-50%);bottom:64px;z-index:5;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:min(92vw,980px)}
+.controls input[type=range]{width:min(30vw,300px);accent-color:var(--orange)}
+.chips{position:fixed;right:18px;bottom:74px;z-index:6;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:min(92vw,720px);
+  background:rgba(22,27,34,.97);border:1px solid var(--border);border-radius:10px;padding:10px;box-shadow:0 8px 32px rgba(1,4,9,.6)}
+.chips[hidden]{display:none}
 .chips button{height:26px;padding:0 10px;border:1px solid var(--border);border-radius:999px;background:rgba(22,27,34,.9);color:var(--muted);font:12px var(--mono);cursor:pointer}
 .chips button:hover{color:var(--text);border-color:var(--faint)}
 .chips button.on{color:var(--text);border-color:var(--orange);background:rgba(247,129,102,.14)}
-.hint{position:fixed;right:18px;bottom:18px;z-index:5;font:11px var(--mono);color:var(--faint)}
-.hint kbd{border:1px solid var(--border);border-radius:4px;padding:0 4px}
-body.capture .controls,body.capture .chips,body.capture .hint{display:none}
+body.capture .controls,body.capture .chips{display:none}
 @media (max-width:820px){
   .chapter{left:20px;top:20px}.chapter .ttl{font-size:20px}
   .bl{left:20px;right:20px;bottom:34px;max-width:none}
@@ -98,7 +96,6 @@ body.capture .controls,body.capture .chips,body.capture .hint{display:none}
 <div class="hud" id="hud">
   <div class="scrim t"></div>
   <div class="scrim b"></div>
-  <div class="brandline" id="brandline" style="opacity:0"><span>eleken-git / design-process-help</span></div>
   <div class="chapter" id="chapter" style="opacity:0"><span class="num" id="chNum">01</span><span class="ttl" id="chTtl"></span></div>
   <div class="legend" id="legend" style="opacity:0">
     <span class="row"><i style="background:#58A6FF"></i>Аня · feat/dashboard-title</span>
@@ -120,16 +117,16 @@ body.capture .controls,body.capture .chips,body.capture .hint{display:none}
   <div class="progress"><i id="pbar"></i></div>
 </div>
 
-<div class="chips" id="chips"></div>
+<div class="chips" id="chips" hidden></div>
 <div class="controls">
-  <button id="btnPlay" title="Пробіл">❚❚</button>
-  <button id="btnBack" title="−5 с">−5</button>
-  <button id="btnFwd" title="+5 с">+5</button>
+  <button id="btnPlay" title="Пауза / грати · Space">❚❚</button>
+  <button id="btnBack" title="−5 с · ←">−5</button>
+  <button id="btnFwd" title="+5 с · →">+5</button>
   <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Час">
   <span class="time" id="tlabel">0:00 / 0:00</span>
   <button id="btnRestart" title="Спочатку">↺</button>
+  <button id="btnChapters" title="Список розділів">Розділи</button>
 </div>
-<div class="hint"><kbd>Space</kbd> пауза · <kbd>←</kbd> <kbd>→</kbd> 5 с</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -574,7 +571,7 @@ const outroRows = [0, 1, 2].map(i => outro.querySelector('.o' + i));
 
 const $ = (id) => document.getElementById(id);
 const el = { chapter: $('chapter'), chNum: $('chNum'), chTtl: $('chTtl'), caption: $('caption'), term: $('term'),
-  badge: $('badge'), legend: $('legend'), titlecard: $('titlecard'), fade: $('fade'), pbar: $('pbar'), brandline: $('brandline') };
+  badge: $('badge'), legend: $('legend'), titlecard: $('titlecard'), fade: $('fade'), pbar: $('pbar') };
 
 let lastBeatId = null, lastTermId = null;
 
@@ -721,7 +718,6 @@ function updateHUD(t) {
   el.caption.style.opacity = String(isIntro ? 0 : fadeBeat(t, b, 0.75));
   el.caption.style.transform = `translateY(${lerp(8, 0, easeOut(win(t, b.t0 + .75, b.t0 + 1.5)))}px)`;
   el.legend.style.opacity = String(win(t, 7.5, 8.6) * (1 - win(t, 64.8, 66.0)) + win(t, 87.6, 88.6) * (1 - win(t, DUR - 1.5, DUR)));
-  el.brandline.style.opacity = String(win(t, 6.6, 7.6) * 0.55 * (1 - win(t, DUR - 1.5, DUR)));
 
   // термінал: рядки зʼявляються по черзі
   const nLines = b.term.length;
@@ -763,10 +759,11 @@ BEATS.filter(b => b.id !== 'intro').forEach(b => {
   const btn = document.createElement('button');
   btn.dataset.id = b.id;
   btn.textContent = b.num + (b.id.startsWith('opt') ? ' ' + b.id.slice(3) : '') + ' · ' + b.ttl.replace(/^Варіант [ABC] · /, '');
-  btn.onclick = () => { setTime(b.t0 + 0.05); };
+  btn.onclick = () => { setTime(b.t0 + 0.05); chips.hidden = true; btnChapters.classList.remove('on'); };
   chips.appendChild(btn);
 });
-const btnPlay = $('btnPlay'), scrub = $('scrub'), tlabel = $('tlabel');
+const btnPlay = $('btnPlay'), scrub = $('scrub'), tlabel = $('tlabel'), btnChapters = $('btnChapters');
+btnChapters.onclick = () => { chips.hidden = !chips.hidden; btnChapters.classList.toggle('on', !chips.hidden); };
 const fmt = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
 function setPlaying(v) { state.playing = v; btnPlay.textContent = v ? '❚❚' : '▶'; btnPlay.classList.toggle('on', !v); }
 btnPlay.onclick = () => setPlaying(!state.playing);
