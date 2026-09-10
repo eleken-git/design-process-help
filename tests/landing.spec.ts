@@ -35,9 +35,9 @@ test.describe('лендінг-хаб docs/', () => {
 });
 
 test.describe('хлібні крихти назад на лендінг', () => {
-  test('презентація: назва проєкту в сайдбарі веде на "../"', async ({ page }) => {
+  test('презентація: окрема крихта "← design-process-help" у сайдбарі веде на "../"', async ({ page }) => {
     await page.goto(BASE + '/presentation/');
-    const link = page.locator('a.home-link');
+    const link = page.locator('a.crumb-home');
     await expect(link).toHaveAttribute('href', '../');
     await link.click();
     await expect(page).toHaveURL(BASE + '/');
