@@ -18,6 +18,10 @@
   vertical-align: top;
 }
 
+.table tbody tr:nth-child(even) td {
+  background: var(--color-inset);
+}
+
 .table tr:last-child td {
   border-bottom: 0;
 }
@@ -28,5 +32,8 @@
 }
 
 .note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   color: var(--color-text-muted);
 }

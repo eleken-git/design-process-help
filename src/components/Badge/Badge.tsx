@@ -3,7 +3,7 @@ import styles from './Badge.module.css';
 
 type BadgeProps = {
   /** Дефолт 'neutral' — сірий. Новий tone додається як новий клас, існуючі не змінюються. */
-  tone?: 'neutral' | 'success' | 'accent' | 'danger' | 'done';
+  tone?: 'neutral' | 'success' | 'accent' | 'danger' | 'done' | 'attention';
   children: ReactNode;
 };
 

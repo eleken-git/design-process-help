@@ -37,3 +37,9 @@
   border-color: color-mix(in srgb, var(--color-done) 40%, transparent);
   background: color-mix(in srgb, var(--color-done) 15%, transparent);
 }
+
+.attention {
+  color: var(--color-attention);
+  border-color: color-mix(in srgb, var(--color-attention) 40%, transparent);
+  background: color-mix(in srgb, var(--color-attention) 15%, transparent);
+}
