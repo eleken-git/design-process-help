@@ -92,7 +92,7 @@ strong{font-weight:600}
 /* slides */
 .page{max-width:1120px;margin:0 auto;padding:0 40px}
 .slide{padding:56px 0 64px;border-bottom:1px solid var(--border-muted);scroll-margin-top:24px}
-.slide:last-of-type{border-bottom:0}
+.slide:last-of-type{border-bottom:0;min-height:calc(100vh - 24px)}
 .eyebrow{display:flex;align-items:center;gap:10px;color:var(--muted);font:12px var(--mono);margin-bottom:14px;flex-wrap:wrap}
 .eyebrow .num{color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1px 7px}
 .lead{color:var(--muted);font-size:16px;max-width:66ch;margin:0 0 28px}
@@ -356,7 +356,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
   <div class="side-foot">
     <button class="theme" id="theme" type="button" aria-pressed="false"><svg class="icon ic-sun"><use href="#i-sun"/></svg><svg class="icon ic-moon"><use href="#i-moon"/></svg><span>Світла тема</span></button>
     <div class="row">
-      <span class="kbd-hint"><kbd>←</kbd> <kbd>→</kbd> між слайдами</span>
+      <span class="kbd-hint"><kbd>←</kbd> <kbd>→</kbd> або <kbd>Space</kbd> між слайдами</span>
       <span class="counter" id="counter">01 / 13</span>
     </div>
   </div>
@@ -898,31 +898,69 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <script>
 (function () {
   var slides = [].slice.call(document.querySelectorAll('.slide'));
-  var tabs = [].slice.call(document.querySelectorAll('.side-nav a'));
+  var links = [].slice.call(document.querySelectorAll('.side-nav a'));
   var counter = document.getElementById('counter');
+  var OFFSET = 24; // = scroll-margin-top слайда
   var current = 0;
+  var pending = null;   // слайд, до якого зараз їде анімація
+  var settleTimer = null;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function topOf(el) { return Math.round(el.getBoundingClientRect().top + window.scrollY - OFFSET); }
+  function maxScroll() { return document.documentElement.scrollHeight - window.innerHeight; }
+
   function setActive(i) {
     current = i;
     counter.textContent = pad(i + 1) + ' / ' + pad(slides.length);
-    tabs.forEach(function (t, j) { t.classList.toggle('active', j === i); });
+    links.forEach(function (a, j) { a.classList.toggle('active', j === i); });
   }
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) setActive(slides.indexOf(e.target)); });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    slides.forEach(function (s) { io.observe(s); });
+
+  // Активний слайд = останній, чий верх уже дійшов до верху екрана.
+  function indexAtScroll() {
+    var y = window.scrollY + 2;
+    if (window.scrollY >= maxScroll() - 2) return slides.length - 1;
+    var idx = 0;
+    for (var i = 0; i < slides.length; i++) { if (topOf(slides[i]) <= y) idx = i; }
+    return idx;
   }
+
+  function clearPending() { pending = null; }
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    pending = i;
+    setActive(i); // лічильник одразу показує ціль
+    window.scrollTo({ top: Math.min(topOf(slides[i]), maxScroll()), behavior: reduced ? 'auto' : 'smooth' });
+  }
+
+  // Поки анімація їде — тримаємо ціль. Коли скрол затих на 120 мс — синхронізуємось із реальною позицією.
+  window.addEventListener('scroll', function () {
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(function () { clearPending(); setActive(indexAtScroll()); }, 120);
+    if (pending === null) setActive(indexAtScroll());
+  }, { passive: true });
+  ['wheel', 'touchstart'].forEach(function (ev) { window.addEventListener(ev, clearPending, { passive: true }); });
+
   document.addEventListener('keydown', function (e) {
-    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.target && /INPUT|TEXTAREA|BUTTON|A/.test(e.target.tagName) && e.key === ' ') return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var base = pending !== null ? pending : current;
     var next = null;
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') next = Math.min(current + 1, slides.length - 1);
-    if (e.key === 'ArrowLeft' || e.key === 'PageUp') next = Math.max(current - 1, 0);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') next = base + 1;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') next = base - 1;
+    if (e.key === 'Home') next = 0;
+    if (e.key === 'End') next = slides.length - 1;
     if (next === null) return;
     e.preventDefault();
-    slides[next].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    goTo(next);
   });
-  setActive(0);
+
+  links.forEach(function (a, i) {
+    a.addEventListener('click', function (e) { e.preventDefault(); history.replaceState(null, '', a.getAttribute('href')); goTo(i); });
+  });
+
+  setActive(indexAtScroll());
 
   var root = document.documentElement;
   var themeBtn = document.getElementById('theme');
