@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Git у 3D</title>
+<meta name="description" content="Git для дизайнерів у 3D: конфлікт при злитті, три стани файлу та інші епізоди. Пауза, перемотка, музика з кнопкою.">
+<style>
+:root{
+  --bg:#0D1117;--surface:#161B22;--inset:#010409;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --green:#238636;--green-fg:#3FB950;--blue:#58A6FF;--red:#F85149;--purple:#A371F7;--orange:#F78166;--yellow:#D29922;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --r:6px;--r-lg:8px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font-family:inherit}
+#stage{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
+
+.hud{position:absolute;inset:0;pointer-events:none}
+.hud>*{position:absolute}
+.bl>*{position:static}
+.scrim{left:0;right:0;pointer-events:none}
+.scrim.t{top:0;height:190px;background:linear-gradient(180deg,rgba(13,17,23,.94),rgba(13,17,23,.6) 45%,rgba(13,17,23,0))}
+.scrim.b{bottom:0;height:330px;background:linear-gradient(0deg,rgba(13,17,23,.95),rgba(13,17,23,.65) 42%,rgba(13,17,23,0))}
+
+.chapter{top:36px;left:44px;display:flex;align-items:baseline;gap:14px;max-width:58%}
+.chapter .num{font:600 13px/22px var(--mono);color:var(--text);border:1px solid var(--border);background:rgba(22,27,34,.8);border-radius:var(--r);padding:1px 9px}
+.chapter .ttl{font:600 32px/1.2 var(--sans);letter-spacing:-.012em;text-wrap:balance}
+
+.bl{left:44px;bottom:40px;display:grid;gap:12px;max-width:min(600px,46vw);align-content:end}
+.caption{font:19px/1.45 var(--sans);color:var(--text);text-wrap:pretty}
+.caption b{color:var(--text)}
+.term{background:rgba(1,4,9,.88);border:1px solid var(--border);border-left:3px solid var(--green-fg);border-radius:var(--r);padding:9px 15px;font:14px/1.65 var(--mono);color:var(--text);white-space:pre-wrap}
+.term .c{color:var(--muted)}.term .err{color:var(--red)}.term .ok{color:var(--green-fg)}.term .p{color:var(--purple)}
+
+.legend{right:44px;top:36px;display:grid;gap:8px;justify-items:end;font:13px var(--mono);color:var(--muted)}
+.legend .row{display:flex;align-items:center;gap:8px;background:rgba(22,27,34,.75);border:1px solid var(--border);border-radius:999px;padding:4px 12px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+.badge-big{right:44px;bottom:104px;display:flex;align-items:center;gap:10px;font:600 17px var(--sans);border-radius:999px;padding:8px 18px;border:1px solid var(--border);background:rgba(22,27,34,.92)}
+.badge-big.red{color:var(--red);border-color:rgba(248,81,73,.5)}
+.badge-big.green{color:var(--green-fg);border-color:rgba(63,185,80,.5)}
+.badge-big.purple{color:var(--purple);border-color:rgba(163,113,247,.5)}
+.badge-big.blue{color:var(--blue);border-color:rgba(88,166,255,.5)}
+.badge-big.orange{color:var(--orange);border-color:rgba(247,129,102,.5)}
+
+.outro{right:44px;top:50%;transform:translateY(-50%);display:grid;gap:14px;max-width:460px;opacity:0}
+.outro .o{opacity:0;display:flex;gap:12px;align-items:flex-start;background:rgba(22,27,34,.92);border:1px solid var(--border);border-left:3px solid var(--green-fg);border-radius:8px;padding:13px 16px;font:16px/1.45 var(--sans)}
+.outro .o .n{font:600 12px/23px var(--mono);color:var(--muted)}
+
+.progress{left:0;right:0;bottom:0;height:3px;background:rgba(48,54,61,.6)}
+.progress i{display:block;height:100%;background:var(--orange);width:0}
+.fade{inset:0;background:var(--bg);opacity:0}
+
+.titlecard{inset:0;display:grid;place-content:center;justify-items:center;gap:18px;text-align:center;padding:0 40px}
+.titlecard h1{margin:0;font:700 clamp(36px,5.4vw,68px)/1.05 var(--sans);letter-spacing:-.025em;text-wrap:balance}
+.titlecard p{margin:0;max-width:54ch;font:20px/1.55 var(--sans);color:var(--muted);text-wrap:pretty}
+.titlecard .kicker{font:600 13px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--orange)}
+.titlecard .repo{margin-top:6px;font:13px var(--mono);color:var(--faint)}
+
+/* ---------- панель керування ---------- */
+.controls{position:fixed;right:18px;bottom:18px;z-index:5;display:flex;align-items:center;gap:8px;
+  background:rgba(22,27,34,.95);border:1px solid var(--border);border-radius:10px;padding:8px 12px;backdrop-filter:blur(8px)}
+.controls button{height:32px;min-width:32px;padding:0 11px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font:600 13px var(--sans);cursor:pointer}
+.controls button:hover{border-color:var(--faint)}
+.controls button.on{border-color:var(--orange);color:var(--orange)}
+.controls button.muted{color:var(--faint);text-decoration:line-through}
+.controls button.unlock{border-color:var(--green-fg);color:var(--green-fg);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{opacity:.55}}
+.controls .time{font:13px var(--mono);color:var(--muted);min-width:84px;text-align:center}
+.controls input[type=range]{width:min(26vw,280px);accent-color:var(--orange)}
+.controls .sep{width:1px;height:22px;background:var(--border)}
+.pop{position:fixed;right:18px;bottom:76px;z-index:6;display:grid;gap:6px;max-width:min(92vw,720px);
+  background:rgba(22,27,34,.97);border:1px solid var(--border);border-radius:10px;padding:10px;box-shadow:0 8px 32px rgba(1,4,9,.6)}
+.pop[hidden]{display:none}
+.pop.chips{display:flex;flex-wrap:wrap;justify-content:flex-end}
+.pop button{text-align:left;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r);background:rgba(22,27,34,.9);color:var(--text);font:13px var(--sans);cursor:pointer;display:grid;gap:2px}
+.pop button small{color:var(--muted);font:12px var(--mono)}
+.pop button:hover{border-color:var(--faint)}
+.pop button.on{border-color:var(--orange)}
+.pop.chips button{height:28px;padding:0 11px;border-radius:999px;font:13px var(--mono);color:var(--muted);display:inline-flex;align-items:center}
+.pop.chips button.on{color:var(--text);background:rgba(247,129,102,.14)}
+body.capture .controls,body.capture .pop{display:none}
+@media (max-width:900px){
+  .chapter{left:20px;top:20px}.chapter .ttl{font-size:22px}
+  .bl{left:20px;right:20px;bottom:34px;max-width:none}.caption{font-size:16px}.term{font-size:13px}
+  .legend{right:20px;top:20px}.badge-big{right:20px;bottom:160px}.outro{display:none}
+}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="c"></canvas></div>
+
+<div class="hud" id="hud">
+  <div class="scrim t"></div>
+  <div class="scrim b"></div>
+  <div class="chapter" id="chapter" style="opacity:0"><span class="num" id="chNum">01</span><span class="ttl" id="chTtl"></span></div>
+  <div class="legend" id="legend" style="opacity:0"></div>
+  <div class="bl">
+    <div class="caption" id="caption" style="opacity:0"></div>
+    <div class="term" id="term" style="opacity:0" hidden></div>
+  </div>
+  <div class="badge-big" id="badge" style="opacity:0"></div>
+  <div class="outro" id="outro"></div>
+  <div class="titlecard" id="titlecard">
+    <span class="kicker" id="tcKicker"></span>
+    <h1 id="tcTitle"></h1>
+    <p id="tcSub"></p>
+    <span class="repo">eleken-git / design-process-help</span>
+  </div>
+  <div class="fade" id="fade"></div>
+  <div class="progress"><i id="pbar"></i></div>
+</div>
+
+<div class="pop" id="eplist" hidden></div>
+<div class="pop chips" id="chips" hidden></div>
+<div class="controls">
+  <button id="btnEp" title="Обрати епізод">Епізоди ▾</button>
+  <span class="sep"></span>
+  <button id="btnPlay" title="Пауза / грати · Space">❚❚</button>
+  <button id="btnBack" title="−5 с · ←">−5</button>
+  <button id="btnFwd" title="+5 с · →">+5</button>
+  <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Час">
+  <span class="time" id="tlabel">0:00 / 0:00</span>
+  <button id="btnRestart" title="Спочатку">↺</button>
+  <button id="btnChapters" title="Розділи цього епізоду">Розділи</button>
+  <button id="btnMusic" title="Музика">♪ Музика</button>
+</div>
+<audio id="bgm" preload="auto"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>window.EPISODES = [];</script>
+<script src="episodes/conflict.js"></script>
+<script src="episodes/file-states.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>
