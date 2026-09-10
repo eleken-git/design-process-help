@@ -4,10 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Nimbus · тренувальний проєкт</title>
+    <style>
+      /* Хлібна крихта назад до лендінгу — лише на опублікованому прев'ю (docs/app/), не заважає локальній розробці */
+      #hub-crumb{display:none;align-items:center;padding:8px 20px;background:#0D1117;border-bottom:1px solid #30363D;font:13px ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+      #hub-crumb a{color:#8B949E;text-decoration:none}
+      #hub-crumb a:hover{color:#E6EDF3}
+    </style>
     <script type="module" crossorigin src="./assets/index-Cyh2JCkO.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-Cljpm_NA.css">
   </head>
   <body>
+    <div id="hub-crumb"><a href="../">← design-process-help</a></div>
+    <script>
+      if (location.pathname.indexOf('/app/') !== -1) {
+        document.getElementById('hub-crumb').style.display = 'flex';
+      }
+    </script>
     <div id="root"></div>
   </body>
 </html>

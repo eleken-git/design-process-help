@@ -59,6 +59,9 @@ strong{font-weight:600}
 .layout{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
 .sidenav{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto}
 .side-head{padding:16px 16px 14px;border-bottom:1px solid var(--border);display:grid;gap:6px;justify-items:start}
+.home-link{display:grid;gap:6px;justify-items:start;text-decoration:none;color:inherit;border-radius:var(--r)}
+.home-link:hover .repo-name{color:var(--blue)}
+.home-link:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .repo-owner{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;line-height:18px}
 .repo-owner .icon{width:14px;height:14px}
 .repo-name{font-size:15px;line-height:22px;font-weight:600;color:var(--text);overflow-wrap:anywhere}
@@ -337,8 +340,10 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <div class="layout">
 <aside class="sidenav">
   <div class="side-head">
-    <span class="repo-owner"><svg class="icon"><use href="#i-repo"/></svg>eleken-git</span>
-    <span class="repo-name">design-process-help</span>
+    <a class="home-link" href="../" title="На головну design-process-help">
+      <span class="repo-owner"><svg class="icon"><use href="#i-repo"/></svg>eleken-git</span>
+      <span class="repo-name">design-process-help</span>
+    </a>
     <span class="badge"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>Private</span>
   </div>
   <nav class="side-nav" aria-label="Розділи">

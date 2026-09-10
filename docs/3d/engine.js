@@ -337,6 +337,7 @@ function toggleFullscreen() {
 function onFsChange() { const on = !!fsEl(); btnFull.classList.toggle('on', on); btnFull.title = on ? 'Вийти з повного екрана · F або Esc' : 'На весь екран · F або двічі клікнути по відео'; document.body.classList.toggle('fs', on); wake(); }
 document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
 btnFull.onclick = toggleFullscreen;
+$('btnHome').onclick = () => { location.href = '../'; };
 
 // клік по відео — пауза/плей; подвійний — повний екран (два кліки повертають стан гри, як у YouTube)
 if (!CAPTURE) {

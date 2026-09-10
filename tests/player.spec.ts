@@ -26,6 +26,9 @@ test.describe('3D-плеєр: керування як у YouTube', () => {
     await page.keyboard.press('Digit5');
     await expect(page.locator('#tlabel')).not.toHaveText(before!);   // стрибок на 50 %
     await expect(page.locator('#btnFull')).toBeVisible();
+    const box = await page.locator('.controls').boundingBox();
+    const viewport = page.viewportSize()!;
+    expect(Math.abs((box!.x + box!.width / 2) - viewport.width / 2), 'панель керування по центру знизу').toBeLessThan(2);
     await page.keyboard.press('f');                            // не має кидати помилок незалежно від того, чи дозволено fullscreen
     await page.locator('#btnChapters').click();
     await expect(page.locator('#chips')).toBeVisible();

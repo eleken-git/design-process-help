@@ -33,3 +33,34 @@ test.describe('лендінг-хаб docs/', () => {
     expect(errors, 'помилки в консолі').toEqual([]);
   });
 });
+
+test.describe('хлібні крихти назад на лендінг', () => {
+  test('презентація: назва проєкту в сайдбарі веде на "../"', async ({ page }) => {
+    await page.goto(BASE + '/presentation/');
+    const link = page.locator('a.home-link');
+    await expect(link).toHaveAttribute('href', '../');
+    await link.click();
+    await expect(page).toHaveURL(BASE + '/');
+  });
+
+  test('3D-плеєр: кнопка 🏠 веде на "../" і не ламає інші кнопки керування', async ({ page }) => {
+    await page.goto(BASE + '/3d/');
+    await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.ready, null, { timeout: 60_000 });
+    await expect(page.locator('#btnHome')).toBeVisible();
+    await expect(page.locator('#btnPlay')).toBeVisible();
+    await page.locator('#btnHome').click();
+    await expect(page).toHaveURL(BASE + '/');
+  });
+
+  test('тренувальний застосунок: крихта видима на /app/, прихована при локальній розробці', async ({ page }) => {
+    await page.goto(BASE + '/app/');
+    const crumb = page.locator('#hub-crumb');
+    await expect(crumb).toBeVisible();
+    await expect(crumb.locator('a')).toHaveAttribute('href', '../');
+    await crumb.locator('a').click();
+    await expect(page).toHaveURL(BASE + '/');
+
+    await page.goto('http://127.0.0.1:5173/');
+    await expect(page.locator('#hub-crumb')).toBeHidden();
+  });
+});
