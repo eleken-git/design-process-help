@@ -2,7 +2,6 @@
   display: grid;
   gap: var(--space-6);
   padding: var(--space-8) 0;
-  max-width: 760px;
 }
 
 .title {

@@ -334,7 +334,13 @@ function toggleFullscreen() {
   if (!req) { fail(); return; }
   try { const p = req.call(root); if (p && p.catch) p.catch(fail); } catch (e) { fail(); }
 }
-function onFsChange() { const on = !!fsEl(); btnFull.classList.toggle('on', on); btnFull.title = on ? 'Вийти з повного екрана · F або Esc' : 'На весь екран · F або двічі клікнути по відео'; document.body.classList.toggle('fs', on); wake(); }
+function onFsChange() {
+  const on = !!fsEl(); btnFull.classList.toggle('on', on); btnFull.title = on ? 'Вийти з повного екрана · F або Esc' : 'На весь екран · F або двічі клікнути по відео'; document.body.classList.toggle('fs', on); wake();
+  // деякі браузери не встигають (або не встигають вчасно) кинути 'resize' саме на зміну fullscreen —
+  // без цього камера й рендерер лишаються зі старими розмірами і сцену «розриває»
+  resize(); if (ep) setTime(state.t);
+  setTimeout(() => { resize(); if (ep) setTime(state.t); }, 120);
+}
 document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
 btnFull.onclick = toggleFullscreen;
 $('btnHome').onclick = () => { location.href = '../'; };
