@@ -26,5 +26,6 @@
 
 - `npm install` — один раз після клонування
 - `npm run dev` — застосунок на http://localhost:5173 (екрани: `#/dashboard`, `#/settings`, `#/ui-kit`)
-- `npm run typecheck` і `npm run build` — перевірка перед PR
+- `npm run typecheck` і `npm run build` — перевірка перед PR (звичайний білд у `dist/`, git його не бачить)
+- `npm run build:pages` — окрема статична збірка застосунку в `docs/app/` для GitHub Pages. Запускай і комітий її свідомо, коли хочеш оновити публічне прев'ю (не в кожному PR).
 - `npm run test:e2e` — Playwright: екрани застосунку, меню презентації, накладання в 3D-епізодах (перший раз: `npx playwright install chromium`)

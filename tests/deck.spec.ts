@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const DECK = 'http://127.0.0.1:8765/index.html';
+const DECK = 'http://127.0.0.1:8765/presentation/';
 
 test.describe('презентація', () => {
   test('меню веде на кожен слайд, перемикач теми працює', async ({ page }) => {

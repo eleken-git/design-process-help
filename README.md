@@ -4,9 +4,11 @@
 
 | Що | Де |
 |---|---|
-| Презентація (10 хвилин, слайди) | [`docs/index.html`](docs/index.html) — відкрий у браузері або через GitHub Pages з папки `/docs` |
+| Лендінг з трьома лінками нижче | [`docs/index.html`](docs/index.html) — корінь GitHub Pages: https://eleken-git.github.io/design-process-help/ |
+| Презентація (10 хвилин, слайди) | [`docs/presentation/index.html`](docs/presentation/index.html) |
 | 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
-| Тренувальний проєкт | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
+| Тренувальний проєкт наживо, без встановлення | `docs/app/` — статична збірка, оновлюється командою `npm run build:pages` |
+| Тренувальний проєкт локально | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
 | Вправи для двох | [`PRACTICE.md`](PRACTICE.md) |
 | Правила, які Claude виконує сам | [`CLAUDE.md`](CLAUDE.md) |
 | Теми наступних анімацій | [`ANIMATIONS.md`](ANIMATIONS.md) |
@@ -53,7 +55,10 @@ npm run dev        # http://localhost:5173
 ```
 .
 ├── README.md, PRACTICE.md, CLAUDE.md
-├── docs/index.html                ← презентація
+├── docs/index.html                ← лендінг GitHub Pages: три лінки нижче
+├── docs/presentation/index.html   ← презентація
+├── docs/3d/                       ← Git у 3D: епізоди, музика, спільний плеєр
+├── docs/app/                      ← статична збірка Nimbus для перегляду наживо (npm run build:pages)
 ├── .github/
 │   ├── CODEOWNERS                 ← хто обовʼязково ревʼює спільний код
 │   ├── PULL_REQUEST_TEMPLATE.md   ← чекліст кожного PR
@@ -210,7 +215,8 @@ git push
 1. GitHub → Settings → Rules → New branch ruleset для `main`: Require a pull request (1 approval) · Require review from Code Owners · Require status checks: `build` · Block force pushes.
 2. Settings → General → Pull Requests: залишити лише **Allow squash merging**, увімкнути **Automatically delete head branches**.
 3. У `.github/CODEOWNERS` вписати реальні GitHub-логіни.
-4. За бажанням: Settings → Pages → Deploy from a branch → `main` / `docs` — презентація відкриється за посиланням.
+4. Settings → Pages → Deploy from a branch → `main` / `docs` — на корені відкриється лендінг із трьома лінками (презентація, 3D, тренувальний застосунок).
+5. Після будь-якої зміни в `src/`, яку варто показати на лендінгу: `npm run build:pages` оновлює `docs/app/` і закомітити цей результат разом зі змінами. Не запускай цю команду в кожному PR — лише коли свідомо оновлюєш публічне прев'ю.
 
 ## 10. Чого не робимо зараз
 
