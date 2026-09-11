@@ -11,6 +11,20 @@ test.describe('лендінг-хаб docs/', () => {
     expect(html).toContain('href="3d/"');
     expect(html).toContain('href="app/"');
     expect(html).toContain('href="podcast/"');
+    expect(html).toContain('href="harness/"');
+  });
+
+  test('GET /harness/ → 200, пʼять матеріалів з лінками на оригінали і бічна навігація', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/harness/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Будуємо харнес');
+    await expect(page.locator('article.item')).toHaveCount(5);
+    await expect(page.locator('nav.side a[href^="#"]')).toHaveCount(5);
+    for (const href of ['gist.github.com/karpathy/442a6bf555914893e9891c11519de94f', 'agents.md', 'github.com/genkovich/sdd', 'github.com/github/spec-kit', 'github.com/obra/superpowers']) {
+      await expect(page.locator(`a.open[href*="${href}"]`)).toHaveCount(1);
+    }
+    expect(errors, 'помилки JS').toEqual([]);
   });
 
   test('GET /podcast/ → 200, плеєр з аудіо і кнопкою плей', async ({ page }) => {
@@ -79,6 +93,14 @@ test.describe('хлібні крихти назад на лендінг', () => 
 
   test('подкаст: крихта "← design-process-help" веде на "../"', async ({ page }) => {
     await page.goto(BASE + '/podcast/');
+    const link = page.locator('a.crumb-home');
+    await expect(link).toHaveAttribute('href', '../');
+    await link.click();
+    await expect(page).toHaveURL(BASE + '/');
+  });
+
+  test('харнес: крихта "← design-process-help" веде на "../"', async ({ page }) => {
+    await page.goto(BASE + '/harness/');
     const link = page.locator('a.crumb-home');
     await expect(link).toHaveAttribute('href', '../');
     await link.click();

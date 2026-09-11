@@ -12,7 +12,7 @@
   color-scheme:dark;
   --bg:#0D1117;--surface:#161B22;--border:#30363D;--border-muted:#21262D;
   --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
-  --green-fg:#3FB950;--blue:#58A6FF;--purple:#A371F7;--orange:#F78166;
+  --green-fg:#3FB950;--blue:#58A6FF;--purple:#A371F7;--orange:#F78166;--yellow:#D29922;
   --hover:rgba(110,118,129,.12);
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
@@ -81,6 +81,17 @@ header{margin-bottom:48px;padding-bottom:28px;border-bottom:1px solid var(--bord
 .card.threed .tag{color:var(--purple);border-color:rgba(163,113,247,.4)}
 .card.app .tag{color:var(--green-fg);border-color:rgba(63,185,80,.4)}
 .card.podcast .tag{color:var(--orange);border-color:rgba(247,129,102,.4)}
+.card.harness .tag{color:var(--yellow);border-color:rgba(210,153,34,.4)}
+
+/* широка картка на всю сітку: ліворуч опис, праворуч список матеріалів */
+.card.wide{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:10px 40px;align-items:start}
+.card.wide .tag{grid-column:1;justify-self:start}
+.card.wide h2,.card.wide .desc,.card.wide .meta,.card.wide .go{grid-column:1}
+.card.wide .list{grid-column:2;grid-row:1/6;display:grid;gap:8px;align-self:center;list-style:none;margin:0;padding:0}
+.card.wide .list li{display:grid;gap:1px;padding:10px 12px;border:1px solid var(--border-muted);border-radius:var(--r);background:var(--bg)}
+.card.wide .list b{font-weight:600;font-size:13.5px}
+.card.wide .list span{font:11.5px var(--mono);color:var(--faint)}
+@media (max-width:820px){.card.wide{grid-template-columns:1fr}.card.wide .list{grid-column:1;grid-row:auto}}
 
 footer{
   margin-top:56px;
@@ -142,6 +153,23 @@ footer a:hover{color:var(--text);text-decoration:underline}
     <span class="go">Слухати
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </span>
+  </a>
+
+  <a class="card harness wide" href="harness/">
+    <span class="tag">Корисна інформація</span>
+    <h2>Будуємо харнес</h2>
+    <p class="desc">Харнес — це правила, файли й навички навколо AI-агента, які роблять його передбачуваним: CLAUDE.md чи AGENTS.md, опис перед кодом, тест перед виправленням. Пʼять матеріалів, на яких побудований цей репозиторій, описані простими словами: що це, головне і що брати собі.</p>
+    <span class="meta">5 матеріалів · оригінали англійською</span>
+    <span class="go">Читати
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
+    <ul class="list" aria-label="Матеріали">
+      <li><b>LLM Wiki</b><span>Andrej Karpathy · агент сам веде базу знань</span></li>
+      <li><b>AGENTS.md</b><span>agents.md · README для агентів, один формат на всіх</span></li>
+      <li><b>SDD — Spec-Driven Development</b><span>genkovich/sdd · від ідеї до PR по прямій</span></li>
+      <li><b>Spec Kit</b><span>github/spec-kit · специфікація, що стає кодом</span></li>
+      <li><b>Superpowers</b><span>obra/superpowers · навички, які спрацьовують самі</span></li>
+    </ul>
   </a>
 
 </div>
