@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:pages": "vite build --mode pages",
     "preview": "vite preview",
+    "docs": "node scripts/serve-docs.mjs 8765",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"

@@ -383,21 +383,52 @@ document.addEventListener('keydown', (e) => {
 
 /* ============================== музика ============================== */
 const bgm = $('bgm'), btnMusic = $('btnMusic');
-let musicOn = true, audioBlocked = false;
+let musicOn = true, audioBlocked = false, playPending = false;
 try { musicOn = localStorage.getItem('git3d-music') !== 'off'; } catch (e) {}
 bgm.volume = 0.85;
 function updateMusicBtn() {
   btnMusic.classList.toggle('muted', !musicOn); btnMusic.classList.toggle('unlock', musicOn && audioBlocked);
-  btnMusic.textContent = !musicOn ? '♪ Музика вимкнена' : (audioBlocked ? '♪ Увімкнути звук' : '♪ Музика');
+  btnMusic.textContent = musicOn && audioBlocked ? '♪ Увімкнути звук' : '♪ Музика';   // вимкнена — перекреслена класом .muted, без слова
 }
+// чи можна перемотати трек на цей час: сервер без Range-запитів віддає порожній seekable, і тоді
+// присвоєння currentTime скидає трек на 0 — краще лишити музику грати, ніж перезапускати її щокадру
+function audioSeekable(t) {
+  const r = bgm.seekable;
+  for (let i = 0; i < r.length; i++) if (t >= r.start(i) - 0.05 && t <= r.end(i) + 0.05) return true;
+  return false;
+}
+// один запуск за раз: pause() під час незавершеного play() кидає AbortError — це не блокування автоплею
+function startAudio() {
+  if (playPending || !bgm.paused) return;
+  playPending = true;
+  const p = bgm.play();
+  if (!p || !p.then) { playPending = false; return; }
+  p.then(() => { playPending = false; audioBlocked = false; updateMusicBtn(); })
+   .catch((e) => { playPending = false; if (e && e.name === 'NotAllowedError') { audioBlocked = true; updateMusicBtn(); } });
+}
+// force — явна дія користувача (плей, пауза, перемотка): підганяємо трек під час анімації.
+// Щокадру (без force) трек не перемотуємо: поки він грає, анімація сама іде за ним (див. loop).
 function syncAudio(force) {
   if (CAPTURE || !ep) return;
   if (!musicOn || !state.playing) { if (!bgm.paused) bgm.pause(); updateMusicBtn(); return; }
-  if (force || Math.abs(bgm.currentTime - state.t) > 0.35) { try { bgm.currentTime = Math.min(state.t, Math.max(0, (bgm.duration || 999) - 0.05)); } catch (e) {} }
-  if (bgm.paused) { const p = bgm.play(); if (p && p.then) p.then(() => { audioBlocked = false; updateMusicBtn(); }).catch(() => { audioBlocked = true; updateMusicBtn(); }); }
+  if (force && Math.abs(bgm.currentTime - state.t) > 0.35 && audioSeekable(state.t)) {
+    try { bgm.currentTime = Math.min(state.t, Math.max(0, (bgm.duration || 999) - 0.05)); } catch (e) {}
+  }
+  if (bgm.paused) startAudio();
 }
-btnMusic.onclick = () => { musicOn = !musicOn; audioBlocked = false; try { localStorage.setItem('git3d-music', musicOn ? 'on' : 'off'); } catch (e) {} syncAudio(true); updateMusicBtn(); };
-document.addEventListener('pointerdown', () => { if (musicOn && audioBlocked) syncAudio(true); }, { passive: true });
+// поки трек грає і збігається з анімацією — він годинник: мʼяко підтягуємо час анімації до звуку
+function audioClock(nt) {
+  if (!musicOn || audioBlocked || bgm.paused || bgm.seeking || bgm.readyState < 3) return nt;
+  const d = bgm.currentTime - nt;
+  return Math.abs(d) < 1 ? nt + d * 0.15 : nt;
+}
+btnMusic.onclick = () => {
+  if (musicOn && audioBlocked) { audioBlocked = false; syncAudio(true); updateMusicBtn(); return; }  // «Увімкнути звук» — саме вмикає
+  musicOn = !musicOn; audioBlocked = false;
+  try { localStorage.setItem('git3d-music', musicOn ? 'on' : 'off'); } catch (e) {}
+  syncAudio(true); updateMusicBtn();
+};
+document.addEventListener('pointerdown', (e) => { if (musicOn && audioBlocked && !btnMusic.contains(e.target)) syncAudio(true); }, { passive: true });
 updateMusicBtn();
 
 /* ============================== цикл ============================== */
@@ -405,7 +436,7 @@ resize();
 let prev = performance.now();
 function loop(now) {
   const dt = Math.min(0.05, (now - prev) / 1000); prev = now;
-  if (ep && state.playing) { let nt = state.t + dt; if (nt >= ep.DUR) { nt = ep.DUR; setPlaying(false); } setTime(nt); }
+  if (ep && state.playing) { let nt = audioClock(state.t + dt); if (nt >= ep.DUR) { nt = ep.DUR; setPlaying(false); } setTime(nt); }
   if (ep) { if (state.playing) syncAudio(false); scrub.value = String(Math.round(state.t / ep.DUR * 1000)); tlabel.textContent = fmt(state.t) + ' / ' + fmt(ep.DUR); }
   requestAnimationFrame(loop);
 }

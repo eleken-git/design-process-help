@@ -41,4 +41,42 @@ test.describe('3D-плеєр: керування як у YouTube', () => {
     await expect(play).toHaveText('❚❚');
     expect(errors, 'помилки JS').toEqual([]);
   });
+
+  test('музика: після паузи і плею трек грає далі, без циклу перемотки', async ({ page }) => {
+    await page.goto(`${BASE}?ep=conflict`);
+    await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.ready, null, { timeout: 60_000 });
+    const audioTime = () => page.evaluate(() => (document.getElementById('bgm') as HTMLAudioElement).currentTime);
+    await page.evaluate(() => {
+      (window as any).__seeks = 0;
+      document.getElementById('bgm')!.addEventListener('seeking', () => (window as any).__seeks++);
+    });
+    await expect.poll(audioTime, { message: 'автоплей: аудіо має йти вперед', timeout: 10_000 }).toBeGreaterThan(1.5);
+    await page.keyboard.press('k');                                   // пауза
+    await page.waitForTimeout(800);
+    const atPause = await audioTime();
+    await page.keyboard.press('k');                                   // плей
+    await page.waitForTimeout(3000);
+    expect((await audioTime()) - atPause, 'аудіо продовжило йти після плею').toBeGreaterThan(2);
+    expect(await page.evaluate(() => (window as any).__seeks), 'перемоток аудіо за весь час').toBeLessThan(6);
+  });
+
+  test('кнопка «Увімкнути звук» вмикає звук, а не вимикає музику', async ({ page }) => {
+    await page.addInitScript(() => {
+      // емуляція політики автоплею браузера: play() відхиляється, доки користувач не клікнув
+      const orig = HTMLMediaElement.prototype.play;
+      let allowed = false;
+      document.addEventListener('pointerdown', () => { allowed = true; }, true);
+      HTMLMediaElement.prototype.play = function () {
+        if (!allowed) return Promise.reject(new DOMException('blocked', 'NotAllowedError'));
+        return orig.call(this);
+      };
+    });
+    await page.goto(`${BASE}?ep=conflict`);
+    await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.ready, null, { timeout: 60_000 });
+    const btn = page.locator('#btnMusic');
+    await expect(btn).toHaveText('♪ Увімкнути звук');
+    await btn.click();
+    await expect(btn).toHaveText('♪ Музика');
+    await expect.poll(() => page.evaluate(() => (document.getElementById('bgm') as HTMLAudioElement).paused)).toBe(false);
+  });
 });
