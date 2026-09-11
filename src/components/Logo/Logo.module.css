@@ -1,0 +1,28 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+}
+
+.mark {
+  display: block;
+  flex: none;
+}
+
+.stopStart {
+  stop-color: var(--color-accent);
+}
+
+.stopEnd {
+  stop-color: var(--color-done);
+}
+
+.cloud {
+  fill: var(--color-on-action);
+}
+
+.name {
+  font: var(--font-body-md-semibold);
+  letter-spacing: -0.01em;
+}
