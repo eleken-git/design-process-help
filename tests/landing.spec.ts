@@ -14,13 +14,14 @@ test.describe('лендінг-хаб docs/', () => {
     expect(html).toContain('href="harness/"');
   });
 
-  test('GET /harness/ → 200, чотири матеріали з лінками на оригінали', async ({ page }) => {
+  test('GET /harness/ → 200, пʼять матеріалів з лінками на оригінали і бічна навігація', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(BASE + '/harness/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Будуємо харнес');
-    await expect(page.locator('article.item')).toHaveCount(4);
-    for (const href of ['gist.github.com/karpathy/442a6bf555914893e9891c11519de94f', 'github.com/genkovich/sdd', 'github.com/github/spec-kit', 'github.com/obra/superpowers']) {
+    await expect(page.locator('article.item')).toHaveCount(5);
+    await expect(page.locator('nav.side a[href^="#"]')).toHaveCount(5);
+    for (const href of ['gist.github.com/karpathy/442a6bf555914893e9891c11519de94f', 'agents.md', 'github.com/genkovich/sdd', 'github.com/github/spec-kit', 'github.com/obra/superpowers']) {
       await expect(page.locator(`a.open[href*="${href}"]`)).toHaveCount(1);
     }
     expect(errors, 'помилки JS').toEqual([]);
