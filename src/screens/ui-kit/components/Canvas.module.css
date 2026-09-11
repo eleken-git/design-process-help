@@ -1,0 +1,58 @@
+.canvas {
+  padding: var(--space-8) var(--space-6);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-6) var(--space-8);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.specimen {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  margin: 0;
+  min-width: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.grid .specimen,
+.stack .specimen {
+  justify-items: stretch;
+}
+
+/* у сітці картки різної висоти — розтягуємо їх, щоб підписи стояли на одній лінії */
+.grid .specimen {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.grid .item {
+  display: grid;
+}
+
+.stack .item {
+  display: block;
+}
+
+.caption {
+  font: var(--font-mono-sm);
+  color: var(--color-text-faint);
+}
