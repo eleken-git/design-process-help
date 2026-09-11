@@ -1,25 +1,30 @@
-# screens — екрани продукту
+# screens — product screens
 
-У Figma це pages. Одна папка = один екран = зазвичай одна гілка `feat/<екран>-<що>`.
+The Figma equivalent is pages. One folder is one screen and usually one `feat/<screen>-<what>` branch.
+Written for agents; the designer-facing explanation is in `README.md`.
 
 ```
 screens/
 ├── dashboard/
 │   ├── Dashboard.tsx
 │   ├── Dashboard.module.css
-│   └── components/           # локальні компоненти тільки цього екрана
+│   └── components/           local components, this screen only
 │       └── StatCard.tsx
 ├── settings/
 │   ├── Settings.tsx
 │   └── components/
 │       └── SettingRow.tsx
 └── ui-kit/
-    └── UiKit.tsx             # галерея всіх спільних компонентів у всіх станах
+    ├── UiKit.tsx             gallery of every shared component in every state
+    └── components/           local building blocks of the gallery
 ```
 
-## Правила
+## Rules
 
-1. Екран імпортує `@/components` і `@/tokens`. Ніколи — інший екран.
-2. Компонент, потрібний лише тут, лежить у `components/` цього екрана. Знадобився другому екрану — переносимо в `src/components` окремим PR `ds/…`.
-3. Двоє працюють над різними екранами в різних гілках: файли не перетинаються, конфліктів немає.
-4. `/ui-kit` — не для клієнта. Це екран для ревʼю: після кожної зміни в `src/components` або `src/tokens` відкриваємо його і дивимось, що нічого не зламалось.
+1. A screen imports `@/components` and `@/tokens`. Never another screen.
+2. A component needed only here stays in this screen's `components/`. Once a second screen needs it,
+   move it to `src/components` in its own `ds/…` PR.
+3. Two people working on different screens work in different branches: the files never overlap, so there
+   are no conflicts.
+4. `#/ui-kit` is not a client-facing screen. It is the review screen: after every change in
+   `src/components` or `src/tokens`, open it and confirm nothing broke, and attach a screenshot to the PR.

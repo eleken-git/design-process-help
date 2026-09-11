@@ -9,12 +9,12 @@
 | 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
 | Подкаст (2 епізоди, 31 хвилина) | [`docs/podcast/index.html`](docs/podcast/index.html) — «Спільна робота дизайнерів у Git через Claude» і «Як приборкати Claude для дизайну інтерфейсів»; плеєр: плей, ±15 с, швидкість, запамʼятовує позицію в кожному |
 | Корисна інформація: будуємо харнес | [`docs/harness/index.html`](docs/harness/index.html) — пʼять матеріалів (LLM Wiki, AGENTS.md, SDD, Spec Kit, Superpowers) простими словами; переказ і промпти для NotebookLM — у [`docs/harness/notebooklm/`](docs/harness/notebooklm/) |
-| Правила для інших агентів (Codex, Cursor, Copilot) | [`AGENTS.md`](AGENTS.md) — відсилає до `CLAUDE.md`, щоб правила були одні на всіх |
 | Тренувальний проєкт наживо, без встановлення | `docs/app/` — статична збірка, оновлюється командою `npm run build:pages` |
 | Тренувальний проєкт локально | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
 | Вправи для двох | [`PRACTICE.md`](PRACTICE.md) |
-| Правила, які Claude виконує сам | [`CLAUDE.md`](CLAUDE.md) |
-| Теми наступних анімацій | [`ANIMATIONS.md`](ANIMATIONS.md) |
+| Правила, які агент виконує сам | [`AGENTS.md`](AGENTS.md) — одні правила для Claude, Codex, Cursor і Copilot (англійською, бо це файл для агента; `CLAUDE.md` лише відсилає до нього) |
+| Журнал роботи над проєктом | [`progress.log`](progress.log) — що і коли зроблено (англійською) |
+| Теми наступних анімацій | [`ANIMATIONS.md`](ANIMATIONS.md) — те саме українською видно в плеєрі, кнопка «Наступні» |
 
 ## Швидкий старт
 
@@ -57,7 +57,8 @@ npm run dev        # http://localhost:5173
 
 ```
 .
-├── README.md, PRACTICE.md, CLAUDE.md
+├── README.md, PRACTICE.md         ← для тебе, українською
+├── AGENTS.md, progress.log        ← для агента, англійською (CLAUDE.md відсилає до AGENTS.md)
 ├── docs/index.html                ← лендінг GitHub Pages: три лінки нижче
 ├── docs/presentation/index.html   ← презентація
 ├── docs/3d/                       ← Git у 3D: епізоди, музика, спільний плеєр
@@ -127,7 +128,7 @@ main ●────────────●───────────
 | Оновитись | «Підтягни `main` у мою гілку» | `git merge main`, при конфлікті — питає тебе |
 | Зорієнтуватись | «На якій я гілці, що змінено, що не запушено?» | `git status`, `git log` простими словами |
 
-Правила з `CLAUDE.md` Claude читає сам на старті кожної сесії: не комітить у `main`, не чіпає `src/components` у `feat/` гілках, додає пропси з дефолтами, перевіряє збірку перед PR, не зливає PR сам.
+Правила з `AGENTS.md` Claude читає сам на старті кожної сесії (`CLAUDE.md` відсилає туди): не комітить у `main`, не чіпає `src/components` у `feat/` гілках, додає пропси з дефолтами, перевіряє збірку перед PR, не зливає PR сам. Файл написаний англійською, бо це інструкція для агента — усе, що читаєш ти, лишається українською.
 
 ## 4. Правила Pull Request
 

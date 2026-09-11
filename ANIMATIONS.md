@@ -1,139 +1,164 @@
-# Анімації про GitHub для дизайнерів
+# 3D episodes about GitHub for designers
 
-Кожна анімація — епізод у спільному 3D-плеєрі (`docs/3d/`, модуль `docs/3d/episodes/<тема>.js`) плюс відео з озвученим текстом і ембіент-музикою. Стиль спільний: GitHub Dark, ті самі персонажі Аня і Богдан, той самий тренувальний проєкт Nimbus. Перед здачею епізоду — `npm run test:e2e`: тест проходить усі розділи й ловить накладання на текст і обрізані плашки.
+Production brief and backlog for agents. The designer-facing version of this list is the "Наступні"
+panel in the player (`docs/3d/backlog.js`, Ukrainian).
 
-Готово:
+Every episode is a scene module in `docs/3d/episodes/<id>.js` plus its own track `<id>.mp3`, played by
+the shared engine in `docs/3d/engine.js`. Shared style: GitHub Dark palette, the same two characters
+Аня and Богдан, the same practice product Nimbus, all on-screen text in Ukrainian.
 
-| # | Тема | Де |
-|---|---|---|
-| 00 | **Конфлікт при злитті гілок** — чому виникає, що git пише у файлі, три способи розв'язати | [`docs/3d/?ep=conflict`](docs/3d/index.html) · відео 1:46 |
-| 01 | **Три стани файлу** — робоча папка → кошик → коміт → GitHub, що можна втратити | [`docs/3d/?ep=file-states`](docs/3d/index.html) · відео 1:32 |
-| 02 | **Життєвий цикл Pull Request** — Draft → Ready → коментар → коміт у ту саму гілку → Approve → Squash and merge | [`docs/3d/?ep=pull-request`](docs/3d/index.html) · відео 1:41 |
-| 03 | **Чому main захищений** — стіна GH006 при прямому пуші, чотири правила як ворота, щит від force push | [`docs/3d/?ep=protected-main`](docs/3d/index.html) · відео 1:44 |
-| 05 | **merge main vs rebase main** — merge додає вузол і лишає коміти, rebase переписує їх заново; чому rebase не роблять у гілці, яку бачив колега | [`docs/3d/?ep=merge-vs-rebase`](docs/3d/index.html) · 1:44 |
+Before shipping an episode run `npm run test:e2e`: it walks every section, fails on plates, cards or
+lines overlapping the caption or the chapter title, and saves frames to `test-results/frames/<episode>/`.
+Look at those frames. Then remove the topic from the queue below and from `docs/3d/backlog.js`, add it to
+the table of shipped episodes here and in `README.md`.
 
-## Черга: обери номер — і зробимо так само
+## Shipped
 
-### Історія і відкати
+| # | Topic | Where |
+| --- | --- | --- |
+| 00 | **Merge conflict** — why it happens, what git writes into the file, three ways to resolve it | [`docs/3d/?ep=conflict`](docs/3d/index.html) · 1:46 |
+| 01 | **Three states of a file** — working directory → staging → commit → GitHub, what can be lost | [`docs/3d/?ep=file-states`](docs/3d/index.html) · 1:32 |
+| 02 | **Pull Request lifecycle** — Draft → Ready → line comment → answering commit → Approve → Squash and merge | [`docs/3d/?ep=pull-request`](docs/3d/index.html) · 1:41 |
+| 03 | **Why main is protected** — the GH006 wall on a direct push, four rules as gates, the shield against force push | [`docs/3d/?ep=protected-main`](docs/3d/index.html) · 1:44 |
+| 05 | **merge main vs rebase main** — merge adds a node and keeps your commits, rebase rewrites them; why rebase is off limits in a branch someone else has seen | [`docs/3d/?ep=merge-vs-rebase`](docs/3d/index.html) · 1:44 |
+
+## Queue — pick a number and it gets built the same way
+
+### History and undo
 
 **04 · Squash vs merge commit vs rebase**
-Три способи злити ту саму гілку — і три різні історії `main` поруч у 3D. Пояснює, чому команда обрала squash.
-Ключові кадри: три паралельні всесвіти історії · як потім читати `main`.
+Three ways to merge the same branch, three different `main` histories side by side in 3D. Explains why
+the team chose squash. Key frames: three parallel universes of history · how `main` reads afterwards.
 
-**06 · Відкат: revert, reset, reflog**
-«Зламали main», «закомітив не туди», «видалив гілку». Три різні інструменти і правило: у спільній історії — тільки `revert`.
-Ключові кадри: revert як новий коміт-антидот · reflog як чорна скринька.
+**06 · Undo: revert, reset, reflog**
+"We broke main", "committed to the wrong branch", "deleted a branch". Three different tools and one
+rule: in shared history only `revert`. Key frames: revert as a new antidote commit · reflog as the black box.
 
-### Про спільний код (найближче до дизайн-системи)
+### Shared code (closest to the design system)
 
-**07 · Радіус ураження зміни компонента**
-Зміна дефолту в Button — і хвиля йде по всіх екранах, що його використовують. Поруч той самий сценарій із новим варіантом: хвиля не виходить за межі одного екрана. Пряме продовження презентації.
-Ключові кадри: граф залежностей екранів · хвиля vs локальна зміна.
+**07 · Blast radius of a component change**
+Changing a default in Button sends a wave through every screen that uses it. Next to it, the same task
+solved with a new variant: the wave stays inside one screen. Direct continuation of the deck.
+Key frames: screen dependency graph · wave vs local change.
 
-**08 · CODEOWNERS: як файл сам призначає рев'юерів**
-Шляхи в репозиторії світяться, коли їх торкається PR, і підтягують потрібних людей. Пояснює, чому `src/components` вимагає двох апрувів, а екран — одного.
-Ключові кадри: PR торкається трьох папок · рев'юери зʼявляються автоматично.
+**08 · CODEOWNERS: the file that assigns reviewers**
+Repository paths light up when a PR touches them and pull in the right people. Explains why
+`src/components` needs two approvals and a screen needs one. Key frames: a PR touching three folders ·
+reviewers appearing automatically.
 
-**09 · Токени: одна змінна — весь продукт**
-Зміна `--color-action` розходиться по компонентах і екранах. Поруч — що буде, якщо написати колір «сирим» значенням: зміна не доходить.
-Ключові кадри: дерево токен → компонент → екран · зламаний ланцюжок.
+**09 · Tokens: one variable, the whole product**
+Changing `--color-action` travels through components and screens. Next to it: what happens when a raw
+value is written instead — the change never arrives. Key frames: token → component → screen tree ·
+the broken chain.
 
-### Командні процеси
+### Team processes
 
-**10 · Задача від Issue до релізу**
-Issue → гілка → коміти → PR → рев'ю → merge → тег версії → те, що бачить клієнт. Показує, де в цьому ланцюжку дизайнер.
-Ключові кадри: одна картка проходить весь шлях.
+**10 · A task from Issue to release**
+Issue → branch → commits → PR → review → merge → version tag → what the client sees. Shows where the
+designer sits in that chain. Key frames: one card travelling the whole path.
 
-**11 · Зелена галочка: що таке checks і GitHub Actions**
-Що саме перевіряє GitHub Actions, поки PR відкритий, і чому червоний build блокує злиття. Знімає магію з «CI».
-Ключові кадри: PR на паузі · GitHub Actions проганяє збірку · червоний і зелений результат.
+**11 · The green check: what checks and GitHub Actions are**
+What GitHub Actions verifies while a PR is open and why a red build blocks the merge. Removes the magic
+from "CI". Key frames: PR on hold · Actions running the build · red and green results.
 
-**12 · Fork і PR ззовні**
-Як працює підрядник або зовнішній дизайнер без доступу на запис: копія репозиторію, PR у головний, ревʼю. Для роботи з клієнтськими командами.
-Ключові кадри: два репозиторії · стрілка PR між ними.
+**12 · Fork and an outside PR**
+How a contractor or external designer works without write access: a copy of the repository, a PR back
+into the main one, review. For working with client teams. Key frames: two repositories · the PR arrow.
 
-### Повсякденні ситуації
+### Everyday situations
 
-**13 · Локально проти GitHub**
-Дві копії репозиторію: на комп'ютері й на GitHub. Що робить `fetch`, що робить `pull`, чому «у мене є, а в тебе нема». Знімає найчастіше непорозуміння між двома людьми.
-Ключові кадри: два стовпи комітів · стрілка push вгору · стрілка pull вниз · момент, коли вони розходяться.
+**13 · Local vs GitHub**
+Two copies of the repository: on your machine and on GitHub. What `fetch` does, what `pull` does, why
+"I have it and you don't". Clears up the most common misunderstanding between two people.
+Key frames: two commit columns · push arrow up · pull arrow down · the moment they diverge.
 
-**14 · `.gitignore`: що не потрапляє в репозиторій**
-`node_modules`, `.env`, експорти з Figma, `.DS_Store` — файли, які мають лишатися на комп'ютері. Що станеться, якщо їх закомітити, і як виправити.
-Ключові кадри: файли летять у коміт, частина відбивається від «сітки» `.gitignore`.
+**14 · `.gitignore`: what never enters the repository**
+`node_modules`, `.env`, Figma exports, `.DS_Store` — files that stay on your machine. What happens if
+they get committed and how to fix it. Key frames: files flying into a commit, some bouncing off the
+`.gitignore` mesh.
 
-**15 · Стеш: відкласти незакінчене**
-Треба терміново перескочити на іншу гілку, а поточна робота не готова до коміту. `git stash` як полиця: поклав, переключився, повернувся, забрав.
-Ключові кадри: файли зникають на полицю · гілка чиста · повернення.
+**15 · Stash: park unfinished work**
+You must jump to another branch and the current work is not ready to commit. `git stash` as a shelf:
+put it down, switch, come back, take it. Key frames: files vanish to the shelf · clean branch · return.
 
-**16 · Конфлікт у `package-lock.json`**
-Найчастіший реальний конфлікт у дизайнерів, які працюють через Claude: обоє встановили пакет. Виглядає страшно на сотні рядків, лікується однією командою — перевстановити залежності й закомітити.
-Ключові кадри: два `npm install` у різних гілках · величезний червоний диф · `rm package-lock.json && npm install`.
+**16 · Conflict in `package-lock.json`**
+The most common real conflict for designers working through an agent: both installed a package. Looks
+terrifying at hundreds of lines, cured by one command — reinstall dependencies and commit.
+Key frames: two `npm install` runs in different branches · a huge red diff · `rm package-lock.json && npm install`.
 
-**17 · Скасувати коміт: локальний проти запушеного**
-Поки коміт лише у тебе — `reset`, і його не було. Коли він уже на GitHub — тільки `revert`, новий коміт-антидот. Два різні світи з різними правилами.
-Ключові кадри: коміт зникає локально · той самий коміт на GitHub уже бачив колега.
+**17 · Undo a commit: local vs pushed**
+While the commit is only yours — `reset`, and it never existed. Once it is on GitHub — only `revert`, a
+new antidote commit. Two different worlds with different rules. Key frames: the commit disappears
+locally · the same commit on GitHub already seen by a colleague.
 
-**18 · «Я в дивному стані»**
-Detached HEAD, випадково перемкнута гілка, файли «не там». Як подивитися, де ти (`git status`, `git log`), і повернутися без втрат через `reflog`.
-Ключові кадри: камера губиться в графі · reflog як мапа всіх кроків · повернення.
+**18 · "I'm in a weird state"**
+Detached HEAD, an accidentally switched branch, files "in the wrong place". How to see where you are
+(`git status`, `git log`) and get back without losses through `reflog`. Key frames: the camera gets lost
+in the graph · reflog as a map of every step · the return.
 
-### Рев'ю очима дизайнера
+### Review through a designer's eyes
 
-**19 · Коментар із запропонованою правкою**
-Кнопка Add suggestion у PR: рев'юер пропонує конкретний рядок, автор приймає одним кліком, і це стає комітом у гілці. Рев'ю без «поправ ось тут» у чаті.
-Ключові кадри: коментар → блок із правкою → кнопка Commit suggestion → новий коміт на гілці.
+**19 · A comment with a suggested edit**
+The Add suggestion button in a PR: the reviewer proposes a concrete line, the author accepts it in one
+click and it becomes a commit in the branch. Review without "fix this bit" in chat. Key frames: comment
+→ suggestion block → Commit suggestion → new commit on the branch.
 
-**20 · Диф для картинок**
-GitHub порівнює PNG у режимах swipe, onion skin і side-by-side. Для скриншотів до/після це рідний інструмент дизайнера.
-Ключові кадри: два скриншоти екрана · шторка swipe · напівпрозоре накладання.
+**20 · Image diffs**
+GitHub compares PNGs in swipe, onion skin and side-by-side modes. For before/after screenshots this is a
+designer's native tool. Key frames: two screenshots · the swipe curtain · translucent overlay.
 
-**21 · Preview на кожен PR**
-Vercel або Netlify піднімає посилання для кожної гілки. Клієнт дивиться екран за URL без клонування. Єдина інфраструктура, яку варто додати першою.
-Ключові кадри: PR відкрито → Vercel будує гілку → посилання в коментарі → клієнт відкриває на телефоні.
+**21 · A preview for every PR**
+Vercel or Netlify builds a link for each branch. The client opens a screen by URL without cloning. The
+one piece of infrastructure worth adding first. Key frames: PR opened → the build runs → link in a
+comment → client opens it on a phone.
 
-**22 · Хто і коли змінив цей рядок**
-`git blame` та історія файлу: знайти, чому кнопка стала синьою місяць тому, і в якому PR це обговорювали.
-Ключові кадри: рядок коду підсвічує коміт → автор → PR → обговорення.
+**22 · Who changed this line and when**
+`git blame` and file history: find out why the button turned blue a month ago and in which PR it was
+discussed. Key frames: a line of code highlights its commit → author → PR → discussion.
 
-### Історія і безпека
+### History and safety
 
-**23 · Машина часу**
-Відкрити стан репозиторію на будь-яку дату й подивитися, як виглядав екран тоді. Порівняти з сьогоднішнім.
-Ключові кадри: повзунок часу по графу · екран змінюється разом із ним.
+**23 · Time machine**
+Open the repository as of any date and look at how a screen looked then. Compare it with today.
+Key frames: a time slider over the graph · the screen changing along with it.
 
-**24 · Секрет у коміті**
-Ключ API потрапив у репозиторій. Чому видалити файл наступним комітом не допомагає (історія пам'ятає все), і що робити насправді: відкликати ключ, переписати історію тільки якщо репо приватне.
-Ключові кадри: файл видалено, але в історії лишився · ключ підсвічений червоним у старому коміті.
+**24 · A secret in a commit**
+An API key landed in the repository. Why deleting the file in the next commit does not help (history
+remembers everything) and what to actually do: revoke the key, rewrite history only if the repo is
+private. Key frames: file deleted but still in history · the key highlighted red in an old commit.
 
 **25 · Force push**
-Один натиск переписує історію, яку вже бачив колега: його коміти «висять у повітрі». Чому це заборонено на `main` і коли допустимо у своїй гілці.
-Ключові кадри: два різні `main` у двох людей · коміти колеги відриваються від графа.
+One keystroke rewrites history a colleague has already seen: their commits are left dangling. Why it is
+forbidden on `main` and when it is acceptable in your own branch. Key frames: two different `main`s in
+two people's hands · the colleague's commits detaching from the graph.
 
-**26 · Bisect: знайти коміт, що зламав**
-Двійковий пошук по історії: 500 комітів перевіряються за 9 кроків. Git сам перемикає стани, ти лише кажеш «працює / не працює».
-Ключові кадри: половина графа гасне на кожному кроці · знайдений коміт спалахує.
+**26 · Bisect: find the commit that broke it**
+Binary search through history: 500 commits checked in 9 steps. Git switches the states, you only say
+"works / doesn't". Key frames: half the graph goes dark at each step · the found commit lights up.
 
-### Процес і асети
+### Process and assets
 
-**27 · Важкі файли**
-40 МБ PNG у репозиторії лишаються назавжди в історії, навіть після видалення. Що таке Git LFS і коли він потрібен.
-Ключові кадри: репозиторій «товстішає» з кожним клоном · LFS виносить файл за межі графа.
+**27 · Heavy files**
+A 40 MB PNG stays in history forever, even after deletion. What Git LFS is and when it is needed.
+Key frames: the repository fattening with each clone · LFS moving the file outside the graph.
 
-**28 · Dependabot відкриває PR**
-Dependabot оновлює бібліотеки сам і відкриває PR. Як читати такий PR, коли зливати одразу, а коли покликати розробника.
-Ключові кадри: PR без автора-людини · зелений check → merge.
+**28 · Dependabot opens a PR**
+Dependabot updates libraries by itself and opens a PR. How to read one, when to merge right away and
+when to call a developer. Key frames: a PR with no human author · green check → merge.
 
-**29 · Теги й релізи**
-Версія продукту як позначка в історії: `v1.2.0`, changelog для клієнта, що саме бачить клієнт у релізі.
-Ключові кадри: прапорці-теги на графі main · сторінка Release зі списком змін.
+**29 · Tags and releases**
+A product version as a marker in history: `v1.2.0`, a changelog for the client, what the client actually
+sees in a release. Key frames: tag flags on the main graph · a Release page with the list of changes.
 
-**30 · Шаблони й лейбли**
-PR template, issue template, лейбли `design`, `bug`, `needs-review`. Процес, який тримається сам, коли команда росте до п'яти людей.
-Ключові кадри: порожній PR → заповнений шаблон · дошка з лейблами.
+**30 · Templates and labels**
+PR template, issue template, labels `design`, `bug`, `needs-review`. The process that holds itself
+together once the team grows to five people. Key frames: empty PR → filled template · a board with labels.
 
-Найсильніші кандидати на анімацію з цього блоку: 16, 20, 21, 23, 25. Решту краще робити слайдом у презентації або вправою в PRACTICE.md.
+Strongest animation candidates from this block: 16, 20, 21, 23, 25. The rest work better as a deck slide
+or an exercise in `PRACTICE.md`.
 
-## Як замовити
+## How an episode is ordered
 
-Скажи номер (можна кілька) — і буде: 3D-сцена в репозиторії, відео з текстом і музикою, слайд у презентації з посиланням.
+The designer names a number, in chat or by clicking a topic in the player's "Наступні" panel, which
+copies a ready-made request. Deliverable: the 3D scene in the repository, its own music track, the
+episode registered in the player, and a link from a deck slide when it fits.

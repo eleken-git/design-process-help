@@ -1,16 +1,20 @@
-# tokens — дизайн-токени
+# tokens — design tokens
 
-У Figma це Variables і Styles. Тут — CSS-змінні: тільки значення, жодних компонентів і логіки.
+The Figma equivalent is Variables and Styles. Here they are CSS custom properties: values only, no
+components and no logic. Written for agents; the designer-facing explanation is in `README.md`.
 
-| Файл | Що всередині |
-|---|---|
-| `colors.css` | палітра («сирі» кольори GitHub Dark) і семантичні токени: `--color-action`, `--color-text`, … |
-| `spacing.css` | шкала відступів і радіуси |
-| `typography.css` | шрифти й текстові стилі |
-| `index.css` | збирає все разом; підключається один раз у `src/main.tsx` |
+| File | Contents |
+| --- | --- |
+| `colors.css` | the raw GitHub Dark palette plus semantic tokens: `--color-action`, `--color-text`, … |
+| `spacing.css` | spacing scale and radii |
+| `typography.css` | font families and text styles |
+| `index.css` | imports all of the above; included once from `src/main.tsx` |
 
-## Правила
+## Rules
 
-1. Компоненти й екрани не пишуть «сирі» значення (`#238636`, `14px`) — тільки `var(--…)`.
-2. Зміна токена змінює весь продукт (як зміна Variable у Figma). Тому: окрема гілка `ds/tokens-<що>`, маленький PR, ревʼю обох, перевірка екрана `/ui-kit`.
-3. Новий токен додаємо вільно. Існуючий перейменовуємо або видаляємо лише PR-ом, у якому оновлено всі його використання.
+1. Components and screens never write raw values (`#238636`, `14px`) — only `var(--…)`.
+2. Changing a token changes the whole product, like editing a Variable in Figma. So: a separate
+   `ds/tokens-<what>` branch, a small PR, review by both people, and a check of the `#/ui-kit` screen.
+3. Adding a token is free. Renaming or deleting one happens only in a PR that also updates every usage.
+4. The palette section at the top of `colors.css` exists for the semantic tokens below it. Components
+   reference semantic tokens, never palette entries.
