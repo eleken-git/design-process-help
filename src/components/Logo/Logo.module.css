@@ -8,21 +8,10 @@
 .mark {
   display: block;
   flex: none;
-}
-
-.stopStart {
-  stop-color: var(--color-accent);
-}
-
-.stopEnd {
-  stop-color: var(--color-done);
-}
-
-.cloud {
-  fill: var(--color-on-action);
+  fill: var(--color-text);
 }
 
 .name {
   font: var(--font-body-md-semibold);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }

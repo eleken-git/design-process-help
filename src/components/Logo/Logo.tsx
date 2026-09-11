@@ -1,21 +1,19 @@
-import { useId } from 'react';
 import styles from './Logo.module.css';
 
 type LogoProps = {
-  /** Розмір знака в пікселях. Дефолт 24 — як у топбарі. Нижче 16 форма хмаринки губиться. */
+  /** Розмір знака в пікселях. Дефолт 24 — як у топбарі. Нижче 16 плечі монограми зливаються. */
   size?: number;
   /** Показати назву «Nimbus» праворуч від знака. */
   name?: boolean;
 };
 
 /**
- * Логотип Nimbus: хмаринка з трьох кіл на плитці з градієнтом accent → done.
+ * Логотип Nimbus — монограма N: два стовпи з мʼякими плечима зверху (хмара)
+ * і рівною основою знизу. Один колір --color-text, без плитки й градієнта,
+ * тому знак живе в будь-якому контексті й перефарбовується разом із темою.
  * Спільний компонент: топбар застосунку і екран UI kit («правило двох»).
- * Кольори — тільки з токенів, тому знак перефарбується разом із темою.
  */
 export function Logo({ size = 24, name = false }: LogoProps) {
-  const gradientId = useId();
-
   return (
     <span className={styles.logo}>
       <svg
@@ -27,19 +25,7 @@ export function Logo({ size = 24, name = false }: LogoProps) {
         aria-label={name ? undefined : 'Nimbus'}
         aria-hidden={name ? true : undefined}
       >
-        <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" className={styles.stopStart} />
-            <stop offset="1" className={styles.stopEnd} />
-          </linearGradient>
-        </defs>
-        <rect width="32" height="32" rx="9" fill={`url(#${gradientId})`} />
-        <g className={styles.cloud}>
-          <circle cx="10.5" cy="17.5" r="5" />
-          <circle cx="17" cy="14" r="6.5" />
-          <circle cx="22" cy="18" r="4.5" />
-          <path d="M5.5 17.5V22a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3v-4z" />
-        </g>
+        <path d="M5 27V9.5A4.5 4.5 0 0 1 9.5 5Q11.25 5 13.18 7.5L21 17.62V5h1.5A4.5 4.5 0 0 1 27 9.5V27h-4.5Q20.75 27 18.82 24.5L11 14.38V27Z" />
       </svg>
       {name && <span className={styles.name}>Nimbus</span>}
     </span>
