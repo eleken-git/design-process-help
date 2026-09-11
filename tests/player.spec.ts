@@ -79,4 +79,28 @@ test.describe('3D-плеєр: керування як у YouTube', () => {
     await expect(btn).toHaveText('♪ Музика');
     await expect.poll(() => page.evaluate(() => (document.getElementById('bgm') as HTMLAudioElement).paused)).toBe(false);
   });
+
+  test('плашка «Наступні»: черга тем, як замовити епізод, клік копіює запит для Claude', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto(`${BASE}?ep=file-states`);
+    await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.ready, null, { timeout: 60_000 });
+    const pop = page.locator('#backlog');
+    await expect(pop).toBeHidden();
+    await page.locator('#btnNext').click();
+    await expect(pop).toBeVisible();
+    await expect(pop).toContainText('Claude Code');                       // пояснення, як замовити
+    await expect(pop).toContainText('git clone');
+    await expect(pop.locator('#backlogList button')).toHaveCount(27);   // усі теми з ANIMATIONS.md
+    await expect(pop.locator('#backlogCount')).toHaveText('27');
+    await pop.locator('#backlogList button', { hasText: 'package-lock' }).click();
+    await expect(page.locator('#toast')).toHaveClass(/show/);
+    await expect(page.locator('#toast')).toContainText('Зроби епізод 16');
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('Зроби епізод 16');
+    await page.keyboard.press('Escape');
+    await expect(pop).toBeHidden();
+    await page.locator('#btnNext').click();
+    await page.locator('#btnEp').click();                                // інша плашка закриває цю
+    await expect(pop).toBeHidden();
+    await expect(page.locator('#eplist')).toBeVisible();
+  });
 });

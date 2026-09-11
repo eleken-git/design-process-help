@@ -303,6 +303,7 @@ function loadEpisode(id, autoplay) {
 
 /* ============================== керування ============================== */
 const btnPlay = $('btnPlay'), scrub = $('scrub'), tlabel = $('tlabel'), btnChapters = $('btnChapters'), btnEp = $('btnEp'), eplist = $('eplist'), chips = $('chips');
+const btnNext = $('btnNext'), backlog = $('backlog');
 const stage = $('stage'), flash = $('flash'), toast = $('toast'), btnFull = $('btnFull'), controls = document.querySelector('.controls');
 const fmt = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
 
@@ -310,7 +311,7 @@ const fmt = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStar
 let idleTimer = 0, controlsHover = false;
 function wake() {
   document.body.classList.remove('idle'); clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => { if (state.playing && eplist.hidden && chips.hidden && !controlsHover) document.body.classList.add('idle'); }, 2600);
+  idleTimer = setTimeout(() => { if (state.playing && eplist.hidden && chips.hidden && backlog.hidden && !controlsHover) document.body.classList.add('idle'); }, 2600);
 }
 ['pointermove', 'pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, wake, { passive: true }));
 controls.addEventListener('pointerenter', () => { controlsHover = true; wake(); });
@@ -320,7 +321,7 @@ function setPlaying(v) { state.playing = v; btnPlay.textContent = v ? '❚❚' :
 function flashIcon(txt, small) { flash.textContent = txt; flash.classList.toggle('sm', !!small); flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
 function togglePlay(show) { setPlaying(!state.playing); if (show) flashIcon(state.playing ? '▶' : '❚❚'); }
 function seek(d, show) { setTime(state.t + d); syncAudio(true); if (show) flashIcon((d > 0 ? '+' : '−') + Math.abs(d) + ' с', true); }
-function closePops() { eplist.hidden = true; chips.hidden = true; btnEp.classList.remove('on'); btnChapters.classList.remove('on'); }
+function closePops() { eplist.hidden = true; chips.hidden = true; backlog.hidden = true; btnEp.classList.remove('on'); btnChapters.classList.remove('on'); btnNext.classList.remove('on'); }
 let toastTimer = 0;
 function showToast(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2800); }
 
@@ -347,7 +348,7 @@ $('btnHome').onclick = () => { location.href = '../'; };
 
 // клік по відео — пауза/плей; подвійний — повний екран (два кліки повертають стан гри, як у YouTube)
 if (!CAPTURE) {
-  stage.addEventListener('click', () => { if (!eplist.hidden || !chips.hidden) { closePops(); return; } togglePlay(true); });
+  stage.addEventListener('click', () => { if (!eplist.hidden || !chips.hidden || !backlog.hidden) { closePops(); return; } togglePlay(true); });
   stage.addEventListener('dblclick', (e) => { e.preventDefault(); flash.classList.remove('go'); toggleFullscreen(); });
 }
 
@@ -356,8 +357,33 @@ $('btnBack').onclick = () => seek(-5);
 $('btnFwd').onclick = () => seek(5);
 $('btnRestart').onclick = () => { setTime(0); setPlaying(true); };
 scrub.oninput = () => { setPlaying(false); setTime(Number(scrub.value) / 1000 * ep.DUR); syncAudio(true); };
-btnChapters.onclick = () => { chips.hidden = !chips.hidden; eplist.hidden = true; btnEp.classList.remove('on'); btnChapters.classList.toggle('on', !chips.hidden); };
-btnEp.onclick = () => { eplist.hidden = !eplist.hidden; chips.hidden = true; btnChapters.classList.remove('on'); btnEp.classList.toggle('on', !eplist.hidden); };
+btnChapters.onclick = () => { const open = chips.hidden; closePops(); chips.hidden = !open; btnChapters.classList.toggle('on', !chips.hidden); };
+btnEp.onclick = () => { const open = eplist.hidden; closePops(); eplist.hidden = !open; btnEp.classList.toggle('on', !eplist.hidden); };
+btnNext.onclick = () => { const open = backlog.hidden; closePops(); backlog.hidden = !open; btnNext.classList.toggle('on', !backlog.hidden); };
+
+// «Наступні»: список тем з backlog.js; клік копіює готовий запит для Claude Code
+(function buildBacklog() {
+  const list = $('backlogList'), groups = window.BACKLOG || [];
+  let total = 0;
+  groups.forEach((g) => {
+    const h = document.createElement('div'); h.className = 'grp'; h.textContent = g.title; list.appendChild(h);
+    g.items.forEach((it) => {
+      total++;
+      const b = document.createElement('button'); b.type = 'button';
+      const t = document.createElement('span'); t.textContent = it.n + ' · ' + it.t;
+      const d = document.createElement('small'); d.textContent = it.d;
+      b.append(t, d);
+      b.onclick = async () => {
+        const ask = 'Зроби епізод ' + it.n + ' «' + it.t + '» для 3D-плеєра, як описано в ANIMATIONS.md';
+        let copied = false;
+        try { await navigator.clipboard.writeText(ask); copied = true; } catch (e) {}
+        showToast((copied ? 'Скопійовано для Claude: ' : 'Запит для Claude: ') + ask);
+      };
+      list.appendChild(b);
+    });
+  });
+  $('backlogCount').textContent = String(total);
+})();
 EPS.forEach(def => {
   const b = document.createElement('button'); b.dataset.id = def.id;
   b.innerHTML = `<span>${def.num} · ${def.title}</span><small>${def.subtitle || ''}</small>`;
