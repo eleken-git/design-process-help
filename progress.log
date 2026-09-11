@@ -186,6 +186,6 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Files: rewrote `AGENTS.md`, `CLAUDE.md`, `ANIMATIONS.md`, `src/{tokens,components,screens}/README.md`;
   added `progress.log`; updated `README.md` and the harness page where they described the old setup.
 - Tests: `npm run typecheck && npm run build` green; `npm run test:e2e` green.
-- Merged: see the PR opened for this change.
+- Merged: https://github.com/eleken-git/design-process-help/pull/12
 - Notes / follow-ups: everything a designer sees — `README.md`, `PRACTICE.md`, every page under `docs/`,
   UI strings, code comments, commit messages — stays Ukrainian.
