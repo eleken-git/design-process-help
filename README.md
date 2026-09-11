@@ -8,6 +8,7 @@
 | Презентація (10 хвилин, слайди) | [`docs/presentation/index.html`](docs/presentation/index.html) |
 | 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
 | Подкаст (2 епізоди, 31 хвилина) | [`docs/podcast/index.html`](docs/podcast/index.html) — «Спільна робота дизайнерів у Git через Claude» і «Як приборкати Claude для дизайну інтерфейсів»; плеєр: плей, ±15 с, швидкість, запамʼятовує позицію в кожному |
+| Корисна інформація: будуємо харнес | [`docs/harness/index.html`](docs/harness/index.html) — чотири матеріали (LLM Wiki, SDD, Spec Kit, Superpowers) простими словами; переказ і промпти для NotebookLM — у [`docs/harness/notebooklm/`](docs/harness/notebooklm/) |
 | Тренувальний проєкт наживо, без встановлення | `docs/app/` — статична збірка, оновлюється командою `npm run build:pages` |
 | Тренувальний проєкт локально | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
 | Вправи для двох | [`PRACTICE.md`](PRACTICE.md) |
