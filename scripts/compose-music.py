@@ -5,8 +5,8 @@
 У кожного епізоду своя тональність, темп, розмір, фактура і «кімната» реверберації,
 щоб треки не звучали як один патерн:
 
-  00 conflict        ре мінор,  60 bpm, 4/4 — бас і один тон акорду на такт, повільна мелодія;
-                     мʼяка напруга в середині (iv → VI → V), мажорна каденція
+  00 conflict        соль мажор, 60 bpm, 4/4 — бас і два тони акорду на такт, повільна мелодія;
+                     тепло і спокійно, м’яка хвиля vi → IV → V посередині
   01 file-states     до мажор,  80 bpm, 3/4 — «музична скринька»: три тихі ноти на такт у верхньому
                      регістрі, мʼякий бас, рідка контрмелодія
   02 pull-request    фа мажор,  ♩.≈56, 6/8 — хвиля з трьох нот на такт у лівій руці, довгі фрази
@@ -249,6 +249,7 @@ def tex_broken(pc, bar, chord, vel, sec):
     pc.note(t0, pc.root - 24 + chord[0], pc.spb * 4, vel)
     tones = pc.tones(chord, pc.root - 12, pc.root + 4)
     pc.note(t0 + 2 * pc.spb, tones[1 % len(tones)], pc.spb * 2, vel - 0.1)
+    pc.note(t0 + 3 * pc.spb, tones[2 % len(tones)], pc.spb * 1.2, vel - 0.16)
 
 
 def tex_musicbox(pc, bar, chord, vel, sec):
@@ -296,14 +297,15 @@ def sec(chords, vel, **kw):
 
 EPISODES = {
     'conflict': dict(
-        id='conflict', root=62, scale=MINOR, bpm=60, beats=4, duration=107.5, seed=7,
+        # соль мажор, тепла і спокійна: без мінору й «моторошності», м’яка хвиля vi → IV → V посередині
+        id='conflict', root=67, scale=MAJOR, bpm=60, beats=4, duration=107.5, seed=7,
         texture=tex_broken, cells=[[4], [2, 2], [3, 1], [2, -2], [-1, 3]], strong=[0, 2],
-        melody_range=(67, 81), pad_octave=4, room=(3.6, 0.55), pad_level=0.16, melody_every=2,
+        melody_range=(67, 81), pad_octave=4, room=(3.0, 0.5), pad_level=0.16, melody_every=2,
         form=[
-            sec([i_m, i_m], 0.26),
-            sec([i_m, VI_m, III_m, VII_m, i_m, iv_m, V_m, i_m], 0.34, melody=True),
-            sec([iv_m, VI_m, V_m, i_m, VI_m, iv_m, V_m, i_m], 0.40, melody=True, tension=True),
-            sec([i_m, VI_m, iv_m, V_m, i_m, VI_m, V_m, I_pic], 0.32, melody=True),
+            sec([I, I], 0.26),
+            sec([I, vi, IV, V, I, IV, ii, V], 0.34, melody=True),
+            sec([vi, IV, I, V, vi, IV, ii, V], 0.40, melody=True),
+            sec([I, vi, IV, V, I, IV, V, Iadd9], 0.32, melody=True),
         ],
         final=dict(lh=[-24, -12], rh=[0, 4, 7, 12]),
     ),
