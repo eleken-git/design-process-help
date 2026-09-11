@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Подкаст · Спільна робота дизайнерів у Git через Claude</title>
-<meta name="description" content="Подкаст тренувального проєкту design-process-help: як двоє дизайнерів працюють у коді в одному репозиторії через Claude.">
+<title>Подкаст · Дизайн у коді з Claude</title>
+<meta name="description" content="Подкаст тренувального проєкту design-process-help: спільна робота дизайнерів у Git через Claude і як приборкати Claude для дизайну інтерфейсів.">
 <style>
 :root{
   /* та сама палітра GitHub Dark, що й на лендінгу, у презентації та 3D-плеєрі */
@@ -47,10 +47,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 
 /* список епізодів — як треки в альбомі */
 .tracks{margin-top:8px}
-.tracks h2{font-size:12px;font-weight:600;color:var(--muted);text-transform:none;padding:20px 0 8px;display:grid;grid-template-columns:36px minmax(0,1fr) 72px;gap:16px;border-bottom:1px solid var(--border-muted)}
+.tracks h2{font-size:12px;font-weight:600;color:var(--muted);text-transform:none;padding:20px 0 8px;display:grid;grid-template-columns:36px minmax(0,1fr) 36px 72px;gap:16px;border-bottom:1px solid var(--border-muted)}
 .tracks h2 span:last-child{text-align:right}
-.track{display:grid;grid-template-columns:36px minmax(0,1fr) 72px;gap:16px;align-items:center;padding:12px 8px;margin:4px -8px 0;border-radius:var(--r);width:calc(100% + 16px);text-align:left}
+.track{display:grid;grid-template-columns:36px minmax(0,1fr) 36px 72px;gap:16px;align-items:center;padding:12px 8px;margin:4px -8px 0;border-radius:var(--r);width:calc(100% + 16px);text-align:left;cursor:pointer}
 .track:hover{background:var(--hover)}
+.track .dl{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;color:var(--faint);opacity:0}
+.track:hover .dl,.track .dl:focus-visible{opacity:1}
+.track .dl:hover{color:var(--text);background:var(--hover);text-decoration:none}
+.track .dl svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .track .n{font:13px var(--mono);color:var(--faint);text-align:center;position:relative}
 .track .n svg{position:absolute;inset:0;margin:auto;width:14px;height:14px;fill:var(--text);opacity:0}
 .track:hover .n span,.track.playing .n span{opacity:0}
@@ -149,25 +153,20 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   <section class="hero">
     <div class="cover" aria-hidden="true"><svg><use href="#cover"/></svg></div>
     <div class="info">
-      <p class="kind">Подкаст · 1 епізод</p>
-      <h1>Спільна робота дизайнерів у Git через Claude</h1>
-      <p class="lead">Про те, як двоє дизайнерів працюють у коді в одному репозиторії: гілка на кожну задачу, Pull Request з ревʼю, спільні компоненти і що робити, коли двоє змінили той самий рядок.</p>
-      <p class="meta">eleken-git · <span id="heroDur">13 хв</span> · українською</p>
+      <p class="kind">Подкаст · <span id="heroCount">2 епізоди</span></p>
+      <h1>Дизайн у коді з Claude</h1>
+      <p class="lead">Два епізоди: як двоє дизайнерів працюють в одному репозиторії через Git, і як приборкати Claude для дизайну інтерфейсів. Плеєр запамʼятовує, де ти зупинився у кожному.</p>
+      <p class="meta">eleken-git · <span id="heroDur">31 хв</span> · українською</p>
       <div class="actions">
         <button class="play-big" id="heroPlay" type="button"><svg><use href="#i-play"/></svg><span>Слухати</span></button>
-        <a class="ghost" href="podcast.m4a" download="Спільна робота дизайнерів у Git через Claude.m4a">Завантажити</a>
         <a class="ghost" href="../presentation/">Слайди до теми</a>
       </div>
     </div>
   </section>
 
   <section class="tracks" aria-label="Епізоди">
-    <h2><span>#</span><span>Назва</span><span>Тривалість</span></h2>
-    <button class="track" id="track1" type="button" aria-label="Відтворити епізод 1">
-      <span class="n"><span>1</span><svg><use href="#i-play"/></svg></span>
-      <span class="t"><b>Спільна робота дизайнерів у Git через Claude</b><small>Один репозиторій на двох, гілки, Pull Request, спільні компоненти, конфлікти</small></span>
-      <span class="d" id="trackDur">13:21</span>
-    </button>
+    <h2><span>#</span><span>Назва</span><span></span><span>Тривалість</span></h2>
+    <div id="tracks"></div>
   </section>
 
   <section class="more">
@@ -183,7 +182,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <footer class="bar" aria-label="Плеєр">
   <div class="now">
     <div class="thumb" aria-hidden="true"><svg><use href="#cover"/></svg></div>
-    <div class="txt"><b>Спільна робота дизайнерів у Git через Claude</b><small>eleken-git · подкаст</small></div>
+    <div class="txt"><b id="nowTitle">Спільна робота дизайнерів у Git через Claude</b><small id="nowSub">eleken-git · епізод 1</small></div>
   </div>
   <div class="center">
     <div class="ctrls">
@@ -206,19 +205,23 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   </div>
 </footer>
 
-<audio id="audio" src="podcast.m4a" preload="metadata"></audio>
+<audio id="audio" preload="metadata"></audio>
 
 <script>
 (() => {
+  const EPISODES = [
+    { n: 1, title: 'Спільна робота дизайнерів у Git через Claude', desc: 'Один репозиторій на двох, гілки, Pull Request, спільні компоненти, конфлікти', file: '01-designers-in-git.m4a', dur: '13:21' },
+    { n: 2, title: 'Як приборкати Claude для дизайну інтерфейсів', desc: 'Практика роботи з Claude над інтерфейсами: як ставити задачі і що перевіряти', file: '02-taming-claude-for-ui.m4a', dur: '17:30' },
+  ];
   const $ = (id) => document.getElementById(id);
-  const audio = $('audio'), play = $('play'), heroPlay = $('heroPlay'), track = $('track1');
+  const audio = $('audio'), play = $('play'), heroPlay = $('heroPlay'), tracksEl = $('tracks');
   const seek = $('seek'), seekRange = $('seekRange'), fill = $('fill'), buf = $('buf'), cur = $('cur'), dur = $('dur');
-  const speedBtn = $('speed'), vol = $('vol'), volFill = $('volFill');
+  const speedBtn = $('speed'), vol = $('vol'), volFill = $('volFill'), nowTitle = $('nowTitle'), nowSub = $('nowSub');
   const SPEEDS = [1, 1.25, 1.5, 2];
   const fmt = (s) => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
-  let dragging = false;
+  let dragging = false, current = null;
 
-  // позиція, швидкість і гучність запамʼятовуються — відкрив пізніше і слухаєш далі
+  // позиція в кожному епізоді, останній епізод, швидкість і гучність запамʼятовуються
   const store = (k, v) => { try { localStorage.setItem('podcast-' + k, String(v)); } catch (e) {} };
   const read = (k) => { try { return localStorage.getItem('podcast-' + k); } catch (e) { return null; } };
   audio.playbackRate = Number(read('speed')) || 1;
@@ -226,16 +229,39 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
   vol.value = String(Math.round(audio.volume * 100)); volFill.style.width = vol.value + '%';
   speedBtn.textContent = audio.playbackRate + '×';
 
+  // список епізодів — як треки в альбомі
+  const rows = EPISODES.map((ep) => {
+    const row = document.createElement('div'); row.className = 'track'; row.dataset.n = String(ep.n); row.setAttribute('role', 'button'); row.tabIndex = 0; row.setAttribute('aria-label', 'Відтворити епізод ' + ep.n);
+    row.innerHTML = '<span class="n"><span>' + ep.n + '</span><svg><use href="#i-play"/></svg></span>' +
+      '<span class="t"><b></b><small></small></span>' +
+      '<a class="dl" href="' + ep.file + '" download title="Завантажити"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14"/></svg></a>' +
+      '<span class="d">' + ep.dur + '</span>';
+    row.querySelector('.t b').textContent = ep.title; row.querySelector('.t small').textContent = ep.desc;
+    row.addEventListener('click', (e) => { if (e.target.closest('a.dl')) return; if (current === ep) toggle(); else select(ep, true); });
+    row.addEventListener('keydown', (e) => { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); row.click(); } });
+    tracksEl.appendChild(row); return row;
+  });
+
   function setIcon() {
     const on = !audio.paused;
     for (const b of [play, heroPlay]) b.querySelector('use').setAttribute('href', on ? '#i-pause' : '#i-play');
     heroPlay.querySelector('span').textContent = on ? 'Пауза' : 'Слухати';
     play.setAttribute('aria-label', on ? 'Пауза' : 'Відтворити');
-    track.classList.toggle('playing', on);
-    track.querySelector('.n use').setAttribute('href', on ? '#i-pause' : '#i-play');
+    rows.forEach((row, i) => { const active = current === EPISODES[i]; row.classList.toggle('playing', active && on); row.querySelector('.n use').setAttribute('href', active && on ? '#i-pause' : '#i-play'); });
+  }
+  function select(ep, autoplay) {
+    if (current === ep) return;
+    if (current && !audio.paused) store('pos-' + current.n, audio.currentTime);
+    current = ep; store('ep', ep.n);
+    audio.src = ep.file; audio.load();
+    nowTitle.textContent = ep.title; nowSub.textContent = 'eleken-git · епізод ' + ep.n;
+    dur.textContent = ep.dur; cur.textContent = '0:00'; seek.value = '0'; fill.style.width = '0%'; buf.style.width = '0%';
+    if ('mediaSession' in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: ep.title, artist: 'eleken-git', album: 'Дизайн у коді з Claude' });
+    setIcon();
+    if (autoplay) { const p = audio.play(); if (p && p.catch) p.catch(() => {}); }
   }
   function toggle() { if (audio.paused) { const p = audio.play(); if (p && p.catch) p.catch(() => {}); } else audio.pause(); }
-  play.onclick = heroPlay.onclick = track.onclick = toggle;
+  play.onclick = heroPlay.onclick = toggle;
 
   function paint() {
     const d = audio.duration || 0;
@@ -243,14 +269,19 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
     if (d && audio.buffered.length) buf.style.width = Math.min(100, audio.buffered.end(audio.buffered.length - 1) / d * 100) + '%';
   }
   audio.addEventListener('loadedmetadata', () => {
-    dur.textContent = fmt(audio.duration); $('trackDur').textContent = fmt(audio.duration); $('heroDur').textContent = Math.round(audio.duration / 60) + ' хв';
-    const saved = Number(read('pos')); if (saved > 5 && saved < audio.duration - 10) audio.currentTime = saved;
+    if (!current) return;
+    dur.textContent = fmt(audio.duration); rows[EPISODES.indexOf(current)].querySelector('.d').textContent = fmt(audio.duration);
+    const saved = Number(read('pos-' + current.n)); if (saved > 5 && saved < audio.duration - 10) audio.currentTime = saved;
     paint();
   });
-  audio.addEventListener('timeupdate', () => { paint(); if (!audio.paused) store('pos', audio.currentTime); });
+  audio.addEventListener('timeupdate', () => { paint(); if (!audio.paused && current) store('pos-' + current.n, audio.currentTime); });
   audio.addEventListener('progress', paint);
   audio.addEventListener('play', setIcon); audio.addEventListener('pause', setIcon);
-  audio.addEventListener('ended', () => { store('pos', 0); setIcon(); });
+  audio.addEventListener('ended', () => {
+    if (current) store('pos-' + current.n, 0);
+    const next = EPISODES[EPISODES.indexOf(current) + 1];
+    if (next) select(next, true); else setIcon();
+  });
 
   // перемотка: під час тягнення оновлюємо лише підпис, у трек пишемо на відпускання
   const seekTo = () => { const d = audio.duration || 0; const t = Number(seek.value) / 1000 * d; fill.style.width = (Number(seek.value) / 10) + '%'; cur.textContent = fmt(t); return t; };
@@ -267,21 +298,23 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 
   document.addEventListener('keydown', (e) => {
     if (e.target && /INPUT|TEXTAREA|BUTTON/.test(e.target.tagName) && e.code !== 'Space') return;
+    if (e.target && e.target.classList && e.target.classList.contains('track')) return;
     if (e.code === 'Space' || e.code === 'KeyK') { e.preventDefault(); toggle(); }
     else if (e.code === 'ArrowLeft' || e.code === 'KeyJ') { e.preventDefault(); skip(-15); }
     else if (e.code === 'ArrowRight' || e.code === 'KeyL') { e.preventDefault(); skip(15); }
   });
 
-  // системний плеєр (macOS, навушники, екран блокування) знає назву й керує відтворенням
+  // системний плеєр (macOS, навушники, екран блокування) керує відтворенням
   if ('mediaSession' in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({ title: 'Спільна робота дизайнерів у Git через Claude', artist: 'eleken-git', album: 'design-process-help' });
     navigator.mediaSession.setActionHandler('play', () => audio.play());
     navigator.mediaSession.setActionHandler('pause', () => audio.pause());
     navigator.mediaSession.setActionHandler('seekbackward', () => skip(-15));
     navigator.mediaSession.setActionHandler('seekforward', () => skip(15));
   }
-  setIcon(); paint();
-  window.__podcast = { audio, toggle, skip };
+  // відкриваємо останній прослуханий епізод (або перший), без автоплею
+  select(EPISODES.find((e) => String(e.n) === read('ep')) || EPISODES[0], false);
+  paint();
+  window.__podcast = { audio, toggle, skip, select, EPISODES };
 })();
 </script>
 </body>

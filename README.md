@@ -7,7 +7,7 @@
 | Лендінг з лінками нижче | [`docs/index.html`](docs/index.html) — корінь GitHub Pages: https://eleken-git.github.io/design-process-help/ |
 | Презентація (10 хвилин, слайди) | [`docs/presentation/index.html`](docs/presentation/index.html) |
 | 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
-| Подкаст (13 хвилин, аудіо) | [`docs/podcast/index.html`](docs/podcast/index.html) — плеєр: плей, ±15 с, швидкість, запамʼятовує позицію |
+| Подкаст (2 епізоди, 31 хвилина) | [`docs/podcast/index.html`](docs/podcast/index.html) — «Спільна робота дизайнерів у Git через Claude» і «Як приборкати Claude для дизайну інтерфейсів»; плеєр: плей, ±15 с, швидкість, запамʼятовує позицію в кожному |
 | Тренувальний проєкт наживо, без встановлення | `docs/app/` — статична збірка, оновлюється командою `npm run build:pages` |
 | Тренувальний проєкт локально | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
 | Вправи для двох | [`PRACTICE.md`](PRACTICE.md) |

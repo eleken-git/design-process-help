@@ -17,8 +17,10 @@ test.describe('лендінг-хаб docs/', () => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(BASE + '/podcast/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Спільна робота дизайнерів у Git через Claude');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Дизайн у коді з Claude');
     await expect(page.locator('#play')).toBeVisible();
+    await expect(page.locator('.track')).toHaveCount(2);                                  // два епізоди
+    await expect(page.locator('#nowTitle')).toHaveText('Спільна робота дизайнерів у Git через Claude');
     // тривалість підставляється з файлу, коли браузер прочитав метадані
     await expect(page.locator('#dur')).toHaveText(/^\d+:\d\d$/);
     const duration = await page.evaluate(() => (document.getElementById('audio') as HTMLAudioElement).duration);
@@ -28,6 +30,10 @@ test.describe('лендінг-хаб docs/', () => {
     await expect(page.locator('#cur')).toHaveText('0:15');
     await page.locator('#back').click();
     await expect(page.locator('#cur')).toHaveText('0:00');
+    // другий епізод відкривається з рядка списку і стає «зараз грає» в нижній панелі
+    await page.locator('.track[data-n="2"]').click();
+    await expect(page.locator('#nowTitle')).toHaveText('Як приборкати Claude для дизайну інтерфейсів');
+    await expect.poll(() => page.evaluate(() => (document.getElementById('audio') as HTMLAudioElement).duration), { timeout: 10_000 }).toBeGreaterThan(1000);
     expect(errors, 'помилки JS').toEqual([]);
   });
 
