@@ -3,7 +3,6 @@
 window.BACKLOG = [
   { title: 'Історія і відкати', items: [
     { n: '04', t: 'Squash vs merge commit vs rebase', d: 'три способи злити гілку — три різні історії main' },
-    { n: '05', t: 'merge main vs rebase main', d: 'що стається з твоїми комітами і чому rebase не роблять у спільній гілці' },
     { n: '06', t: 'Відкат: revert, reset, reflog', d: 'три інструменти; у спільній історії — тільки revert' },
   ] },
   { title: 'Про спільний код', items: [
