@@ -8,7 +8,7 @@ import path from 'node:path';
  * Кадри кожного розділу зберігаються в test-results/frames/<епізод>/ для перегляду.
  */
 const BASE = 'http://127.0.0.1:8765/3d/';
-const EPISODES = ['conflict', 'file-states', 'pull-request', 'protected-main'];
+const EPISODES = ['conflict', 'file-states', 'pull-request', 'protected-main', 'merge-vs-rebase'];
 
 type Issue = { t: number; what: string };
 type Probe = { issues: string[]; textTop: number | null };

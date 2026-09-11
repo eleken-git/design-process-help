@@ -85,7 +85,7 @@ canvas{display:block;width:100%;height:100%}
 .controls .time{font:13px var(--mono);color:var(--muted);min-width:84px;text-align:center}
 .controls input[type=range]{width:min(26vw,280px);accent-color:var(--orange)}
 .controls .sep{width:1px;height:22px;background:var(--border)}
-.pop{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:6;display:grid;gap:6px;max-width:min(92vw,720px);
+.pop{position:fixed;left:50%;bottom:114px;transform:translateX(-50%);z-index:6;display:grid;gap:6px;max-width:min(92vw,720px);
   background:rgba(22,27,34,.97);border:1px solid var(--border);border-radius:10px;padding:10px;box-shadow:0 8px 32px rgba(1,4,9,.6)}
 .pop[hidden]{display:none!important}   /* інакше .pop.chips{display:flex} нижче перекриває hidden */
 .pop.chips{display:flex;flex-wrap:wrap;justify-content:center}
@@ -95,6 +95,18 @@ canvas{display:block;width:100%;height:100%}
 .pop button.on{border-color:var(--orange)}
 .pop.chips button{height:28px;padding:0 11px;border-radius:999px;font:13px var(--mono);color:var(--muted);display:inline-flex;align-items:center}
 .pop.chips button.on{color:var(--text);background:rgba(247,129,102,.14)}
+/* «Наступні»: черга епізодів і як замовити свій */
+.pop.backlog{width:min(92vw,760px);gap:10px}
+.pop.backlog .how{display:grid;gap:6px;padding:4px 4px 0;font:13px/1.45 var(--sans);color:var(--muted)}
+.pop.backlog .how b{color:var(--text);font-weight:600;font-size:14px}
+.pop.backlog .how ol{margin:0;padding-left:18px;display:grid;gap:3px}
+.pop.backlog .how code{font:12px var(--mono);color:var(--text);background:var(--bg);padding:1px 5px;border-radius:4px}
+.pop.backlog .list{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-height:34vh;overflow:auto;padding-right:2px}
+.pop.backlog .grp{grid-column:1/-1;font:11px var(--mono);color:var(--faint);padding:8px 4px 0}
+.pop.backlog .list button{padding:6px 10px}
+.pop.backlog .list button small{color:var(--muted);font:11.5px/1.35 var(--sans)}
+.pop.backlog .hint{font:11px var(--mono);color:var(--faint);text-align:center}
+@media (max-width:900px){.pop.backlog .list{grid-template-columns:1fr;max-height:30vh}}
 body.idle .controls{opacity:0;pointer-events:none}   /* під час гри панель ховається, коли миша не рухається */
 body.idle.fs{cursor:none}
 body.capture .controls,body.capture .pop{display:none}
@@ -133,6 +145,18 @@ body.capture .controls,body.capture .pop{display:none}
 
 <div class="pop" id="eplist" hidden></div>
 <div class="pop chips" id="chips" hidden></div>
+<div class="pop backlog" id="backlog" hidden>
+  <div class="how">
+    <b>Наступні епізоди: <span id="backlogCount">26</span> тем у черзі, їх ще немає</b>
+    <ol>
+      <li>Скачай репозиторій: <code>git clone https://github.com/eleken-git/design-process-help.git</code> або на GitHub кнопкою Code → Download ZIP.</li>
+      <li>Відкрий папку в Claude Code і попроси: «Зроби епізод 16 про конфлікт у package-lock.json». Claude побудує сцену, музику й додасть епізод сюди.</li>
+      <li>Є своє питання про Git чи GitHub? Спитай Claude і додай «і зроби про це епізод», щоб побачити відповідь у 3D.</li>
+    </ol>
+  </div>
+  <div class="list" id="backlogList"></div>
+  <small class="hint">Клік по темі копіює готовий запит для Claude.</small>
+</div>
 <div class="controls">
   <div class="row row-play">
     <button id="btnPlay" title="Пауза / грати · Space або K · клік по відео">❚❚</button>
@@ -147,6 +171,7 @@ body.capture .controls,body.capture .pop{display:none}
     <span class="sep"></span>
     <button id="btnEp" title="Обрати епізод">Епізоди ▾</button>
     <button id="btnChapters" title="Розділи цього епізоду">Розділи</button>
+    <button id="btnNext" title="Епізоди, яких ще немає, і як замовити свій">Наступні</button>
     <button id="btnMusic" title="Музика · M">♪ Музика</button>
     <button id="btnFull" title="На весь екран · F або двічі клікнути по відео">⛶</button>
   </div>
@@ -155,10 +180,12 @@ body.capture .controls,body.capture .pop{display:none}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>window.EPISODES = [];</script>
+<script src="backlog.js"></script>
 <script src="episodes/conflict.js"></script>
 <script src="episodes/file-states.js"></script>
 <script src="episodes/pull-request.js"></script>
 <script src="episodes/protected-main.js"></script>
+<script src="episodes/merge-vs-rebase.js"></script>
 <script src="engine.js"></script>
 </body>
 </html>
