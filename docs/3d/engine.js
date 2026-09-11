@@ -414,7 +414,7 @@ try { musicOn = localStorage.getItem('git3d-music') !== 'off'; } catch (e) {}
 bgm.volume = 0.85;
 function updateMusicBtn() {
   btnMusic.classList.toggle('muted', !musicOn); btnMusic.classList.toggle('unlock', musicOn && audioBlocked);
-  btnMusic.textContent = !musicOn ? '♪ Музика вимкнена' : (audioBlocked ? '♪ Увімкнути звук' : '♪ Музика');
+  btnMusic.textContent = musicOn && audioBlocked ? '♪ Увімкнути звук' : '♪ Музика';   // вимкнена — перекреслена класом .muted, без слова
 }
 // чи можна перемотати трек на цей час: сервер без Range-запитів віддає порожній seekable, і тоді
 // присвоєння currentTime скидає трек на 0 — краще лишити музику грати, ніж перезапускати її щокадру
