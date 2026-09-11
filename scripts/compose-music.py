@@ -7,6 +7,7 @@
 
   00 conflict        соль мажор, 60 bpm, 4/4 — бас і два тони акорду на такт, повільна мелодія;
                      тепло і спокійно, м’яка хвиля vi → IV → V посередині
+  05 merge-vs-rebase мі мажор,  66 bpm, 4/4 — та ж спокійна фактура, що й у 00, в іншій тональності
   01 file-states     до мажор,  80 bpm, 3/4 — «музична скринька»: три тихі ноти на такт у верхньому
                      регістрі, мʼякий бас, рідка контрмелодія
   02 pull-request    фа мажор,  ♩.≈56, 6/8 — хвиля з трьох нот на такт у лівій руці, довгі фрази
@@ -306,6 +307,19 @@ EPISODES = {
             sec([I, vi, IV, V, I, IV, ii, V], 0.34, melody=True),
             sec([vi, IV, I, V, vi, IV, ii, V], 0.40, melody=True),
             sec([I, vi, IV, V, I, IV, V, Iadd9], 0.32, melody=True),
+        ],
+        final=dict(lh=[-24, -12], rh=[0, 4, 7, 12]),
+    ),
+    'merge-vs-rebase': dict(
+        # мі мажор, 66 bpm: спокійна розповідь про дві історії однієї роботи; трохи руху в середині (vi → IV → V)
+        id='merge-vs-rebase', root=64, scale=MAJOR, bpm=66, beats=4, duration=104.5, seed=41,
+        texture=tex_broken, cells=[[4], [2, 2], [3, 1], [2, -2], [-1, 3]], strong=[0, 2],
+        melody_range=(64, 79), pad_octave=4, room=(2.8, 0.5), pad_level=0.16, melody_every=2,
+        form=[
+            sec([I, I], 0.26),
+            sec([I, IV, vi, V, I, IV, ii, V], 0.34, melody=True),
+            sec([vi, IV, I, V, vi, IV, ii, V], 0.40, melody=True),
+            sec([I, IV, vi, V, I, IV, V, Iadd9], 0.32, melody=True),
         ],
         final=dict(lh=[-24, -12], rh=[0, 4, 7, 12]),
     ),
