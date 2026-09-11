@@ -21,6 +21,6 @@ components/
 │   ├── Button.tsx          # пропси і розмітка
 │   ├── Button.module.css   # стилі тільки через var(--…)
 │   └── index.ts            # export { Button }
-├── Card/  Badge/  Toggle/  CodeHint/
+├── Card/  Badge/  Toggle/  CodeHint/  Logo/
 └── index.ts                # реекспорт → import { Button, Card } from '@/components'
 ```

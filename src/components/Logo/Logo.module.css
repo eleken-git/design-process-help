@@ -1,0 +1,17 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text);
+}
+
+.mark {
+  display: block;
+  flex: none;
+  fill: var(--color-text);
+}
+
+.name {
+  font: var(--font-body-md-semibold);
+  letter-spacing: -0.02em;
+}

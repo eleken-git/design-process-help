@@ -1,0 +1,116 @@
+.groupTitle {
+  margin-bottom: var(--space-3);
+  font: var(--font-body-sm-semibold);
+  color: var(--color-text-muted);
+}
+
+.tokenName {
+  font: var(--font-mono-sm);
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.tokenValue {
+  font: var(--font-mono-sm);
+  color: var(--color-text-faint);
+  white-space: nowrap;
+}
+
+/* кольори */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-4);
+}
+
+.swatch {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.color {
+  display: block;
+  height: 40px;
+  margin-bottom: var(--space-1);
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--radius-md);
+}
+
+/* шрифти */
+.typeList {
+  display: grid;
+}
+
+.type {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.type:first-child {
+  padding-top: 0;
+}
+
+.type:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.sample {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typeMeta {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-1);
+  text-align: right;
+}
+
+/* відступи */
+.spaceList {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.space {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.bar {
+  display: block;
+  height: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+}
+
+/* радіуси */
+.radii {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.radius {
+  display: grid;
+  gap: var(--space-1);
+  justify-items: start;
+}
+
+.radiusBox {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--space-1);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
