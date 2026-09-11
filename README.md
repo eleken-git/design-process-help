@@ -8,6 +8,7 @@
 | Презентація (10 хвилин, слайди) | [`docs/presentation/index.html`](docs/presentation/index.html) |
 | 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
 | Подкаст (13 хвилин, аудіо) | [`docs/podcast/index.html`](docs/podcast/index.html) — плеєр: плей, ±15 с, швидкість, запамʼятовує позицію |
+| Корисна інформація: будуємо харнес | [`docs/harness/index.html`](docs/harness/index.html) — чотири матеріали (LLM Wiki, SDD, Spec Kit, Superpowers) простими словами; переказ і промпти для NotebookLM — у [`docs/harness/notebooklm/`](docs/harness/notebooklm/) |
 | Тренувальний проєкт наживо, без встановлення | `docs/app/` — статична збірка, оновлюється командою `npm run build:pages` |
 | Тренувальний проєкт локально | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
 | Вправи для двох | [`PRACTICE.md`](PRACTICE.md) |
