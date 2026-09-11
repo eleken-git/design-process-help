@@ -6,14 +6,14 @@
 щоб треки не звучали як один патерн:
 
   00 conflict        ре мінор,  60 bpm, 4/4 — бас і один тон акорду на такт, повільна мелодія;
-                     напруга в середині (домінантовий педаль, зменшений акорд), мажорна каденція
+                     мʼяка напруга в середині (iv → VI → V), мажорна каденція
   01 file-states     до мажор,  80 bpm, 3/4 — «музична скринька»: три тихі ноти на такт у верхньому
                      регістрі, мʼякий бас, рідка контрмелодія
   02 pull-request    фа мажор,  ♩.≈56, 6/8 — хвиля з трьох нот на такт у лівій руці, довгі фрази
   03 protected-main  ля мажор,  54 bpm, 4/4 — хорал: акорд на весь такт, октавний бас, рідка мелодія
 
-Фонова музика: пед — основа, фортепіано далеко й тихо (мʼяка атака, зріз верху 2.5 кГц, реверберація 60–70 %),
-близько однієї ноти на секунду, RMS −23 dBFS.
+Фонова музика: пед — основа, фортепіано тихе, мʼяке і повітряне (без приглушення верху, мʼяка атака,
+реверберація 50–60 %), близько однієї ноти на секунду, RMS −21 dBFS.
 
 Запуск: python3 scripts/compose-music.py [conflict file-states pull-request protected-main]
 Потрібні: numpy, lame (brew install lame). Тривалість треків дорівнює тривалості епізодів.
@@ -51,11 +51,11 @@ def piano_note(midi, vel_q, dur_q):
     length = dur + min(t60, 3.5)
     n = int(length * SR)
     t = np.arange(n) / SR
-    p = 2.8 - 1.0 * vel                      # тихіше — темніше; фонове фортепіано без дзвінкого верху
+    p = 2.2 - 0.9 * vel                      # тихіше — мʼякше, але з повітрям у верхах
     B = 0.00015 + 0.0006 * max(0.0, (midi - 40) / 60)
     k = 6.9 / t60
     y = np.zeros(n)
-    nh = int(min(8, (SR * 0.45) // f0))
+    nh = int(min(14, (SR * 0.45) // f0))
     for h in range(1, nh + 1):
         fh = h * f0 * math.sqrt(1 + B * h * h)
         if fh > SR * 0.45:
@@ -64,11 +64,11 @@ def piano_note(midi, vel_q, dur_q):
         env = np.exp(-t * k * (1 + 0.2 * (h - 1))) * (0.7 + 0.3 * np.exp(-t * 9))
         ph = (h * 1.7) % 6.283
         y += a * env * (np.sin(2 * math.pi * fh * t + ph) + 0.5 * np.sin(2 * math.pi * fh * 1.0009 * t))
-    y *= 1 - np.exp(-t / 0.014)   # повільна атака: нота «випливає», а не бʼє
+    y *= 1 - np.exp(-t / 0.008)   # мʼяка атака: нота «випливає», а не бʼє
     hn = int(0.006 * SR)
     hammer = np.random.RandomState(midi).randn(hn) * np.exp(-np.arange(hn) / (0.0015 * SR))
     hammer = np.convolve(hammer, np.ones(8) / 8, mode='same')
-    y[:hn] += hammer * 0.04 * vel
+    y[:hn] += hammer * 0.08 * vel
     i0 = int(dur * SR)
     if i0 < n:
         y[i0:] *= np.exp(-(t[i0:] - dur) * 9)
@@ -255,7 +255,7 @@ def tex_musicbox(pc, bar, chord, vel, sec):
     """3/4: три тихі короткі ноти у верхньому регістрі й мʼякий бас на першій долі."""
     t0 = pc.bar_t(bar)
     pc.note(t0, pc.root - 24 + chord[0], pc.spb * 2.5, vel - 0.08)
-    tones = pc.tones(chord, pc.root, pc.root + 19)   # середній регістр, без дзвінких верхів
+    tones = pc.tones(chord, pc.root + 7, pc.root + 26)   # світлий, але не дзвінкий регістр
     pattern = [0, 1, 2] if bar % 2 == 0 else [2, 1, 3]
     for k, idx in enumerate(pattern):
         pc.note(t0 + k * pc.spb, tones[idx % len(tones)], pc.spb * 1.1, vel - 0.12 + (0.03 if k == 0 else 0))
@@ -298,11 +298,11 @@ EPISODES = {
     'conflict': dict(
         id='conflict', root=62, scale=MINOR, bpm=60, beats=4, duration=107.5, seed=7,
         texture=tex_broken, cells=[[4], [2, 2], [3, 1], [2, -2], [-1, 3]], strong=[0, 2],
-        melody_range=(62, 76), pad_octave=4, room=(3.6, 0.7), pad_level=0.22, melody_every=2,
+        melody_range=(67, 81), pad_octave=4, room=(3.6, 0.55), pad_level=0.16, melody_every=2,
         form=[
             sec([i_m, i_m], 0.26),
             sec([i_m, VI_m, III_m, VII_m, i_m, iv_m, V_m, i_m], 0.34, melody=True),
-            sec([iv_m, iio, V7_m, V7_m, VI_m, iio, V7_m, V7_m], 0.42, melody=True, tension=True),
+            sec([iv_m, VI_m, V_m, i_m, VI_m, iv_m, V_m, i_m], 0.40, melody=True, tension=True),
             sec([i_m, VI_m, iv_m, V_m, i_m, VI_m, V_m, I_pic], 0.32, melody=True),
         ],
         final=dict(lh=[-24, -12], rh=[0, 4, 7, 12]),
@@ -310,7 +310,7 @@ EPISODES = {
     'file-states': dict(
         id='file-states', root=60, scale=MAJOR, bpm=80, beats=3, duration=93.5, seed=11,
         texture=tex_musicbox, cells=[[3], [2, 1], [1, 2], [2, -1]], strong=[0], melody_every=2,
-        melody_range=(55, 67), pad_octave=4, room=(2.8, 0.6), pad_level=0.2,
+        melody_range=(62, 74), pad_octave=4, room=(2.8, 0.5), pad_level=0.15,
         form=[
             sec([I, I], 0.28),
             sec([I, V, vi, IV, I, V, ii, V], 0.36),
@@ -324,7 +324,7 @@ EPISODES = {
     'pull-request': dict(
         id='pull-request', root=65, scale=MAJOR, bpm=168, beats=6, duration=102.5, seed=23,  # пульс вісімок; чвертка з крапкою = 56
         texture=tex_rolling, cells=[[6], [3, 3], [4, 2], [3, -3], [2, 4]], strong=[0, 3], melody_every=2,
-        melody_range=(62, 74), pad_octave=4, room=(3.2, 0.65), pad_level=0.2,
+        melody_range=(65, 79), pad_octave=4, room=(3.2, 0.55), pad_level=0.15,
         form=[
             sec([I, I], 0.28),
             sec([I, IV, I, V, vi, IV, ii, V], 0.36),
@@ -339,7 +339,7 @@ EPISODES = {
     'protected-main': dict(
         id='protected-main', root=57, scale=MAJOR, bpm=54, beats=4, duration=105.5, seed=31,
         texture=tex_chorale, cells=[[4], [2, 2], [3, 1], [-2, 2]], strong=[0, 2],
-        melody_range=(62, 74), pad_octave=4, room=(4.0, 0.7), pad_level=0.24, melody_every=2,
+        melody_range=(67, 79), pad_octave=4, room=(4.0, 0.6), pad_level=0.18, melody_every=2,
         form=[
             sec([I, I], 0.26),
             sec([I, V, vi, IV, I, IV, V, I], 0.34),
@@ -351,8 +351,8 @@ EPISODES = {
 }
 
 
-def write_mp3(L, R, path, target_rms_db=-23.0, ceiling=0.6):
-    """Однакова гучність для всіх епізодів (RMS −23 dBFS, рівень фону під голос) і мʼякий лімітер."""
+def write_mp3(L, R, path, target_rms_db=-21.0, ceiling=0.6):
+    """Однакова гучність для всіх епізодів (RMS −21 dBFS, рівень фону під голос) і мʼякий лімітер."""
     x = np.stack([L, R], axis=1)
     rms = math.sqrt(float(np.mean(x ** 2))) + 1e-9
     x *= 10 ** (target_rms_db / 20) / rms
@@ -367,8 +367,8 @@ def write_mp3(L, R, path, target_rms_db=-23.0, ceiling=0.6):
     os.remove(wav)
 
 
-def lowpass(x, fc=2500.0):
-    """Мʼякий зріз верху (2-й порядок) через FFT — фортепіано відходить на задній план."""
+def lowpass(x, fc=9000.0):
+    """Дуже мʼякий зріз лише самого верху (2-й порядок, 9 кГц) — прибирає скло, не темнить."""
     X = np.fft.rfft(x)
     f = np.fft.rfftfreq(len(x), 1 / SR)
     return np.fft.irfft(X / np.sqrt(1 + (f / fc) ** 4), len(x))
