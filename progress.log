@@ -1,0 +1,191 @@
+# design-process-help — Progress Log
+
+Project status and the build log. Kept out of `AGENTS.md` so that file stays short: short instruction
+files load fully every session and get followed more closely. Rules live in `AGENTS.md`, history here.
+
+## Status
+
+| Area | State |
+| --- | --- |
+| Practice app (Nimbus) | ✅ three screens: `#/dashboard`, `#/settings`, `#/ui-kit`, built from tokens and shared components |
+| Design system | ✅ tokens + Badge, Button, Card, CodeHint, Logo, Toggle, every variant shown on `#/ui-kit` |
+| Slide deck | ✅ 13 slides, `docs/presentation/` |
+| 3D episodes | 🟡 5 shipped (00, 01, 02, 03, 05), 26 topics queued in `ANIMATIONS.md` |
+| Podcast | ✅ 2 episodes, `docs/podcast/` |
+| Harness reading page | ✅ 5 materials, `docs/harness/` + NotebookLM sources |
+| GitHub Pages | ✅ live at https://eleken-git.github.io/design-process-help/ |
+| Tests | ✅ Playwright: app, landing, deck, player, 3D overlap checks |
+
+## Progress Log
+
+> Append a new entry at the bottom after each finished piece of work. Newest last. Never rewrite past
+> entries. Format:
+>
+> ```
+> ### YYYY-MM-DD — <title>
+> - Built: <what>
+> - Files: <added/changed>
+> - Tests: <what was run and the result>
+> - Merged: <PR link or "direct to main" or "not merged">
+> - Notes / follow-ups: <anything worth remembering>
+> ```
+
+<!-- progress entries go below this line -->
+
+### 2026-09-10 — Foundations: three-layer architecture and the rules
+
+- Built: the design-in-code workflow — folder architecture (`tokens → components → screens`), branch and
+  PR rules, the designer-facing deck.
+- Files: added `README.md`, `CLAUDE.md`, `PRACTICE.md`, `.github/PULL_REQUEST_TEMPLATE.md`,
+  `.github/CODEOWNERS`, the initial deck under `docs/`.
+- Tests: n/a (docs and scaffolding).
+- Merged: direct to main (pre-PR-workflow phase).
+- Notes / follow-ups: the rule "add a variant, never change a default" is the spine of everything that
+  followed; the deck and the app both illustrate it.
+
+### 2026-09-10 — Practice app Nimbus
+
+- Built: Vite + React + TypeScript app with a hash router and three screens: Dashboard, Settings, UI kit.
+  Shared components Badge, Button, Card, CodeHint, Toggle on top of CSS-variable tokens.
+- Files: added `src/tokens/*`, `src/components/*`, `src/screens/*`, `vite.config.ts`, `tsconfig.json`.
+- Tests: `npm run typecheck && npm run build` green.
+- Merged: direct to main.
+- Notes / follow-ups: every screen ends with a `CodeHint` telling the designer which folder and branch
+  name belong to it.
+
+### 2026-09-10 — Slide deck for designers
+
+- Built: the 13-slide deck: Figma → GitHub vocabulary, branches, PR, shared components, conflicts.
+  Sidebar navigation, keyboard control, light/dark toggle.
+- Files: `docs/presentation/index.html`.
+- Tests: `tests/deck.spec.ts` (menu and slide navigation).
+- Merged: direct to main.
+- Notes / follow-ups: plain-language pass removed jargon; every slide maps to a section of `README.md`.
+
+### 2026-09-10 — 3D player engine and the first episodes
+
+- Built: the Three.js engine (`docs/3d/engine.js`): scene primitives, canvas textures, HUD, camera
+  keyframes, chapters, YouTube-style controls, per-episode music. Episodes 00 (conflict), 01 (file
+  states), 02 (Pull Request lifecycle), 03 (protected main).
+- Files: added `docs/3d/index.html`, `docs/3d/engine.js`, `docs/3d/episodes/*.js` + `*.mp3`,
+  `ANIMATIONS.md` with the backlog of 30 topics.
+- Tests: `tests/3d-episodes.spec.ts` — walks every section of every episode and fails on plates, cards or
+  lines overlapping the caption text; frames saved to `test-results/frames/<episode>/`.
+- Merged: direct to main.
+- Notes / follow-ups: the overlap test caught most layout problems; camera keyframes and label positions
+  were tuned per episode until it went green.
+
+### 2026-09-11 — Landing hub on GitHub Pages
+
+- Built: `docs/index.html` as the Pages root with a card per section, breadcrumbs back from every page,
+  and `npm run build:pages` producing the static app into `docs/app/`.
+- Files: `docs/index.html`, `vite.config.ts` (pages mode), `tests/landing.spec.ts`.
+- Tests: landing spec — every section answers 200, the app mounts without console errors.
+- Merged: direct to main.
+- Notes / follow-ups: `docs/` is the Pages root, so anything added there becomes public.
+
+### 2026-09-11 — Nimbus logo and UI kit redesign (PR #1)
+
+- Built: a shared `Logo` component — a bold monogram N with soft shoulders, single color, no tile and no
+  gradient, with `size` and `name` props. The UI kit screen became a real component library: sticky side
+  navigation with the active section highlighted, a "Foundations" section (logo, colors, type, spacing,
+  radii — values read live from CSS), each variant captioned with its props, props tables with required
+  props marked.
+- Files: added `src/components/Logo/*`, `src/screens/ui-kit/components/{KitNav,Section,Canvas,Tokens,PropsTable}`;
+  rewrote `src/screens/ui-kit/UiKit.tsx`, updated `src/App.tsx`.
+- Tests: `npm run typecheck && npm run build` green; `tests/app.spec.ts` 3/3.
+- Merged: https://github.com/eleken-git/design-process-help/pull/1
+- Notes / follow-ups: the first logo attempt (cloud on a gradient app tile) was rejected; a sheet of six
+  candidates rendered side by side settled it in one round. Offer option sheets for brand work.
+
+### 2026-09-11 — Clearer landing card copy (PR #2)
+
+- Built: rewrote the three landing card titles and descriptions so each says what is inside and why to
+  open it.
+- Files: `docs/index.html`.
+- Tests: `tests/landing.spec.ts` 7/7.
+- Merged: https://github.com/eleken-git/design-process-help/pull/2
+
+### 2026-09-11 — Generated music per episode (PR #3)
+
+- Built: `scripts/compose-music.py` (numpy + lame) — a piano composer giving every episode its own key,
+  tempo, meter, texture and reverb room. Iterated from "one pattern, too busy" to background music under
+  a voice: sparse, soft attack, pad-led, normalized to about −21 dBFS. Episode 00 later moved from D
+  minor to a warm G major on request.
+- Files: added `scripts/compose-music.py`; regenerated all four `docs/3d/episodes/*.mp3`.
+- Tests: spectral check of every track (loudness, brightness, onset rate, detected pulse, key) plus
+  `npm run test:e2e`.
+- Merged: https://github.com/eleken-git/design-process-help/pull/3
+- Notes / follow-ups: regenerate one track with `python3 scripts/compose-music.py <episode-id>`.
+
+### 2026-09-11 — Music in the 3D player stopped dropping out (PR #4)
+
+- Built: root cause was the animation loop reseeking the audio every frame while
+  `python3 -m http.server` served no Range requests, so the track restarted 60 times a second (589 seeks
+  in 10 s, `currentTime` stuck at 0). The track is now seeked only on an explicit user action, and while
+  it plays the animation follows the audio clock. The muted button no longer flips `musicOn` when it
+  means "enable sound". Replaced the local docs server with `scripts/serve-docs.mjs` (Range support).
+- Files: `docs/3d/engine.js`, added `scripts/serve-docs.mjs`, `package.json` (`npm run docs`),
+  `.claude/launch.json`, `playwright.config.ts`, `tests/player.spec.ts`.
+- Tests: two new player specs, red before the fix and green after; 0 seeks in 10 s at 60 and at 51 fps.
+- Merged: https://github.com/eleken-git/design-process-help/pull/4
+
+### 2026-09-11 — Podcast player (PR #5)
+
+- Built: `docs/podcast/` — a Spotify-shaped player: hero with cover and a big play button, episode rows,
+  a fixed now-playing bar with −15/play/+15, a seek bar with buffer, speed and volume, keyboard control,
+  Media Session metadata, remembered position. Started with one episode, later extended to two with
+  per-episode saved positions and auto-advance.
+- Files: added `docs/podcast/index.html`, `docs/podcast/*.m4a`; updated `docs/index.html`,
+  `tests/landing.spec.ts`, `README.md`.
+- Tests: landing spec covers the page, duration read from the file, ±15 s, and switching to episode 2.
+- Merged: https://github.com/eleken-git/design-process-help/pull/5
+
+### 2026-09-11 — "Buduiemo kharnes" reading page (PR #9)
+
+- Built: `docs/harness/` explaining five materials in plain Ukrainian, each as "what it is / the main
+  points / what we take from it" with a link to the original: Karpathy's LLM Wiki, AGENTS.md, SDD,
+  Spec Kit, Superpowers. Sticky side navigation highlights the section on screen. Added a wide landing
+  card, a root `AGENTS.md`, and NotebookLM source texts plus per-material podcast prompts.
+- Files: added `docs/harness/index.html`, `docs/harness/notebooklm/*.md`, `AGENTS.md`; updated
+  `docs/index.html`, `tests/landing.spec.ts`, `README.md`.
+- Tests: landing spec — the page opens without JS errors, five materials, five nav items, links to all
+  five originals.
+- Merged: https://github.com/eleken-git/design-process-help/pull/9
+- Notes / follow-ups: all five summaries were written from the fetched originals, not from memory.
+
+### 2026-09-11 — "Next episodes" panel and episode 05 (PR #10)
+
+- Built: a "Наступні" panel in the player — three steps explaining how to order an episode through Claude
+  plus all queued topics grouped as in `ANIMATIONS.md`; clicking a topic copies a ready request. Episode
+  05 "merge main vs rebase main": two worlds side by side, ghost commits after the rebase, the colleague's
+  broken PR, and the team rule as two cards.
+- Files: added `docs/3d/backlog.js`, `docs/3d/episodes/merge-vs-rebase.{js,mp3}`; updated
+  `docs/3d/index.html`, `docs/3d/engine.js`, `tests/player.spec.ts`, `tests/3d-episodes.spec.ts`,
+  `ANIMATIONS.md`, `README.md`.
+- Tests: `npm run test:e2e` 22/22; overlap report for episode 05 clean after moving labels and cameras.
+- Merged: https://github.com/eleken-git/design-process-help/pull/10
+- Notes / follow-ups: stacked PRs (#6, #7, #8) broke when their base branches were squash-merged and
+  deleted — GitHub closed the children. Their commits were cherry-picked onto fresh branches from `main`
+  and reopened as #9 and #10. Branch every PR off `main`.
+
+### 2026-09-11 — Public preview rebuilt (PR #11)
+
+- Built: `npm run build:pages` after the merges so `docs/app/` on GitHub Pages carries the new logo and
+  UI kit.
+- Files: `docs/app/*`.
+- Tests: polled the live Pages URL until the new landing, episode 05 and the second podcast answered.
+- Merged: https://github.com/eleken-git/design-process-help/pull/11
+
+### 2026-09-11 — Documentation split by audience: English for agents, Ukrainian for designers
+
+- Built: `AGENTS.md` became the single English rule set (143 lines, cap 300) covering the language policy,
+  architecture, branches and PRs, commands, the `docs/` map, 3D episode production and this log.
+  `CLAUDE.md` is now only a pointer to it. Translated `ANIMATIONS.md` and the three `src/*/README.md`
+  files to English. Created this file.
+- Files: rewrote `AGENTS.md`, `CLAUDE.md`, `ANIMATIONS.md`, `src/{tokens,components,screens}/README.md`;
+  added `progress.log`; updated `README.md` and the harness page where they described the old setup.
+- Tests: `npm run typecheck && npm run build` green; `npm run test:e2e` green.
+- Merged: see the PR opened for this change.
+- Notes / follow-ups: everything a designer sees — `README.md`, `PRACTICE.md`, every page under `docs/`,
+  UI strings, code comments, commit messages — stays Ukrainian.
