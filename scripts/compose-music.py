@@ -5,13 +5,14 @@
 У кожного епізоду своя тональність, темп, розмір, фактура і «кімната» реверберації,
 щоб треки не звучали як один патерн:
 
-  00 conflict        ре мінор,  72 bpm, 4/4 — розкладені акорди й мелодія; напруга в середині
-                     (домінантовий педаль, зменшений акорд), мажорна каденція в кінці
-  01 file-states     до мажор,  96 bpm, 3/4 — «музична скринька»: стакато-арпеджіо у верхньому
-                     регістрі, легкий бас, контрмелодія в середньому регістрі
-  02 pull-request    фа мажор,  ♩.≈67, 6/8 — хвилясте арпеджіо лівої руки, довгі фрази мелодії
-  03 protected-main  ля мажор,  60 bpm, 4/4 — хорал: акорди на весь такт, октавний бас,
-                     рідка висока мелодія від третьої фрази
+  00 conflict        ре мінор,  60 bpm, 4/4 — бас і один тон акорду на такт, повільна мелодія;
+                     напруга в середині (домінантовий педаль, зменшений акорд), мажорна каденція
+  01 file-states     до мажор,  80 bpm, 3/4 — «музична скринька»: три тихі ноти на такт у верхньому
+                     регістрі, мʼякий бас, рідка контрмелодія
+  02 pull-request    фа мажор,  ♩.≈56, 6/8 — хвиля з трьох нот на такт у лівій руці, довгі фрази
+  03 protected-main  ля мажор,  54 bpm, 4/4 — хорал: акорд на весь такт, октавний бас, рідка мелодія
+
+Спокійний характер: 1–1.5 ноти на секунду, тихі швидкості (0.35–0.55), пед і довга реверберація.
 
 Запуск: python3 scripts/compose-music.py [conflict file-states pull-request protected-main]
 Потрібні: numpy, lame (brew install lame). Тривалість треків дорівнює тривалості епізодів.
@@ -49,7 +50,7 @@ def piano_note(midi, vel_q, dur_q):
     length = dur + min(t60, 3.5)
     n = int(length * SR)
     t = np.arange(n) / SR
-    p = 2.0 - 1.0 * vel                      # тихіше — темніше
+    p = 2.3 - 1.1 * vel                      # тихіше — темніше
     B = 0.00015 + 0.0006 * max(0.0, (midi - 40) / 60)
     k = 6.9 / t60
     y = np.zeros(n)
@@ -66,7 +67,7 @@ def piano_note(midi, vel_q, dur_q):
     hn = int(0.006 * SR)
     hammer = np.random.RandomState(midi).randn(hn) * np.exp(-np.arange(hn) / (0.0015 * SR))
     hammer = np.convolve(hammer, np.ones(8) / 8, mode='same')
-    y[:hn] += hammer * 0.3 * vel
+    y[:hn] += hammer * 0.18 * vel
     i0 = int(dur * SR)
     if i0 < n:
         y[i0:] *= np.exp(-(t[i0:] - dur) * 9)
@@ -196,7 +197,7 @@ class Piece:
                     step = abs(step) or 1
                 nxt = sc[max(0, min(len(sc) - 1, i + step))]
             self.cur = nxt
-            self.note(self.bar_t(bar) + pos * self.spb, nxt, d * self.spb * 0.92, vel + (0.08 if strong else 0))
+            self.note(self.bar_t(bar) + pos * self.spb, nxt, d * self.spb * 0.95, vel + (0.04 if strong else 0))
             pos += d
 
 
@@ -215,8 +216,9 @@ def compose(cfg):
         vel = sec['vel']
         pc.pad(bar, 1, chord, octave=cfg.get('pad_octave', 4))
         cfg['texture'](pc, bar, chord, vel, sec)
-        if sec.get('melody'):
-            ph = bar % 4
+        every = cfg.get('melody_every', 1)  # мелодія не в кожному такті — більше повітря
+        if sec.get('melody') and bar % every == 0:
+            ph = (bar // every) % 4
             if ph == 0:
                 motif = {}
             if ph == 3:
@@ -226,69 +228,58 @@ def compose(cfg):
                     motif[ph] = cfg['cells'][pc.rng.randint(len(cfg['cells']))]
                 cell = motif[ph]
             lo, hi = cfg['melody_range']
-            pc.melody_bar(bar, chord, lo, hi, cell, vel + 0.05, cfg['strong'])
+            pc.melody_bar(bar, chord, lo, hi, cell, vel + 0.02, cfg['strong'])
 
     # фінальний акорд і хвіст
     final = cfg['final']
     t = end_t
     for m in final['lh']:
-        pc.note(t, cfg['root'] + m, 6.0, 0.5)
+        pc.note(t, cfg['root'] + m, 6.0, 0.4)
     for k, m in enumerate(final['rh']):
-        pc.note(t + 0.03 * k, cfg['root'] + m, 6.0, 0.48)
+        pc.note(t + 0.03 * k, cfg['root'] + m, 6.0, 0.38)
     pc.pads.append((t, cfg['duration'] - 2.5, [cfg['root'] + m for m in final['rh']]))
     return pc
 
 
 # фактури -------------------------------------------------------------------
 def tex_broken(pc, bar, chord, vel, sec):
-    """4/4: бас на 1, далі тони акорду четвертними — розкладений акорд у лівій руці."""
-    root = pc.root - 24 + chord[0]
+    """4/4: бас на весь такт і один тон акорду на третій долі — дві ноти на такт."""
     t0 = pc.bar_t(bar)
-    pc.note(t0, root, pc.spb * 4, vel)
+    pc.note(t0, pc.root - 24 + chord[0], pc.spb * 4, vel)
     tones = pc.tones(chord, pc.root - 12, pc.root + 4)
-    seq = [tones[1 % len(tones)], tones[2 % len(tones)], tones[1 % len(tones)]]
-    for k, m in enumerate(seq):
-        pc.note(t0 + (k + 1) * pc.spb, m, pc.spb * 1.6, vel - 0.12)
-    if sec.get('tension'):  # напруга: нижній тон акорду ще й на четвертій долі, тихо
-        pc.note(t0 + 3.5 * pc.spb, tones[0], pc.spb, vel - 0.2)
+    pc.note(t0 + 2 * pc.spb, tones[1 % len(tones)], pc.spb * 2, vel - 0.12)
+    if sec.get('tension'):  # напруга: ще квінта на другій долі, тихо
+        pc.note(t0 + pc.spb, tones[2 % len(tones)], pc.spb * 1.5, vel - 0.2)
 
 
 def tex_musicbox(pc, bar, chord, vel, sec):
-    """3/4: шість вісімок стакато у верхньому регістрі + легкий бас на 1 і квінта на 2."""
+    """3/4: три тихі короткі ноти у верхньому регістрі й мʼякий бас на першій долі."""
     t0 = pc.bar_t(bar)
-    root = pc.root - 24 + chord[0]
-    pc.note(t0, root, pc.spb * 0.6, vel - 0.05)
-    fifth = pc.root - 12 + chord[0] + 7
-    pc.note(t0 + pc.spb, fifth, pc.spb * 0.5, vel - 0.25)
+    pc.note(t0, pc.root - 24 + chord[0], pc.spb * 2.5, vel - 0.08)
     tones = pc.tones(chord, pc.root + 12, pc.root + 31)
-    pattern = [0, 1, 2, 3, 2, 1] if bar % 2 == 0 else [2, 1, 0, 1, 2, 3]
+    pattern = [0, 1, 2] if bar % 2 == 0 else [2, 1, 3]
     for k, idx in enumerate(pattern):
-        m = tones[idx % len(tones)]
-        pc.note(t0 + k * pc.spb / 2, m, pc.spb * 0.28, vel - 0.1 + (0.06 if k == 0 else 0))
+        pc.note(t0 + k * pc.spb, tones[idx % len(tones)], pc.spb * 0.45, vel - 0.14 + (0.05 if k == 0 else 0))
 
 
 def tex_rolling(pc, bar, chord, vel, sec):
-    """6/8: хвиля вісімками — основа, квінта, октава, терція, квінта, терція."""
+    """6/8: три ноти на такт — основа, квінта, децима — кожна на дві вісімки."""
     t0 = pc.bar_t(bar)
     r = pc.root - 24 + chord[0]
     third = chord[1] - chord[0]
-    seq = [r, r + 7, r + 12, r + 12 + third, r + 19, r + 12 + third]
-    for k, m in enumerate(seq):
-        pc.note(t0 + k * pc.spb, m, pc.spb * 1.9, vel - 0.14 + (0.1 if k == 0 else 0) + (0.04 if k == 3 else 0))
+    for k, m in enumerate([r, r + 7, r + 12 + third]):
+        pc.note(t0 + 2 * k * pc.spb, m, pc.spb * 2.6, vel - 0.12 + (0.08 if k == 0 else 0))
 
 
 def tex_chorale(pc, bar, chord, vel, sec):
-    """4/4: октавний бас і тісний тризвук на весь такт, тихий повтор на третій долі."""
+    """4/4: октавний бас і тісний тризвук на весь такт, без повторів."""
     t0 = pc.bar_t(bar)
     r = pc.root - 24 + chord[0]
     pc.note(t0, r, pc.spb * 4, vel)
     pc.note(t0 + 0.02, r + 12, pc.spb * 4, vel - 0.1)
     tones = pc.tones(chord, pc.root - 3, pc.root + 9)[:3]
     for k, m in enumerate(tones):
-        pc.note(t0 + 0.04 + 0.03 * k, m, pc.spb * 3.9, vel - 0.12)
-    if sec.get('restrike', True):
-        for k, m in enumerate(tones):
-            pc.note(t0 + 2 * pc.spb + 0.03 * k, m, pc.spb * 1.9, vel - 0.3)
+        pc.note(t0 + 0.04 + 0.03 * k, m, pc.spb * 3.9, vel - 0.14)
 
 
 # акорди як зсуви від тоніки -------------------------------------------------
@@ -306,65 +297,63 @@ def sec(chords, vel, **kw):
 
 EPISODES = {
     'conflict': dict(
-        id='conflict', root=62, scale=MINOR, bpm=72, beats=4, duration=107.5, seed=7,
-        texture=tex_broken, cells=[[2, 1, 1], [1, 1, 2], [3, 1], [1.5, 0.5, 2], [2, 2]], strong=[0, 2],
-        melody_range=(69, 86), pad_octave=4, room=(2.8, 0.34),
+        id='conflict', root=62, scale=MINOR, bpm=60, beats=4, duration=107.5, seed=7,
+        texture=tex_broken, cells=[[4], [2, 2], [3, 1], [2, -2], [-1, 3]], strong=[0, 2],
+        melody_range=(69, 84), pad_octave=4, room=(3.0, 0.4), pad_level=0.075,
         form=[
-            sec([i_m, i_m], 0.42),
-            sec([i_m, VI_m, III_m, VII_m, i_m, iv_m, V_m, i_m], 0.52, melody=True),
-            sec([i_m, VI_m, III_m, VII_m, iv_m, i_m, V_m, i_m], 0.56, melody=True),
-            sec([iv_m, iio, V7_m, V7_m, VI_m, iio, V7_m, V7_m], 0.66, melody=True, tension=True),
-            sec([i_m, VI_m, iv_m, V_m, I_pic], 0.5, melody=True),
+            sec([i_m, i_m], 0.36),
+            sec([i_m, VI_m, III_m, VII_m, i_m, iv_m, V_m, i_m], 0.44, melody=True),
+            sec([iv_m, iio, V7_m, V7_m, VI_m, iio, V7_m, V7_m], 0.52, melody=True, tension=True),
+            sec([i_m, VI_m, iv_m, V_m, i_m, VI_m, V_m, I_pic], 0.42, melody=True),
         ],
         final=dict(lh=[-24, -12], rh=[0, 4, 7, 12]),
     ),
     'file-states': dict(
-        id='file-states', root=60, scale=MAJOR, bpm=96, beats=3, duration=93.5, seed=11,
-        texture=tex_musicbox, cells=[[1, 1, 1], [2, 1], [1, 2], [1, -1, 1]], strong=[0],
-        melody_range=(60, 74), pad_octave=4, room=(1.7, 0.24),
+        id='file-states', root=60, scale=MAJOR, bpm=80, beats=3, duration=93.5, seed=11,
+        texture=tex_musicbox, cells=[[3], [2, 1], [1, 2], [2, -1]], strong=[0], melody_every=2,
+        melody_range=(60, 72), pad_octave=4, room=(2.0, 0.3), pad_level=0.07,
         form=[
-            sec([I, I], 0.46),
-            sec([I, V, vi, IV, I, V, ii, V], 0.55),
-            sec([I, V, vi, IV, I, V, ii, V], 0.58, melody=True),
-            sec([vi, iii, IV, I, ii, V, I, I], 0.62, melody=True),
-            sec([IV, I, IV, I, V, I, I, I], 0.56, melody=True),
-            sec([IVadd9, I, V, I, IVadd9, I, V, I, I, I, I, I, I], 0.5),
+            sec([I, I], 0.38),
+            sec([I, V, vi, IV, I, V, ii, V], 0.46),
+            sec([I, V, vi, IV, I, V, ii, V], 0.48, melody=True),
+            sec([vi, iii, IV, I, ii, V, I, I], 0.5, melody=True),
+            sec([I, V, vi, IV, I, V, ii, V], 0.46, melody=True),
+            sec([IVadd9, I, V, I, I, I], 0.4),
         ],
         final=dict(lh=[-24, -12], rh=[4, 7, 12, 16]),
     ),
     'pull-request': dict(
-        id='pull-request', root=65, scale=MAJOR, bpm=200, beats=6, duration=102.5, seed=23,  # пульс вісімок; чвертка з крапкою ≈ 67
-        texture=tex_rolling, cells=[[3, 3], [3, 2, 1], [2, 1, 3], [4, 2], [1, 1, 1, 3]], strong=[0, 3],
-        melody_range=(69, 84), pad_octave=4, room=(2.2, 0.28),
+        id='pull-request', root=65, scale=MAJOR, bpm=168, beats=6, duration=102.5, seed=23,  # пульс вісімок; чвертка з крапкою = 56
+        texture=tex_rolling, cells=[[6], [3, 3], [4, 2], [3, -3], [2, 4]], strong=[0, 3], melody_every=2,
+        melody_range=(69, 81), pad_octave=4, room=(2.6, 0.34), pad_level=0.07,
         form=[
-            sec([I, I], 0.45),
-            sec([I, IV, I, V, vi, IV, ii, V], 0.54),
-            sec([I, IV, I, V, vi, IV, ii, V], 0.58, melody=True),
-            sec([IV, V, iii, vi, ii, V, I, I], 0.64, melody=True),
-            sec([I, IV, I, V, vi, IV, ii, V], 0.6, melody=True),
-            sec([IV, V, iii, vi, ii, V, I, I], 0.62, melody=True),
-            sec([IV, I, IV, I, ii, V, Iadd9, Iadd9, I, I], 0.52, melody=True),
-            sec([I, I], 0.48),
+            sec([I, I], 0.38),
+            sec([I, IV, I, V, vi, IV, ii, V], 0.46),
+            sec([I, IV, I, V, vi, IV, ii, V], 0.48, melody=True),
+            sec([IV, V, iii, vi, ii, V, I, I], 0.52, melody=True),
+            sec([I, IV, I, V, vi, IV, ii, V], 0.48, melody=True),
+            sec([IV, I, IV, I, ii, V, Iadd9, Iadd9], 0.42, melody=True),
+            sec([I, I, I, I], 0.38),
         ],
         final=dict(lh=[-24, -12], rh=[0, 4, 7, 12]),
     ),
     'protected-main': dict(
-        id='protected-main', root=57, scale=MAJOR, bpm=60, beats=4, duration=105.5, seed=31,
-        texture=tex_chorale, cells=[[2, 2], [3, 1], [1, 1, 2], [4]], strong=[0, 2],
-        melody_range=(69, 81), pad_octave=4, room=(3.2, 0.38),
+        id='protected-main', root=57, scale=MAJOR, bpm=54, beats=4, duration=105.5, seed=31,
+        texture=tex_chorale, cells=[[4], [2, 2], [3, 1], [-2, 2]], strong=[0, 2],
+        melody_range=(69, 81), pad_octave=4, room=(3.4, 0.42), pad_level=0.08,
         form=[
-            sec([I, I], 0.42, restrike=False),
-            sec([I, V, vi, IV, I, IV, V, I], 0.52),
-            sec([vi, IV, I, V, ii, V, I, I], 0.6, melody=True),
-            sec([IV, I, V, I, IV, V, I], 0.56, melody=True),
+            sec([I, I], 0.36),
+            sec([I, V, vi, IV, I, IV, V, I], 0.44),
+            sec([vi, IV, I, V, ii, V, I, I], 0.5, melody=True),
+            sec([IV, I, V, I], 0.44, melody=True),
         ],
         final=dict(lh=[-24, -12], rh=[0, 4, 7, 12]),
     ),
 }
 
 
-def write_mp3(L, R, path, target_rms_db=-16.0, ceiling=0.8):
-    """Однакова гучність для всіх епізодів (RMS −16 dBFS) і мʼякий лімітер, щоб mp3 не кліпав."""
+def write_mp3(L, R, path, target_rms_db=-19.0, ceiling=0.75):
+    """Однакова гучність для всіх епізодів (RMS −19 dBFS) і мʼякий лімітер, щоб mp3 не кліпав."""
     x = np.stack([L, R], axis=1)
     rms = math.sqrt(float(np.mean(x ** 2))) + 1e-9
     x *= 10 ** (target_rms_db / 20) / rms
