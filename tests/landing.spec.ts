@@ -10,6 +10,31 @@ test.describe('лендінг-хаб docs/', () => {
     expect(html).toContain('href="presentation/"');
     expect(html).toContain('href="3d/"');
     expect(html).toContain('href="app/"');
+    expect(html).toContain('href="podcast/"');
+  });
+
+  test('GET /podcast/ → 200, плеєр з аудіо і кнопкою плей', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/podcast/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Дизайн у коді з Claude');
+    await expect(page.locator('#play')).toBeVisible();
+    await expect(page.locator('.track')).toHaveCount(2);                                  // два епізоди
+    await expect(page.locator('#nowTitle')).toHaveText('Спільна робота дизайнерів у Git через Claude');
+    // тривалість підставляється з файлу, коли браузер прочитав метадані
+    await expect(page.locator('#dur')).toHaveText(/^\d+:\d\d$/);
+    const duration = await page.evaluate(() => (document.getElementById('audio') as HTMLAudioElement).duration);
+    expect(duration, 'аудіофайл читається').toBeGreaterThan(60);
+    // перемотка ±15 с працює без відтворення
+    await page.locator('#fwd').click();
+    await expect(page.locator('#cur')).toHaveText('0:15');
+    await page.locator('#back').click();
+    await expect(page.locator('#cur')).toHaveText('0:00');
+    // другий епізод відкривається з рядка списку і стає «зараз грає» в нижній панелі
+    await page.locator('.track[data-n="2"]').click();
+    await expect(page.locator('#nowTitle')).toHaveText('Як приборкати Claude для дизайну інтерфейсів');
+    await expect.poll(() => page.evaluate(() => (document.getElementById('audio') as HTMLAudioElement).duration), { timeout: 10_000 }).toBeGreaterThan(1000);
+    expect(errors, 'помилки JS').toEqual([]);
   });
 
   test('GET /presentation/ → 200, перенесення нічого не зламало', async ({ request }) => {
@@ -49,6 +74,14 @@ test.describe('хлібні крихти назад на лендінг', () => 
     await expect(page.locator('#btnHome')).toBeVisible();
     await expect(page.locator('#btnPlay')).toBeVisible();
     await page.locator('#btnHome').click();
+    await expect(page).toHaveURL(BASE + '/');
+  });
+
+  test('подкаст: крихта "← design-process-help" веде на "../"', async ({ page }) => {
+    await page.goto(BASE + '/podcast/');
+    const link = page.locator('a.crumb-home');
+    await expect(link).toHaveAttribute('href', '../');
+    await link.click();
     await expect(page).toHaveURL(BASE + '/');
   });
 

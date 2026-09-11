@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Подкаст · Дизайн у коді з Claude</title>
+<meta name="description" content="Подкаст тренувального проєкту design-process-help: спільна робота дизайнерів у Git через Claude і як приборкати Claude для дизайну інтерфейсів.">
+<style>
+:root{
+  /* та сама палітра GitHub Dark, що й на лендінгу, у презентації та 3D-плеєрі */
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--inset:#010409;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --green:#3FB950;--green-hover:#56D364;--blue:#58A6FF;--orange:#F78166;
+  --hover:rgba(110,118,129,.12);
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --r:6px;--r-lg:8px;
+  --bar-h:96px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+h1,h2,h3,p{margin:0}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:var(--r)}
+
+.wrap{max-width:960px;margin:0 auto;padding:40px 24px calc(var(--bar-h) + 48px)}
+.crumb-home{display:inline-block;font:12px var(--mono);color:var(--muted);margin-bottom:36px}
+.crumb-home:hover{color:var(--text)}
+
+/* герой: обкладинка + назва + велика кнопка */
+.hero{display:grid;grid-template-columns:232px minmax(0,1fr);gap:32px;align-items:end;padding-bottom:32px;border-bottom:1px solid var(--border-muted)}
+.cover{width:232px;height:232px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);overflow:hidden;box-shadow:0 24px 48px rgba(1,4,9,.6)}
+.cover svg{display:block;width:100%;height:100%}
+.kind{font:12px var(--mono);color:var(--muted);margin-bottom:10px}
+.hero h1{font-size:40px;line-height:1.1;letter-spacing:-.02em;text-wrap:balance;margin-bottom:16px}
+.lead{color:var(--muted);font-size:15px;line-height:1.55;max-width:58ch;margin-bottom:14px}
+.meta{font:12px var(--mono);color:var(--faint);margin-bottom:24px}
+.actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.play-big{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px 0 18px;border-radius:999px;background:var(--green);color:var(--inset);font-weight:600;font-size:15px;transition:transform .12s ease,background .12s ease}
+.play-big:hover{background:var(--green-hover);transform:scale(1.03)}
+.play-big svg{width:18px;height:18px;fill:currentColor}
+.ghost{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-weight:600;font-size:13px}
+.ghost:hover{color:var(--text);border-color:var(--faint);background:var(--hover)}
+
+/* список епізодів — як треки в альбомі */
+.tracks{margin-top:8px}
+.tracks h2{font-size:12px;font-weight:600;color:var(--muted);text-transform:none;padding:20px 0 8px;display:grid;grid-template-columns:36px minmax(0,1fr) 36px 72px;gap:16px;border-bottom:1px solid var(--border-muted)}
+.tracks h2 span:last-child{text-align:right}
+.track{display:grid;grid-template-columns:36px minmax(0,1fr) 36px 72px;gap:16px;align-items:center;padding:12px 8px;margin:4px -8px 0;border-radius:var(--r);width:calc(100% + 16px);text-align:left;cursor:pointer}
+.track:hover{background:var(--hover)}
+.track .dl{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;color:var(--faint);opacity:0}
+.track:hover .dl,.track .dl:focus-visible{opacity:1}
+.track .dl:hover{color:var(--text);background:var(--hover);text-decoration:none}
+.track .dl svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.track .n{font:13px var(--mono);color:var(--faint);text-align:center;position:relative}
+.track .n svg{position:absolute;inset:0;margin:auto;width:14px;height:14px;fill:var(--text);opacity:0}
+.track:hover .n span,.track.playing .n span{opacity:0}
+.track:hover .n svg,.track.playing .n svg{opacity:1}
+.track.playing .n svg{fill:var(--green)}
+.track .t{min-width:0}
+.track .t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.track.playing .t b{color:var(--green)}
+.track .t small{color:var(--muted);font-size:12.5px}
+.track .d{font:13px var(--mono);color:var(--faint);text-align:right}
+
+/* дивись також */
+.more{margin-top:44px}
+.more h2{font-size:16px;margin-bottom:14px}
+.more .row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.more a{display:grid;gap:4px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);color:var(--text)}
+.more a:hover{border-color:var(--faint);background:var(--hover)}
+.more a b{font-weight:600}
+.more a span{color:var(--muted);font-size:12.5px}
+
+/* нижня панель «зараз грає» */
+.bar{position:fixed;left:0;right:0;bottom:0;height:var(--bar-h);background:var(--surface);border-top:1px solid var(--border);display:grid;grid-template-columns:1fr minmax(0,560px) 1fr;align-items:center;gap:16px;padding:0 20px}
+.now{display:flex;align-items:center;gap:12px;min-width:0}
+.now .thumb{width:56px;height:56px;border-radius:var(--r);overflow:hidden;flex:none;border:1px solid var(--border)}
+.now .thumb svg{display:block;width:100%;height:100%}
+.now .txt{min-width:0}
+.now b{display:block;font-weight:600;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.now small{color:var(--muted);font-size:12px}
+.center{display:grid;gap:8px;justify-items:center}
+.ctrls{display:flex;align-items:center;gap:22px}
+.ctrls .skip{width:32px;height:32px;display:grid;place-items:center;color:var(--muted);border-radius:50%}
+.ctrls .skip:hover{color:var(--text)}
+.ctrls .skip svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ctrls .skip small{position:absolute;font:9px var(--mono);font-weight:700}
+.ctrls .skip{position:relative}
+.play{width:40px;height:40px;border-radius:50%;background:var(--text);color:var(--inset);display:grid;place-items:center;transition:transform .1s ease}
+.play:hover{transform:scale(1.06)}
+.play svg{width:16px;height:16px;fill:currentColor}
+.seek{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:10px;align-items:center;width:100%}
+.seek time{font:12px var(--mono);color:var(--muted)}
+.seek time:last-child{text-align:right}
+.range{position:relative;height:16px;display:flex;align-items:center}
+.range .rail{position:absolute;left:0;right:0;height:4px;border-radius:2px;background:var(--border)}
+.range .buf{position:absolute;left:0;height:4px;border-radius:2px;background:var(--faint);width:0}
+.range .fill{position:absolute;left:0;height:4px;border-radius:2px;background:var(--text);width:0}
+.range:hover .fill,.range.dragging .fill{background:var(--green)}
+.range input{position:relative;width:100%;margin:0;height:16px;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
+.range input::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--text);opacity:0;transition:opacity .1s}
+.range:hover input::-webkit-slider-thumb,.range.dragging input::-webkit-slider-thumb{opacity:1}
+.range input::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;background:var(--text)}
+.right{display:flex;align-items:center;justify-content:flex-end;gap:16px}
+.speed{height:28px;min-width:44px;padding:0 10px;border:1px solid var(--border);border-radius:999px;font:12px var(--mono);color:var(--muted)}
+.speed:hover{color:var(--text);border-color:var(--faint)}
+.vol{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.vol svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.vol .range{width:96px}
+.hint{position:absolute;right:20px;top:-26px;font:11px var(--mono);color:var(--faint)}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;align-items:start}
+  .cover{width:180px;height:180px}
+  .hero h1{font-size:28px}
+  .more .row{grid-template-columns:1fr}
+  .bar{grid-template-columns:1fr;height:auto;padding:12px 16px 14px;gap:10px}
+  .now{display:none}
+  .right{display:none}
+  .wrap{padding-bottom:160px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></symbol>
+  <!-- обкладинка: хвиля з мʼяких стовпчиків на темному тлі -->
+  <symbol id="cover" viewBox="0 0 232 232">
+    <rect width="232" height="232" fill="#161B22"/>
+    <g fill="#3FB950">
+      <rect x="44" y="104" width="10" height="24" rx="5"/>
+      <rect x="62" y="84" width="10" height="64" rx="5"/>
+      <rect x="80" y="64" width="10" height="104" rx="5"/>
+      <rect x="98" y="92" width="10" height="48" rx="5"/>
+      <rect x="116" y="48" width="10" height="136" rx="5"/>
+      <rect x="134" y="80" width="10" height="72" rx="5"/>
+      <rect x="152" y="98" width="10" height="36" rx="5"/>
+      <rect x="170" y="70" width="10" height="92" rx="5"/>
+    </g>
+    <text x="116" y="206" text-anchor="middle" fill="#8B949E" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">design-process-help · подкаст</text>
+  </symbol>
+</svg>
+
+<main class="wrap">
+  <a class="crumb-home" href="../" title="На головну design-process-help">← design-process-help</a>
+
+  <section class="hero">
+    <div class="cover" aria-hidden="true"><svg><use href="#cover"/></svg></div>
+    <div class="info">
+      <p class="kind">Подкаст · <span id="heroCount">2 епізоди</span></p>
+      <h1>Дизайн у коді з Claude</h1>
+      <p class="lead">Два епізоди: як двоє дизайнерів працюють в одному репозиторії через Git, і як приборкати Claude для дизайну інтерфейсів. Плеєр запамʼятовує, де ти зупинився у кожному.</p>
+      <p class="meta">eleken-git · <span id="heroDur">31 хв</span> · українською</p>
+      <div class="actions">
+        <button class="play-big" id="heroPlay" type="button"><svg><use href="#i-play"/></svg><span>Слухати</span></button>
+        <a class="ghost" href="../presentation/">Слайди до теми</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="tracks" aria-label="Епізоди">
+    <h2><span>#</span><span>Назва</span><span></span><span>Тривалість</span></h2>
+    <div id="tracks"></div>
+  </section>
+
+  <section class="more">
+    <h2>Дивись також</h2>
+    <div class="row">
+      <a href="../presentation/"><b>Презентація</b><span>Слайди про правила гри на 10 хвилин</span></a>
+      <a href="../3d/"><b>Git у 3D</b><span>Чотири епізоди: стани файлу, PR, main, конфлікт</span></a>
+      <a href="../app/"><b>Nimbus</b><span>Тренувальний застосунок для вправ</span></a>
+    </div>
+  </section>
+</main>
+
+<footer class="bar" aria-label="Плеєр">
+  <div class="now">
+    <div class="thumb" aria-hidden="true"><svg><use href="#cover"/></svg></div>
+    <div class="txt"><b id="nowTitle">Спільна робота дизайнерів у Git через Claude</b><small id="nowSub">eleken-git · епізод 1</small></div>
+  </div>
+  <div class="center">
+    <div class="ctrls">
+      <button class="skip" id="back" type="button" title="Назад 15 с · ←"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v5h5"/></svg><small>15</small></button>
+      <button class="play" id="play" type="button" title="Плей / пауза · пробіл" aria-label="Відтворити"><svg><use href="#i-play"/></svg></button>
+      <button class="skip" id="fwd" type="button" title="Вперед 15 с · →"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></svg><small>15</small></button>
+    </div>
+    <div class="seek">
+      <time id="cur">0:00</time>
+      <div class="range" id="seekRange"><span class="rail"></span><span class="buf" id="buf"></span><span class="fill" id="fill"></span><input id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Позиція"></div>
+      <time id="dur">13:21</time>
+    </div>
+  </div>
+  <div class="right">
+    <button class="speed" id="speed" type="button" title="Швидкість">1×</button>
+    <div class="vol" title="Гучність">
+      <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>
+      <div class="range"><span class="rail"></span><span class="fill" id="volFill" style="width:100%"></span><input id="vol" type="range" min="0" max="100" value="100" aria-label="Гучність"></div>
+    </div>
+  </div>
+</footer>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+(() => {
+  const EPISODES = [
+    { n: 1, title: 'Спільна робота дизайнерів у Git через Claude', desc: 'Один репозиторій на двох, гілки, Pull Request, спільні компоненти, конфлікти', file: '01-designers-in-git.m4a', dur: '13:21' },
+    { n: 2, title: 'Як приборкати Claude для дизайну інтерфейсів', desc: 'Практика роботи з Claude над інтерфейсами: як ставити задачі і що перевіряти', file: '02-taming-claude-for-ui.m4a', dur: '17:30' },
+  ];
+  const $ = (id) => document.getElementById(id);
+  const audio = $('audio'), play = $('play'), heroPlay = $('heroPlay'), tracksEl = $('tracks');
+  const seek = $('seek'), seekRange = $('seekRange'), fill = $('fill'), buf = $('buf'), cur = $('cur'), dur = $('dur');
+  const speedBtn = $('speed'), vol = $('vol'), volFill = $('volFill'), nowTitle = $('nowTitle'), nowSub = $('nowSub');
+  const SPEEDS = [1, 1.25, 1.5, 2];
+  const fmt = (s) => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  let dragging = false, current = null;
+
+  // позиція в кожному епізоді, останній епізод, швидкість і гучність запамʼятовуються
+  const store = (k, v) => { try { localStorage.setItem('podcast-' + k, String(v)); } catch (e) {} };
+  const read = (k) => { try { return localStorage.getItem('podcast-' + k); } catch (e) { return null; } };
+  audio.playbackRate = Number(read('speed')) || 1;
+  audio.volume = read('vol') === null ? 1 : Number(read('vol'));
+  vol.value = String(Math.round(audio.volume * 100)); volFill.style.width = vol.value + '%';
+  speedBtn.textContent = audio.playbackRate + '×';
+
+  // список епізодів — як треки в альбомі
+  const rows = EPISODES.map((ep) => {
+    const row = document.createElement('div'); row.className = 'track'; row.dataset.n = String(ep.n); row.setAttribute('role', 'button'); row.tabIndex = 0; row.setAttribute('aria-label', 'Відтворити епізод ' + ep.n);
+    row.innerHTML = '<span class="n"><span>' + ep.n + '</span><svg><use href="#i-play"/></svg></span>' +
+      '<span class="t"><b></b><small></small></span>' +
+      '<a class="dl" href="' + ep.file + '" download title="Завантажити"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14"/></svg></a>' +
+      '<span class="d">' + ep.dur + '</span>';
+    row.querySelector('.t b').textContent = ep.title; row.querySelector('.t small').textContent = ep.desc;
+    row.addEventListener('click', (e) => { if (e.target.closest('a.dl')) return; if (current === ep) toggle(); else select(ep, true); });
+    row.addEventListener('keydown', (e) => { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); row.click(); } });
+    tracksEl.appendChild(row); return row;
+  });
+
+  function setIcon() {
+    const on = !audio.paused;
+    for (const b of [play, heroPlay]) b.querySelector('use').setAttribute('href', on ? '#i-pause' : '#i-play');
+    heroPlay.querySelector('span').textContent = on ? 'Пауза' : 'Слухати';
+    play.setAttribute('aria-label', on ? 'Пауза' : 'Відтворити');
+    rows.forEach((row, i) => { const active = current === EPISODES[i]; row.classList.toggle('playing', active && on); row.querySelector('.n use').setAttribute('href', active && on ? '#i-pause' : '#i-play'); });
+  }
+  function select(ep, autoplay) {
+    if (current === ep) return;
+    if (current && !audio.paused) store('pos-' + current.n, audio.currentTime);
+    current = ep; store('ep', ep.n);
+    audio.src = ep.file; audio.load();
+    nowTitle.textContent = ep.title; nowSub.textContent = 'eleken-git · епізод ' + ep.n;
+    dur.textContent = ep.dur; cur.textContent = '0:00'; seek.value = '0'; fill.style.width = '0%'; buf.style.width = '0%';
+    if ('mediaSession' in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: ep.title, artist: 'eleken-git', album: 'Дизайн у коді з Claude' });
+    setIcon();
+    if (autoplay) { const p = audio.play(); if (p && p.catch) p.catch(() => {}); }
+  }
+  function toggle() { if (audio.paused) { const p = audio.play(); if (p && p.catch) p.catch(() => {}); } else audio.pause(); }
+  play.onclick = heroPlay.onclick = toggle;
+
+  function paint() {
+    const d = audio.duration || 0;
+    if (!dragging) { seek.value = d ? String(Math.round(audio.currentTime / d * 1000)) : '0'; fill.style.width = (Number(seek.value) / 10) + '%'; cur.textContent = fmt(audio.currentTime); }
+    if (d && audio.buffered.length) buf.style.width = Math.min(100, audio.buffered.end(audio.buffered.length - 1) / d * 100) + '%';
+  }
+  audio.addEventListener('loadedmetadata', () => {
+    if (!current) return;
+    dur.textContent = fmt(audio.duration); rows[EPISODES.indexOf(current)].querySelector('.d').textContent = fmt(audio.duration);
+    const saved = Number(read('pos-' + current.n)); if (saved > 5 && saved < audio.duration - 10) audio.currentTime = saved;
+    paint();
+  });
+  audio.addEventListener('timeupdate', () => { paint(); if (!audio.paused && current) store('pos-' + current.n, audio.currentTime); });
+  audio.addEventListener('progress', paint);
+  audio.addEventListener('play', setIcon); audio.addEventListener('pause', setIcon);
+  audio.addEventListener('ended', () => {
+    if (current) store('pos-' + current.n, 0);
+    const next = EPISODES[EPISODES.indexOf(current) + 1];
+    if (next) select(next, true); else setIcon();
+  });
+
+  // перемотка: під час тягнення оновлюємо лише підпис, у трек пишемо на відпускання
+  const seekTo = () => { const d = audio.duration || 0; const t = Number(seek.value) / 1000 * d; fill.style.width = (Number(seek.value) / 10) + '%'; cur.textContent = fmt(t); return t; };
+  seek.addEventListener('pointerdown', () => { dragging = true; seekRange.classList.add('dragging'); });
+  seek.addEventListener('input', seekTo);
+  seek.addEventListener('change', () => { audio.currentTime = seekTo(); dragging = false; seekRange.classList.remove('dragging'); });
+  seek.addEventListener('pointerup', () => { dragging = false; seekRange.classList.remove('dragging'); });
+
+  const skip = (d) => { audio.currentTime = Math.min(Math.max(0, audio.currentTime + d), audio.duration || 0); paint(); };
+  $('back').onclick = () => skip(-15); $('fwd').onclick = () => skip(15);
+
+  speedBtn.onclick = () => { const i = (SPEEDS.indexOf(audio.playbackRate) + 1) % SPEEDS.length; audio.playbackRate = SPEEDS[i]; speedBtn.textContent = SPEEDS[i] + '×'; store('speed', SPEEDS[i]); };
+  vol.addEventListener('input', () => { audio.volume = Number(vol.value) / 100; volFill.style.width = vol.value + '%'; store('vol', audio.volume); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target && /INPUT|TEXTAREA|BUTTON/.test(e.target.tagName) && e.code !== 'Space') return;
+    if (e.target && e.target.classList && e.target.classList.contains('track')) return;
+    if (e.code === 'Space' || e.code === 'KeyK') { e.preventDefault(); toggle(); }
+    else if (e.code === 'ArrowLeft' || e.code === 'KeyJ') { e.preventDefault(); skip(-15); }
+    else if (e.code === 'ArrowRight' || e.code === 'KeyL') { e.preventDefault(); skip(15); }
+  });
+
+  // системний плеєр (macOS, навушники, екран блокування) керує відтворенням
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.setActionHandler('play', () => audio.play());
+    navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+    navigator.mediaSession.setActionHandler('seekbackward', () => skip(-15));
+    navigator.mediaSession.setActionHandler('seekforward', () => skip(15));
+  }
+  // відкриваємо останній прослуханий епізод (або перший), без автоплею
+  select(EPISODES.find((e) => String(e.n) === read('ep')) || EPISODES[0], false);
+  paint();
+  window.__podcast = { audio, toggle, skip, select, EPISODES };
+})();
+</script>
+</body>
+</html>
