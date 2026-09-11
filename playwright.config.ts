@@ -16,10 +16,11 @@ export default defineConfig({
     browserName: 'chromium',
     viewport: { width: 1280, height: 720 },
     deviceScaleFactor: 1,
-    launchOptions: { args: ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--force-color-profile=srgb'] },
+    // автоплей без жесту — щоб тести музики в 3D-плеєрі могли перевірити, що трек реально грає
+    launchOptions: { args: ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--force-color-profile=srgb', '--autoplay-policy=no-user-gesture-required'] },
   },
   webServer: [
-    { command: 'python3 -m http.server 8765 --bind 127.0.0.1 --directory docs', url: 'http://127.0.0.1:8765/3d/', reuseExistingServer: true, timeout: 30_000 },
+    { command: 'node scripts/serve-docs.mjs 8765', url: 'http://127.0.0.1:8765/3d/', reuseExistingServer: true, timeout: 30_000 },
     { command: 'npm run dev -- --port 5173 --strictPort --host 127.0.0.1', url: 'http://127.0.0.1:5173/', reuseExistingServer: true, timeout: 60_000 },
   ],
 });
