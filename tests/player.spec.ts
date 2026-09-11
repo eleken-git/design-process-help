@@ -12,11 +12,11 @@ test.describe('3D-плеєр: керування як у YouTube', () => {
     await expect(page.locator('#chips')).toBeHidden();          // список розділів закритий, доки не натиснуто «Розділи»
     await expect(page.locator('#eplist')).toBeHidden();
     await expect(play).toHaveText('❚❚');                       // автоплей
-    await stage.click({ position: { x: 640, y: 300 } });
+    await stage.click({ position: { x: 160, y: 200 } });
     await expect(play).toHaveText('▶');                        // пауза
     await expect(flash).toHaveClass(/go/);
     await expect(flash).toHaveText('❚❚');                      // спалах показує новий стан
-    await stage.click({ position: { x: 640, y: 300 } });
+    await stage.click({ position: { x: 160, y: 200 } });
     await expect(play).toHaveText('❚❚');                       // знову грає
     await page.keyboard.press('k');
     await expect(play).toHaveText('▶');
@@ -36,7 +36,7 @@ test.describe('3D-плеєр: керування як у YouTube', () => {
     await expect(page.locator('#chips')).toBeHidden();
     await page.locator('#btnEp').click();
     await expect(page.locator('#eplist')).toBeVisible();
-    await stage.click({ position: { x: 640, y: 300 } });      // клік по відео з відкритим меню лише закриває меню
+    await stage.click({ position: { x: 160, y: 200 } });      // клік по відео з відкритим меню лише закриває меню
     await expect(page.locator('#eplist')).toBeHidden();
     await expect(play).toHaveText('❚❚');
     expect(errors, 'помилки JS').toEqual([]);
@@ -90,8 +90,8 @@ test.describe('3D-плеєр: керування як у YouTube', () => {
     await expect(pop).toBeVisible();
     await expect(pop).toContainText('Claude Code');                       // пояснення, як замовити
     await expect(pop).toContainText('git clone');
-    await expect(pop.locator('#backlogList button')).toHaveCount(27);   // усі теми з ANIMATIONS.md
-    await expect(pop.locator('#backlogCount')).toHaveText('27');
+    await expect(pop.locator('#backlogList button')).toHaveCount(26);   // усі теми з ANIMATIONS.md, крім уже зроблених
+    await expect(pop.locator('#backlogCount')).toHaveText('26');
     await pop.locator('#backlogList button', { hasText: 'package-lock' }).click();
     await expect(page.locator('#toast')).toHaveClass(/show/);
     await expect(page.locator('#toast')).toContainText('Зроби епізод 16');
