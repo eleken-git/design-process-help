@@ -37,7 +37,9 @@ The user asked for a centered, good-looking top menu and a site that is comforta
 - The nav is centered in the viewport, never clipped at 375 px, and no page scrolls horizontally
   anywhere from 320 to 1920 px.
 - Every old URL keeps working (section 7).
-- The harness page on mobile is at most half the current Верстак height (≤ 9,000 px at 375 px).
+- The harness page on mobile is at least 45% shorter than the same content was: the Верстак tab
+  (17,878 px) plus the reading page (7,005 px) at 375 px → ≤ 13,500 px. Prompts, the file tree and the
+  gates stay visible; people, materials and the "where to keep it" notes fold.
 - Nothing is lost: 16 stations, 24 prompts, 5 people, 5 materials, the checklist and its saved state
   (`localStorage` key `frontend-map-done-v1`).
 

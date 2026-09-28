@@ -235,3 +235,19 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Opened: https://github.com/eleken-git/design-process-help/pull/17
 - Notes / follow-ups: PR #16 closed (its TOC is inside this PR). Next: harness order and collapsed
   people/materials, nav in the Nimbus shell, `docs/app/` rebuild.
+
+### 2026-09-29 — Harness page: use first, understand later (PR #18)
+
+- Built: `docs/harness/` now opens with what designers look up: the file tree (with the "постійне /
+  змінне" legend that replaced the `#h-universal` section, which stays as an anchor on the legend),
+  the six setup prompts, workday, mistake → rule, gates, what to skip. Then "Розібратися": what a
+  harness is, five people (name, idea, verdict visible; details folded), five materials (title,
+  source and link visible; summary folded), one merged source list. The TOC has two groups. On phones
+  the setup prompts show four lines with "Показати весь запит"; copy always takes the full text.
+  Fixed the lost harness accent colour (`--c` from the `.hz` class) on step numbers and prompt edges.
+- Mobile height at 375 px: 13,434 px, down from 24,883 px for the same content (Верстак tab + old
+  reading page). The spec's first guess of 9,000 px was revised: going lower would hide the prompts,
+  the file tree or the gates.
+- Files: `docs/harness/index.html`, `tests/landing.spec.ts`, `specs/2026-09-29-site-ux-design.md`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green (76).
+- Opened: https://github.com/eleken-git/design-process-help/pull/18

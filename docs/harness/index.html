@@ -430,8 +430,10 @@ img{max-width:100%}
 .ftree button[aria-pressed="true"]{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--blue)}
 .ftree i,.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
 i.k{background:var(--blue)}i.v{background:var(--yellow)}
-.legend{display:flex;gap:16px;margin-top:10px;font-size:12.5px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend{display:grid;gap:6px;margin-top:12px;font-size:13px;color:var(--muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
+.legend>span{display:flex;align-items:baseline;gap:8px}
+.legend>span>i{transform:translateY(-1px)}
+.legend b{color:var(--text);font-weight:600}
 .fdetail{position:sticky;top:calc(var(--jump-h,48px) + 12px);min-width:0;display:grid;gap:12px;padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
 .fdetail h3{font:700 19px var(--mono)}
 .fmeta{display:flex;flex-wrap:wrap;gap:6px}
@@ -513,11 +515,11 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
 
 /* п'ять матеріалів */
 #h-materials{--r:6px;--r-lg:8px}
-#h-materials .item{padding:40px 0;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
+#h-materials .item{padding:24px 0;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
 #h-materials .item:last-of-type{border-bottom:0}
 #h-materials .src{display:flex;align-items:center;gap:8px;font:12px var(--mono);color:var(--muted);margin-bottom:10px}
 #h-materials .src i{width:8px;height:8px;border-radius:50%;background:var(--dot,var(--blue));flex:none}
-#h-materials .item h2{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin-bottom:16px}
+#h-materials .item h2{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:4px}
 #h-materials .item h3{font-size:13px;font-weight:600;color:var(--muted);margin:22px 0 8px}
 #h-materials .item h3:first-of-type{margin-top:0}
 #h-materials .item p{max-width:66ch}
@@ -561,6 +563,31 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
   .site-nav nav{justify-self:end}
   .site-nav nav a{padding:0 9px}
 }
+/* згорнуті деталі: люди і матеріали */
+.more{margin-top:12px}
+.more>summary{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:6px;color:var(--text);font:600 13px var(--sans);cursor:pointer;list-style:none}
+.more>summary::-webkit-details-marker{display:none}
+.more>summary::after{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px)}
+.more[open]>summary::after{transform:rotate(-135deg) translateY(-1px)}
+.more>summary:hover{background:var(--hover)}
+.more[open]>summary{margin-bottom:18px}
+.person{padding-block:28px}
+.person .st-head{margin-bottom:12px}
+.person>.eli{max-width:62ch}
+#h-materials .more ul{margin-top:0}
+.toc-group{margin:16px 0 6px 12px;font:600 11px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}
+.toc>.toc-group:first-child{margin-top:0}
+/* на телефоні довгі запити показано перші чотири рядки; копіюється завжди повний текст */
+.pmore{display:none;margin-top:8px;padding:0;border:0;background:none;color:var(--blue);font:600 13px var(--sans);cursor:pointer}
+@media (max-width:640px){
+  .bstep .prompt.clamp p{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .bstep .prompt.clamp .pmore{display:block}
+  .person{padding-block:22px}
+  .person>.eli{font-size:16px}
+  .block{padding-block:32px}
+  .sec-head{margin-bottom:18px}
+  .where-more .where2{margin-top:0}
+}
 </style>
 </head>
 <body>
@@ -585,11 +612,20 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
 </div>
 
 <div class="wrap">
-<main class="panel has-toc" id="main">
+<main class="panel has-toc hz" id="main">
 
-<!-- ЗМІСТ ВЕРСТАКА -->
-<nav class="toc" id="toc-harness" aria-label="Зміст верстака">
-  <p class="toc-title">Зміст</p>
+<!-- ЗМІСТ ХАРНЕСУ -->
+<nav class="toc" id="toc-harness" aria-label="Зміст харнесу">
+  <p class="toc-group">Користуватися</p>
+  <ol>
+    <li><a href="#h-tree"><span>Файли харнесу</span></a></li>
+    <li><a href="#h-build"><span>Зібрати за шість запитів</span></a></li>
+    <li><a href="#h-loop"><span>Робочий день</span></a></li>
+    <li><a href="#h-rules"><span>Помилка стає правилом</span></a></li>
+    <li><a href="#h-gates"><span>Ворота якості</span></a></li>
+    <li><a href="#h-skip"><span>Що не брати на старті</span></a></li>
+  </ol>
+  <p class="toc-group">Розібратися</p>
   <ol>
     <li><a href="#h-what"><span>Що таке харнес</span></a></li>
     <li><a href="#h-people"><span>П'ять людей</span></a>
@@ -601,13 +637,6 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
         <li class="p-yeg"><a href="#h-yegge"><i></i><span>Steve Yegge</span></a></li>
       </ol>
     </li>
-    <li><a href="#h-universal"><span>Постійне і змінне</span></a></li>
-    <li><a href="#h-tree"><span>Структура верстака</span></a></li>
-    <li><a href="#h-loop"><span>Робочий день</span></a></li>
-    <li><a href="#h-rules"><span>Помилка стає правилом</span></a></li>
-    <li><a href="#h-gates"><span>Ворота якості</span></a></li>
-    <li><a href="#h-build"><span>Зібрати за шість запитів</span></a></li>
-    <li><a href="#h-skip"><span>Що не брати на старті</span></a></li>
     <li><a href="#h-materials"><span>П'ять матеріалів</span></a></li>
     <li><a href="#h-sources"><span>Джерела</span></a></li>
   </ol>
@@ -621,217 +650,11 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
   <p class="lede">Тут практики п'ятьох інженерів, адаптовані під дизайнера, який здає фронтенд клієнту.</p>
 </header>
 
-<!-- ЩО ТАКЕ ХАРНЕС -->
-<section id="h-what" class="block">
-  <div class="sec-head">
-    <h2>Що таке харнес</h2>
-    <p>Агент складається з моделі й харнесу. Цю формулу Viv Trivedy наводить Addy Osmani: харнес охоплює все, що не є самою моделлю. Модель ви не змінюєте. Харнес змінюєте щодня.</p>
-  </div>
-  <figure class="pic rings-pic">
-    <div class="ring r4"><span class="rl">Межі</span><span class="ri">дозволи · hooks · ваше OK перед злиттям</span>
-      <div class="ring r3"><span class="rl">Перевірки</span><span class="ri">lint · typecheck · build · Playwright · axe</span>
-        <div class="ring r2"><span class="rl">Інструменти</span><span class="ri">скіли · MCP (наприклад, Figma) · браузер · git</span>
-          <div class="ring r1"><span class="rl">Контекст</span><span class="ri">AGENTS.md · DESIGN.md · FRONTEND.md · specs/ · план</span>
-            <div class="core">Claude<span>модель</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <figcaption>Шари харнесу за статтею Addy Osmani, спрощено для фронтенду. Claude у центрі, усе навколо можна налаштувати.</figcaption>
-  </figure>
-</section>
-
-<!-- ЛЮДИ -->
-<section id="h-people" class="block">
-  <div class="sec-head">
-    <h2>П'ять людей, п'ять ідей</h2>
-    <p>Від кожного беремо одну ідею, яку дизайнер може застосувати вже в наступному проєкті.</p>
-  </div>
-
-  <article class="station person p-hunt" id="h-huntley">
-    <div class="st-head"><span class="num ini">GH</span><div><h3>Geoffrey Huntley</h3><span class="tm">Ralph · how-to-ralph-wiggum</span></div><span class="verdict">беремо структуру</span></div>
-    <div class="st-body">
-      <figure class="pic">
-        <div class="flow">
-          <span class="n">specs/</span><span class="ar">→</span><span class="n">план</span><span class="ar">→</span><span class="n win">одна задача</span><span class="ar">→</span><span class="n">тести</span><span class="ar">→</span><span class="n">коміт</span><span class="ar">→</span><span class="n">чистий контекст</span><span class="ar">↺</span>
-        </div>
-<div class="pre">project/
-├── loop.sh
-├── PROMPT_plan.md
-├── PROMPT_build.md
-├── AGENTS.md
-├── IMPLEMENTATION_PLAN.md
-├── specs/
-└── src/</div>
-        <figcaption>Структура з репозиторію Huntley. loop.sh просто запускає Claude знову і знову.</figcaption>
-      </figure>
-      <div class="st-text">
-        <p class="eli">Пам'ять агента живе у файлах: специфікації, план і AGENTS.md. Кожен запуск бере одну задачу, перевіряє її тестами, комітить і починає з чистого контексту.</p>
-        <h4>Що взяти дизайнеру</h4>
-        <ul class="checks">
-          <li>Файл у specs/ на кожну сторінку</li>
-          <li>План із маленьких задач</li>
-          <li>Одна задача за сесію</li>
-          <li>«Сплануй» окремо від «збудуй»</li>
-          <li>План можна викинути й перегенерувати</li>
-        </ul>
-        <p class="note">Тести, збірку й lint Huntley називає зворотним тиском (backpressure): вони не пускають сиру роботу в коміт. Туди ж він додає оцінку іншою моделлю за критеріями «так/ні», тож так можна перевіряти й вигляд сторінки.</p>
-        <p class="self"><a href="https://github.com/ghuntley/how-to-ralph-wiggum">github.com/ghuntley/how-to-ralph-wiggum</a></p>
-      </div>
-    </div>
-  </article>
-
-  <article class="station person p-hash" id="h-hashimoto">
-    <div class="st-head"><span class="num ini">MH</span><div><h3>Mitchell Hashimoto</h3><span class="tm">співзасновник HashiCorp, автор терміналу Ghostty</span></div><span class="verdict">беремо звичку</span></div>
-    <div class="st-body">
-      <figure class="pic">
-        <div class="ladder">
-          <div class="rung s1"><b>помилка</b><span>Claude зробив div замість button</span></div>
-          <div class="rung s2"><b>рядок в AGENTS.md</b><span>Use &lt;button&gt; for actions</span></div>
-          <div class="rung s3"><b>скрипт або тест</b><span>lint падає на div з onClick</span></div>
-        </div>
-<div class="pre">AGENTS.md у Ghostty, ~40 рядків
-├── Commands
-├── libghostty-vt
-├── Directory Structure
-└── Issue and PR Guidelines</div>
-      </figure>
-      <div class="st-text">
-        <p class="eli">Кожна помилка агента стає правилом або перевіркою, щоб більше не повторитися. Hashimoto пише, що кожен рядок у його AGENTS.md з'явився після поганої поведінки агента.</p>
-        <h4>Що взяти дизайнеру</h4>
-        <ul class="checks">
-          <li>Помилка вдруге: рядок в AGENTS.md</li>
-          <li>Помилка втретє: скрипт або тест</li>
-          <li>Новий скрипт згадати в AGENTS.md</li>
-          <li>Короткий файл: команди, папки, заборони</li>
-        </ul>
-        <p class="note">Це він називає harness engineering у статті My AI Adoption Journey (5 лютого 2026). Інструменти, які він дописує для агента, прості: скрипт для скріншотів, запуск лише потрібних тестів.</p>
-        <p class="self"><a href="https://mitchellh.com/writing/my-ai-adoption-journey">My AI Adoption Journey</a> · <a href="https://github.com/ghostty-org/ghostty/blob/main/AGENTS.md">AGENTS.md у Ghostty</a></p>
-      </div>
-    </div>
-  </article>
-
-  <article class="station person p-karp" id="h-karpathy">
-    <div class="st-head"><span class="num ini">AK</span><div><h3>Andrej Karpathy</h3><span class="tm">один із засновників OpenAI, колишній директор з AI у Tesla</span></div><span class="verdict">беремо цикл</span></div>
-    <div class="st-body">
-      <figure class="pic">
-        <div class="files3">
-          <div class="f3"><span class="mono">program.md</span><b>пише людина</b></div>
-          <div class="f3 hl"><span class="mono">train.py</span><b>змінює агент</b></div>
-          <div class="f3 dim"><span class="mono">prepare.py</span><b>ніхто не чіпає</b></div>
-        </div>
-        <div class="flow"><span class="n">зміна</span><span class="ar">→</span><span class="n">5 хв експерименту</span><span class="ar">→</span><span class="n">метрика</span><span class="ar">→</span><span class="n win">лишити</span><span class="ar">або</span><span class="n hot">відкотити</span></div>
-        <span class="cap">для фронтенду</span>
-        <div class="flow"><span class="n">DESIGN.md + FRONTEND.md</span><span class="ar">→</span><span class="n">сторінка</span><span class="ar">→</span><span class="n">браузер</span><span class="ar">→</span><span class="n">ворота якості</span><span class="ar">→</span><span class="n win">прийняти</span><span class="ar">або</span><span class="n hot">виправити</span></div>
-      </figure>
-      <div class="st-text">
-        <p class="eli">Людина пише інструкцію program.md. Агент змінює лише один файл, запускає експеримент, міряє результат однією цифрою і лишає зміну або відкочує її.</p>
-        <h4>Що взяти дизайнеру</h4>
-        <ul class="checks">
-          <li>Чітке «готово», яке можна виміряти</li>
-          <li>Агент змінює обмежену частину</li>
-          <li>Прийняти або відкотити</li>
-          <li>Людина покращує інструкцію</li>
-        </ul>
-        <p class="note">В autoresearch кожен експеримент триває 5 хвилин, тож за годину їх близько дванадцяти. Проєкт про навчання моделей, не про фронтенд. Для сайту метрикою стають ворота якості: тести проходять, скріншоти відповідають макету.</p>
-        <p class="self"><a href="https://github.com/karpathy/autoresearch">github.com/karpathy/autoresearch</a></p>
-      </div>
-    </div>
-  </article>
-
-  <article class="station person p-osm" id="h-osmani">
-    <div class="st-head"><span class="num ini">AO</span><div><h3>Addy Osmani</h3><span class="tm">багато років очолював інженерні команди Chrome у Google</span></div><span class="verdict">беремо ворота</span></div>
-    <div class="st-body">
-      <figure class="pic">
-        <div class="vs">
-          <div class="vs-a"><span class="cap">прохання в промпті</span><p class="bubble" lang="en">Please check the contrast.</p><span class="m">Claude може забути</span></div>
-          <div class="vs-b"><span class="cap">перевірка</span>
-<div class="pre"><span class="m">$</span> npm run test:a11y
-<span class="r">✕ 3 порушення контрасту</span>
-<span class="r">✕ поле без label</span></div><span class="g">обійти не вийде</span></div>
-        </div>
-        <div class="formula-mini"><b>агент</b> = <b>модель</b> + <b>харнес</b></div>
-      </figure>
-      <div class="st-text">
-        <p class="eli">Правило в промпті Claude може пропустити. Перевірку в хуку чи тесті пропустити не вийде. Тому якість переносять із прохань у перевірки.</p>
-        <h4>Що взяти дизайнеру</h4>
-        <ul class="checks">
-          <li>Короткий AGENTS.md</li>
-          <li>У кожного правила є причина</li>
-          <li>Hooks для обов'язкових кроків</li>
-          <li>Десять добрих інструментів замість п'ятдесяти</li>
-          <li>Коли все добре, перевірки мовчать</li>
-        </ul>
-        <p class="note">Добрий AGENTS.md, за словами Osmani, це «Pilot's checklist, not style guide» (Agent Harness Engineering, 19 квітня 2026). Він радить додавати правило лише після реальної помилки.</p>
-        <p class="self"><a href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a></p>
-      </div>
-    </div>
-  </article>
-
-  <article class="station person p-yeg" id="h-yegge">
-    <div class="st-head"><span class="num ini">SY</span><div><h3>Steve Yegge</h3><span class="tm">багато років працював в Amazon і Google</span></div><span class="verdict">поки ні</span></div>
-    <div class="st-body">
-      <figure class="pic">
-        <div class="sessions">
-          <div class="ses gone">сесія 1</div><div class="ses gone">сесія 2</div><div class="ses live">сесія 3</div>
-        </div>
-        <div class="state">стан роботи в git</div>
-        <figcaption>Сесії закриваються, стан лишається. У Gas Town це Beads, у верстаку файл plan/progress.md.</figcaption>
-      </figure>
-      <div class="st-text">
-        <p class="eli">Сесія тимчасова, робота постійна. Стан задач лежить у git, тому нова сесія Claude продовжує з місця, де зупинилася попередня.</p>
-        <h4>Що взяти дизайнеру</h4>
-        <ul class="checks">
-          <li>progress.md: що зроблено і що далі</li>
-          <li>Нова сесія читає його першою</li>
-          <li>Передача роботи перед закриттям сесії</li>
-        </ul>
-        <p class="note">Gas Town керує 20–30 екземплярами Claude Code одночасно. Сам Yegge у Welcome to Gas Town (1 січня 2026) попереджає, що система дорога і розрахована на тих, хто вже глибоко працює з агентами. На старті беремо лише ідею передачі.</p>
-        <p class="self"><a href="https://yegge.ai/essays/welcome-to-gas-town/">Welcome to Gas Town</a></p>
-      </div>
-    </div>
-  </article>
-
-  <div class="stack" aria-label="Як ідеї складаються у верстак">
-    <div class="sl p-hunt"><span class="who">Huntley</span><b>Структура</b><span>specs/, план, AGENTS.md, одна задача за раз</span></div>
-    <div class="sl p-hash"><span class="who">Hashimoto</span><b>Правила</b><span>ростуть із кожної повторної помилки</span></div>
-    <div class="sl p-osm"><span class="who">Osmani</span><b>Ворота якості</b><span>lint, typecheck, build, браузер, доступність</span></div>
-    <div class="sl p-karp"><span class="who">Karpathy</span><b>Цикл</b><span>зробив → виміряв → прийняв або виправив</span></div>
-    <div class="sl p-yeg"><span class="who">Yegge</span><b>Передача</b><span>progress.md між сесіями</span></div>
-    <div class="sl result"><span class="who">разом</span><b>Верстак</b><span>той самий для кожного клієнтського проєкту</span></div>
-  </div>
-</section>
-
-<!-- ПОСТІЙНЕ І ЗМІННЕ -->
-<section id="h-universal" class="block">
-  <div class="sec-head">
-    <h2>Що переходить з проєкту в проєкт</h2>
-    <p>Верстак універсальний, бо ділиться на дві частини. Постійна їде з вами в кожен проєкт. Змінна з'являється заново для кожного клієнта.</p>
-  </div>
-  <div class="uni">
-    <div class="uni-col keep">
-      <h3>Постійне: верстак</h3>
-      <p>Однакове для всіх клієнтів. Покращується після кожного проєкту.</p>
-      <ul><li>AGENTS.md</li><li>CLAUDE.md</li><li>FRONTEND.md</li><li>PROMPT_plan.md</li><li>PROMPT_build.md</li><li>.claude/skills/</li><li>.claude/settings.json</li><li>tests/</li><li>package.json scripts</li></ul>
-    </div>
-    <div class="uni-col vary">
-      <h3>Змінне: проєкт</h3>
-      <p>Нове щоразу. Заповнюєте ви, план і код пише Claude.</p>
-      <ul><li>PROJECT.md</li><li>DESIGN.md</li><li>specs/</li><li>plan/</li><li>HANDOFF.md</li><li>src/</li><li>public/</li></ul>
-    </div>
-  </div>
-  <div class="where2">
-    <div><b>Шаблон на GitHub</b><p>Кнопка «Use this template» створює новий репозиторій з усім верстаком. Так верстак отримує вся команда.</p></div>
-    <div><b>Папка ~/.claude</b><p>CLAUDE.md і skills/ звідти працюють у всіх ваших проєктах. Підходить для особистих звичок.</p></div>
-    <div><b>Мова файлів</b><p>Файли, які читає Claude (AGENTS.md, FRONTEND.md, PROMPT_*.md, скіли), пишемо англійською, як і запити. HANDOFF.md пишемо мовою клієнта.</p></div>
-  </div>
-</section>
-
-<!-- СТРУКТУРА -->
+<!-- ФАЙЛИ ХАРНЕСУ -->
 <section id="h-tree" class="block">
   <div class="sec-head">
-    <h2>Структура верстака</h2>
-    <p>Натисніть файл, щоб побачити, що в ньому, хто його пише і коли він змінюється.</p>
+    <h2>Файли харнесу</h2>
+    <p>Натисніть файл, щоб побачити, що в ньому, хто його пише і коли він змінюється. Файли діляться на дві частини: постійна їде з вами в кожен проєкт, змінна з'являється заново для кожного клієнта.</p>
   </div>
   <div class="explorer">
     <div>
@@ -865,7 +688,7 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
         <div class="row"><span class="pfx">├── </span><button type="button" data-f="pkg" aria-pressed="false"><i class="k"></i>package.json</button></div>
         <div class="row"><span class="pfx">└── </span><button type="button" data-f="readme" aria-pressed="false"><i class="v"></i>README.md</button></div>
       </div>
-      <div class="legend"><span><i class="k"></i> постійне</span><span><i class="v"></i> змінне</span></div>
+      <div class="legend" id="h-universal"><span><i class="k"></i><span><b>постійне</b> — однакове для всіх клієнтів, покращується після кожного проєкту</span></span><span><i class="v"></i><span><b>змінне</b> — нове для кожного клієнта: заповнюєте ви, план і код пише Claude</span></span></div>
     </div>
     <div class="fdetail" id="fdetail" aria-live="polite">
       <h3 id="fd-name">AGENTS.md</h3>
@@ -882,6 +705,59 @@ npm run dev | build | lint | typecheck | test:e2e
 - Never say "done" before all gates pass</div>
       <p id="fd-link" class="self" hidden></p>
     </div>
+  </div>
+  <details class="more where-more"><summary>Де тримати верстак і якою мовою писати файли</summary>
+  <div class="where2">
+    <div><b>Шаблон на GitHub</b><p>Кнопка «Use this template» створює новий репозиторій з усім верстаком. Так верстак отримує вся команда.</p></div>
+    <div><b>Папка ~/.claude</b><p>CLAUDE.md і skills/ звідти працюють у всіх ваших проєктах. Підходить для особистих звичок.</p></div>
+    <div><b>Мова файлів</b><p>Файли, які читає Claude (AGENTS.md, FRONTEND.md, PROMPT_*.md, скіли), пишемо англійською, як і запити. HANDOFF.md пишемо мовою клієнта.</p></div>
+  </div>
+  </details>
+</section>
+
+<!-- ЗІБРАТИ -->
+<section id="h-build" class="block">
+  <div class="sec-head">
+    <h2>Зберіть верстак за шість запитів</h2>
+    <p>Один раз, у новому порожньому репозиторії. Потім кожен клієнтський проєкт починається з цього шаблону.</p>
+  </div>
+  <ol class="bsteps">
+    <li class="bstep"><span class="num">1</span><div>
+      <h3>Каркас шаблону</h3>
+      <div class="prompt"><p lang="en">Create a template repository called verstak for frontend client projects. Add this structure: AGENTS.md, CLAUDE.md (one line that imports AGENTS.md), PROJECT.md, DESIGN.md, FRONTEND.md, HANDOFF.md, PROMPT_plan.md, PROMPT_build.md, specs/pages, specs/features, plan/IMPLEMENTATION_PLAN.md, plan/progress.md, .claude/skills, .claude/settings.json, tests/accessibility, tests/visual, tests/e2e and README.md. Fill each file with a short template and a comment on what goes there. Do not add any client-specific content.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">2</span><div>
+      <h3>AGENTS.md</h3>
+      <div class="prompt"><p lang="en">Write AGENTS.md for this template. Keep it under 60 lines, like a pilot's checklist: the commands (dev, build, lint, typecheck, test:e2e), the folder structure, and hard rules (styles come from tokens only, button for actions and a for navigation, one task per session, never commit to main, run every quality gate before saying done). Every rule must be something I can check.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">3</span><div>
+      <h3>FRONTEND.md зі стандартом якості</h3>
+      <div class="prompt"><p lang="en">Write FRONTEND.md as our quality standard. Cover these areas: semantic HTML, accessibility (WCAG 2.2 AA basics), responsive layout from 320 px, UI states, maintainable code, performance (Core Web Vitals), browsers, SEO basics and a clean build. For each area, write three to six short rules that can be checked, and name the command or test that verifies each one.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+      <p class="self">Зміст для цього файлу вже є: 16 зупинок на сторінці <a href="../map/#map">«Карта фронтенду»</a>.</p>
+    </div></li>
+    <li class="bstep"><span class="num">4</span><div>
+      <h3>Запити для планування і будування</h3>
+      <div class="prompt"><p lang="en">Write PROMPT_plan.md and PROMPT_build.md. Plan mode: read AGENTS.md, PROJECT.md, DESIGN.md, FRONTEND.md and specs/, compare them with src/, and write a prioritized list of small tasks to plan/IMPLEMENTATION_PLAN.md; plan only, do not implement anything. Build mode: read plan/progress.md first, pick the single most important task, implement it, run every quality gate, commit only when they pass, then update the plan and plan/progress.md.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">5</span><div>
+      <h3>Ворота якості і hook</h3>
+      <div class="prompt"><p lang="en">Set up the quality gates: npm scripts for lint (with jsx-a11y rules), typecheck, build and test:e2e; Playwright tests with axe for accessibility, screenshots at 320, 375, 768, 1024, 1440 and 1920 px, a console-error check and a broken-link check. Add a Stop hook in .claude/settings.json that runs typecheck and lint and sends any failure back to you. Then make each gate fail once on purpose and show me the output, so I know it works.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">6</span><div>
+      <h3>Три скіли</h3>
+      <div class="prompt"><p lang="en">Use skill-creator to create three skills in .claude/skills: build-page (turns a spec from specs/pages into a page that uses our tokens), frontend-qa (runs every quality gate and reports problems in plain English with screenshots, most important first) and client-handoff (prepares README, .env.example and HANDOFF.md). None of them may fix, publish or merge anything without my OK.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+      <p class="self">Більше ідей для скілів є на карті фронтенду, у розділі <a href="../map/#skills">«Перевірки, які варто перетворити на скіли»</a>.</p>
+    </div></li>
+  </ol>
+  <div class="newproj">
+    <span class="cap">новий клієнт</span>
+    <div class="flow"><span class="n">Use this template</span><span class="ar">→</span><span class="n">PROJECT.md</span><span class="ar">→</span><span class="n">DESIGN.md</span><span class="ar">→</span><span class="n">specs/</span><span class="ar">→</span><span class="n">PROMPT_plan.md</span><span class="ar">→</span><span class="n win">робочий день</span></div>
   </div>
 </section>
 
@@ -957,52 +833,6 @@ npm run dev | build | lint | typecheck | test:e2e
   </div>
 </section>
 
-<!-- ЗІБРАТИ -->
-<section id="h-build" class="block">
-  <div class="sec-head">
-    <h2>Зберіть верстак за шість запитів</h2>
-    <p>Один раз, у новому порожньому репозиторії. Потім кожен клієнтський проєкт починається з цього шаблону.</p>
-  </div>
-  <ol class="bsteps">
-    <li class="bstep"><span class="num">1</span><div>
-      <h3>Каркас шаблону</h3>
-      <div class="prompt"><p lang="en">Create a template repository called verstak for frontend client projects. Add this structure: AGENTS.md, CLAUDE.md (one line that imports AGENTS.md), PROJECT.md, DESIGN.md, FRONTEND.md, HANDOFF.md, PROMPT_plan.md, PROMPT_build.md, specs/pages, specs/features, plan/IMPLEMENTATION_PLAN.md, plan/progress.md, .claude/skills, .claude/settings.json, tests/accessibility, tests/visual, tests/e2e and README.md. Fill each file with a short template and a comment on what goes there. Do not add any client-specific content.</p>
-        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
-    </div></li>
-    <li class="bstep"><span class="num">2</span><div>
-      <h3>AGENTS.md</h3>
-      <div class="prompt"><p lang="en">Write AGENTS.md for this template. Keep it under 60 lines, like a pilot's checklist: the commands (dev, build, lint, typecheck, test:e2e), the folder structure, and hard rules (styles come from tokens only, button for actions and a for navigation, one task per session, never commit to main, run every quality gate before saying done). Every rule must be something I can check.</p>
-        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
-    </div></li>
-    <li class="bstep"><span class="num">3</span><div>
-      <h3>FRONTEND.md зі стандартом якості</h3>
-      <div class="prompt"><p lang="en">Write FRONTEND.md as our quality standard. Cover these areas: semantic HTML, accessibility (WCAG 2.2 AA basics), responsive layout from 320 px, UI states, maintainable code, performance (Core Web Vitals), browsers, SEO basics and a clean build. For each area, write three to six short rules that can be checked, and name the command or test that verifies each one.</p>
-        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
-      <p class="self">Зміст для цього файлу вже є: 16 зупинок на сторінці <a href="../map/#map">«Карта фронтенду»</a>.</p>
-    </div></li>
-    <li class="bstep"><span class="num">4</span><div>
-      <h3>Запити для планування і будування</h3>
-      <div class="prompt"><p lang="en">Write PROMPT_plan.md and PROMPT_build.md. Plan mode: read AGENTS.md, PROJECT.md, DESIGN.md, FRONTEND.md and specs/, compare them with src/, and write a prioritized list of small tasks to plan/IMPLEMENTATION_PLAN.md; plan only, do not implement anything. Build mode: read plan/progress.md first, pick the single most important task, implement it, run every quality gate, commit only when they pass, then update the plan and plan/progress.md.</p>
-        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
-    </div></li>
-    <li class="bstep"><span class="num">5</span><div>
-      <h3>Ворота якості і hook</h3>
-      <div class="prompt"><p lang="en">Set up the quality gates: npm scripts for lint (with jsx-a11y rules), typecheck, build and test:e2e; Playwright tests with axe for accessibility, screenshots at 320, 375, 768, 1024, 1440 and 1920 px, a console-error check and a broken-link check. Add a Stop hook in .claude/settings.json that runs typecheck and lint and sends any failure back to you. Then make each gate fail once on purpose and show me the output, so I know it works.</p>
-        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
-    </div></li>
-    <li class="bstep"><span class="num">6</span><div>
-      <h3>Три скіли</h3>
-      <div class="prompt"><p lang="en">Use skill-creator to create three skills in .claude/skills: build-page (turns a spec from specs/pages into a page that uses our tokens), frontend-qa (runs every quality gate and reports problems in plain English with screenshots, most important first) and client-handoff (prepares README, .env.example and HANDOFF.md). None of them may fix, publish or merge anything without my OK.</p>
-        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
-      <p class="self">Більше ідей для скілів є на карті фронтенду, у розділі <a href="../map/#skills">«Перевірки, які варто перетворити на скіли»</a>.</p>
-    </div></li>
-  </ol>
-  <div class="newproj">
-    <span class="cap">новий клієнт</span>
-    <div class="flow"><span class="n">Use this template</span><span class="ar">→</span><span class="n">PROJECT.md</span><span class="ar">→</span><span class="n">DESIGN.md</span><span class="ar">→</span><span class="n">specs/</span><span class="ar">→</span><span class="n">PROMPT_plan.md</span><span class="ar">→</span><span class="n win">робочий день</span></div>
-  </div>
-</section>
-
 <!-- НЕ БРАТИ -->
 <section id="h-skip" class="block">
   <div class="sec-head">
@@ -1016,6 +846,197 @@ npm run dev | build | lint | typecheck | test:e2e
   </div>
 </section>
 
+<!-- ЩО ТАКЕ ХАРНЕС -->
+<section id="h-what" class="block">
+  <div class="sec-head">
+    <h2>Що таке харнес</h2>
+    <p>Агент складається з моделі й харнесу. Цю формулу Viv Trivedy наводить Addy Osmani: харнес охоплює все, що не є самою моделлю. Модель ви не змінюєте. Харнес змінюєте щодня.</p>
+  </div>
+  <figure class="pic rings-pic">
+    <div class="ring r4"><span class="rl">Межі</span><span class="ri">дозволи · hooks · ваше OK перед злиттям</span>
+      <div class="ring r3"><span class="rl">Перевірки</span><span class="ri">lint · typecheck · build · Playwright · axe</span>
+        <div class="ring r2"><span class="rl">Інструменти</span><span class="ri">скіли · MCP (наприклад, Figma) · браузер · git</span>
+          <div class="ring r1"><span class="rl">Контекст</span><span class="ri">AGENTS.md · DESIGN.md · FRONTEND.md · specs/ · план</span>
+            <div class="core">Claude<span>модель</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>Шари харнесу за статтею Addy Osmani, спрощено для фронтенду. Claude у центрі, усе навколо можна налаштувати.</figcaption>
+  </figure>
+</section>
+
+<!-- ЛЮДИ -->
+<section id="h-people" class="block">
+  <div class="sec-head">
+    <h2>П'ять людей, п'ять ідей</h2>
+    <p>Від кожного беремо одну ідею, яку дизайнер може застосувати вже в наступному проєкті.</p>
+  </div>
+
+  <article class="station person p-hunt" id="h-huntley">
+    <div class="st-head"><span class="num ini">GH</span><div><h3>Geoffrey Huntley</h3><span class="tm">Ralph · how-to-ralph-wiggum</span></div><span class="verdict">беремо структуру</span></div>
+    <p class="eli">Пам'ять агента живе у файлах: специфікації, план і AGENTS.md. Кожен запуск бере одну задачу, перевіряє її тестами, комітить і починає з чистого контексту.</p>
+    <details class="more"><summary>Детальніше</summary>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="flow">
+          <span class="n">specs/</span><span class="ar">→</span><span class="n">план</span><span class="ar">→</span><span class="n win">одна задача</span><span class="ar">→</span><span class="n">тести</span><span class="ar">→</span><span class="n">коміт</span><span class="ar">→</span><span class="n">чистий контекст</span><span class="ar">↺</span>
+        </div>
+<div class="pre">project/
+├── loop.sh
+├── PROMPT_plan.md
+├── PROMPT_build.md
+├── AGENTS.md
+├── IMPLEMENTATION_PLAN.md
+├── specs/
+└── src/</div>
+        <figcaption>Структура з репозиторію Huntley. loop.sh просто запускає Claude знову і знову.</figcaption>
+      </figure>
+      <div class="st-text">
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Файл у specs/ на кожну сторінку</li>
+          <li>План із маленьких задач</li>
+          <li>Одна задача за сесію</li>
+          <li>«Сплануй» окремо від «збудуй»</li>
+          <li>План можна викинути й перегенерувати</li>
+        </ul>
+        <p class="note">Тести, збірку й lint Huntley називає зворотним тиском (backpressure): вони не пускають сиру роботу в коміт. Туди ж він додає оцінку іншою моделлю за критеріями «так/ні», тож так можна перевіряти й вигляд сторінки.</p>
+        <p class="self"><a href="https://github.com/ghuntley/how-to-ralph-wiggum">github.com/ghuntley/how-to-ralph-wiggum</a></p>
+      </div>
+    </div>
+    </details>
+  </article>
+
+  <article class="station person p-hash" id="h-hashimoto">
+    <div class="st-head"><span class="num ini">MH</span><div><h3>Mitchell Hashimoto</h3><span class="tm">співзасновник HashiCorp, автор терміналу Ghostty</span></div><span class="verdict">беремо звичку</span></div>
+    <p class="eli">Кожна помилка агента стає правилом або перевіркою, щоб більше не повторитися. Hashimoto пише, що кожен рядок у його AGENTS.md з'явився після поганої поведінки агента.</p>
+    <details class="more"><summary>Детальніше</summary>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="ladder">
+          <div class="rung s1"><b>помилка</b><span>Claude зробив div замість button</span></div>
+          <div class="rung s2"><b>рядок в AGENTS.md</b><span>Use &lt;button&gt; for actions</span></div>
+          <div class="rung s3"><b>скрипт або тест</b><span>lint падає на div з onClick</span></div>
+        </div>
+<div class="pre">AGENTS.md у Ghostty, ~40 рядків
+├── Commands
+├── libghostty-vt
+├── Directory Structure
+└── Issue and PR Guidelines</div>
+      </figure>
+      <div class="st-text">
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Помилка вдруге: рядок в AGENTS.md</li>
+          <li>Помилка втретє: скрипт або тест</li>
+          <li>Новий скрипт згадати в AGENTS.md</li>
+          <li>Короткий файл: команди, папки, заборони</li>
+        </ul>
+        <p class="note">Це він називає harness engineering у статті My AI Adoption Journey (5 лютого 2026). Інструменти, які він дописує для агента, прості: скрипт для скріншотів, запуск лише потрібних тестів.</p>
+        <p class="self"><a href="https://mitchellh.com/writing/my-ai-adoption-journey">My AI Adoption Journey</a> · <a href="https://github.com/ghostty-org/ghostty/blob/main/AGENTS.md">AGENTS.md у Ghostty</a></p>
+      </div>
+    </div>
+    </details>
+  </article>
+
+  <article class="station person p-karp" id="h-karpathy">
+    <div class="st-head"><span class="num ini">AK</span><div><h3>Andrej Karpathy</h3><span class="tm">один із засновників OpenAI, колишній директор з AI у Tesla</span></div><span class="verdict">беремо цикл</span></div>
+    <p class="eli">Людина пише інструкцію program.md. Агент змінює лише один файл, запускає експеримент, міряє результат однією цифрою і лишає зміну або відкочує її.</p>
+    <details class="more"><summary>Детальніше</summary>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="files3">
+          <div class="f3"><span class="mono">program.md</span><b>пише людина</b></div>
+          <div class="f3 hl"><span class="mono">train.py</span><b>змінює агент</b></div>
+          <div class="f3 dim"><span class="mono">prepare.py</span><b>ніхто не чіпає</b></div>
+        </div>
+        <div class="flow"><span class="n">зміна</span><span class="ar">→</span><span class="n">5 хв експерименту</span><span class="ar">→</span><span class="n">метрика</span><span class="ar">→</span><span class="n win">лишити</span><span class="ar">або</span><span class="n hot">відкотити</span></div>
+        <span class="cap">для фронтенду</span>
+        <div class="flow"><span class="n">DESIGN.md + FRONTEND.md</span><span class="ar">→</span><span class="n">сторінка</span><span class="ar">→</span><span class="n">браузер</span><span class="ar">→</span><span class="n">ворота якості</span><span class="ar">→</span><span class="n win">прийняти</span><span class="ar">або</span><span class="n hot">виправити</span></div>
+      </figure>
+      <div class="st-text">
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Чітке «готово», яке можна виміряти</li>
+          <li>Агент змінює обмежену частину</li>
+          <li>Прийняти або відкотити</li>
+          <li>Людина покращує інструкцію</li>
+        </ul>
+        <p class="note">В autoresearch кожен експеримент триває 5 хвилин, тож за годину їх близько дванадцяти. Проєкт про навчання моделей, не про фронтенд. Для сайту метрикою стають ворота якості: тести проходять, скріншоти відповідають макету.</p>
+        <p class="self"><a href="https://github.com/karpathy/autoresearch">github.com/karpathy/autoresearch</a></p>
+      </div>
+    </div>
+    </details>
+  </article>
+
+  <article class="station person p-osm" id="h-osmani">
+    <div class="st-head"><span class="num ini">AO</span><div><h3>Addy Osmani</h3><span class="tm">багато років очолював інженерні команди Chrome у Google</span></div><span class="verdict">беремо ворота</span></div>
+    <p class="eli">Правило в промпті Claude може пропустити. Перевірку в хуку чи тесті пропустити не вийде. Тому якість переносять із прохань у перевірки.</p>
+    <details class="more"><summary>Детальніше</summary>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="vs">
+          <div class="vs-a"><span class="cap">прохання в промпті</span><p class="bubble" lang="en">Please check the contrast.</p><span class="m">Claude може забути</span></div>
+          <div class="vs-b"><span class="cap">перевірка</span>
+<div class="pre"><span class="m">$</span> npm run test:a11y
+<span class="r">✕ 3 порушення контрасту</span>
+<span class="r">✕ поле без label</span></div><span class="g">обійти не вийде</span></div>
+        </div>
+        <div class="formula-mini"><b>агент</b> = <b>модель</b> + <b>харнес</b></div>
+      </figure>
+      <div class="st-text">
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Короткий AGENTS.md</li>
+          <li>У кожного правила є причина</li>
+          <li>Hooks для обов'язкових кроків</li>
+          <li>Десять добрих інструментів замість п'ятдесяти</li>
+          <li>Коли все добре, перевірки мовчать</li>
+        </ul>
+        <p class="note">Добрий AGENTS.md, за словами Osmani, це «Pilot's checklist, not style guide» (Agent Harness Engineering, 19 квітня 2026). Він радить додавати правило лише після реальної помилки.</p>
+        <p class="self"><a href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a></p>
+      </div>
+    </div>
+    </details>
+  </article>
+
+  <article class="station person p-yeg" id="h-yegge">
+    <div class="st-head"><span class="num ini">SY</span><div><h3>Steve Yegge</h3><span class="tm">багато років працював в Amazon і Google</span></div><span class="verdict">поки ні</span></div>
+    <p class="eli">Сесія тимчасова, робота постійна. Стан задач лежить у git, тому нова сесія Claude продовжує з місця, де зупинилася попередня.</p>
+    <details class="more"><summary>Детальніше</summary>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="sessions">
+          <div class="ses gone">сесія 1</div><div class="ses gone">сесія 2</div><div class="ses live">сесія 3</div>
+        </div>
+        <div class="state">стан роботи в git</div>
+        <figcaption>Сесії закриваються, стан лишається. У Gas Town це Beads, у верстаку файл plan/progress.md.</figcaption>
+      </figure>
+      <div class="st-text">
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>progress.md: що зроблено і що далі</li>
+          <li>Нова сесія читає його першою</li>
+          <li>Передача роботи перед закриттям сесії</li>
+        </ul>
+        <p class="note">Gas Town керує 20–30 екземплярами Claude Code одночасно. Сам Yegge у Welcome to Gas Town (1 січня 2026) попереджає, що система дорога і розрахована на тих, хто вже глибоко працює з агентами. На старті беремо лише ідею передачі.</p>
+        <p class="self"><a href="https://yegge.ai/essays/welcome-to-gas-town/">Welcome to Gas Town</a></p>
+      </div>
+    </div>
+    </details>
+  </article>
+
+  <div class="stack" aria-label="Як ідеї складаються у верстак">
+    <div class="sl p-hunt"><span class="who">Huntley</span><b>Структура</b><span>specs/, план, AGENTS.md, одна задача за раз</span></div>
+    <div class="sl p-hash"><span class="who">Hashimoto</span><b>Правила</b><span>ростуть із кожної повторної помилки</span></div>
+    <div class="sl p-osm"><span class="who">Osmani</span><b>Ворота якості</b><span>lint, typecheck, build, браузер, доступність</span></div>
+    <div class="sl p-karp"><span class="who">Karpathy</span><b>Цикл</b><span>зробив → виміряв → прийняв або виправив</span></div>
+    <div class="sl p-yeg"><span class="who">Yegge</span><b>Передача</b><span>progress.md між сесіями</span></div>
+    <div class="sl result"><span class="who">разом</span><b>Верстак</b><span>той самий для кожного клієнтського проєкту</span></div>
+  </div>
+</section>
+
 <!-- П'ЯТЬ МАТЕРІАЛІВ -->
 <section id="h-materials" class="block">
   <div class="sec-head">
@@ -1026,6 +1047,7 @@ npm run dev | build | lint | typecheck | test:e2e
   <article class="item karpathy" id="karpathy">
     <p class="src"><i></i>Andrej Karpathy · gist</p>
     <h2>LLM Wiki: агент сам веде базу знань</h2>
+    <details class="more"><summary>Що це, головне і що брати нам</summary>
     <h3>Що це</h3>
     <p>Коротка ідея-нотатка, яку автор пропонує просто скинути своєму агенту. Звична робота з документами виглядає так: завантажив файли, поставив питання, модель шукає шматки і відповідає. Щоразу з нуля, нічого не накопичується. Карпаті пропонує інакше: агент веде <b>вікі</b> — набір звʼязаних markdown-сторінок, які він сам пише і оновлює з кожним новим джерелом. Ти читаєш, він пише.</p>
     <h3>Головне</h3>
@@ -1036,12 +1058,14 @@ npm run dev | build | lint | typecheck | test:e2e
       <li>Людина курує джерела і ставить питання. Агент робить бухгалтерію, через яку люди кидають вікі: перехресні посилання, оновлення, узгодженість.</li>
     </ul>
     <p class="us"><b>Для нас.</b> Наш <code>AGENTS.md</code> — це та сама «схема»: правила, які агент виконує без нагадувань. І та сама логіка поділу: людина — рішення і смак, агент — рутина.</p>
+    </details>
     <a class="open" href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener">Читати оригінал<svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </article>
 
   <article class="item agents" id="agents">
     <p class="src"><i></i>agents.md · відкритий формат, Agentic AI Foundation (Linux Foundation)</p>
     <h2>AGENTS.md: README для агентів</h2>
+    <details class="more"><summary>Що це, головне і що брати нам</summary>
     <h3>Що це</h3>
     <p>Простий відкритий формат: один markdown-файл <code>AGENTS.md</code> у корені репозиторію, де записано все, що агенту треба знати про проєкт. <code>README.md</code> — для людей: про що проєкт і як почати. <code>AGENTS.md</code> — для агентів: як зібрати, як перевірити, які домовленості, чого не робити. Його читають понад 60 тисяч відкритих проєктів і десятки агентів: Codex, Cursor, Copilot, Gemini CLI, Jules, Devin, Factory, Zed, Warp та інші.</p>
     <h3>Головне</h3>
@@ -1053,12 +1077,14 @@ npm run dev | build | lint | typecheck | test:e2e
       <li>Формат виріс зі спільної роботи OpenAI Codex, Amp, Jules, Cursor і Factory, тепер його веде Agentic AI Foundation під Linux Foundation, тож він не належить одному продукту.</li>
     </ul>
     <p class="us"><b>Для нас.</b> Усі наші правила живуть у <code>AGENTS.md</code>, а <code>CLAUDE.md</code> лише відсилає до нього. Тож Claude Code, Codex, Cursor і Copilot працюють за одним і тим самим файлом: одні правила на всіх агентів.</p>
+    </details>
     <a class="open" href="https://agents.md/" target="_blank" rel="noopener">Читати оригінал<svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </article>
 
   <article class="item sdd" id="sdd">
     <p class="src"><i></i>Kyrylo Genkov · genkovich/sdd</p>
     <h2>SDD: від ідеї до злитого PR по прямій лінії</h2>
+    <details class="more"><summary>Що це, головне і що брати нам</summary>
     <h3>Що це</h3>
     <p>Плагін для Claude Code з 23 навичками, які ведуть фічу від одного речення до перевіреного коду в PR. Кроки йдуть по прямій: описати → уточнити → спроєктувати → розбити на задачі → реалізувати → перевірити → відправити. Кожен крок пише файл, який читає наступний, і <b>відмовляється працювати, якщо попереднього файла немає</b>. Пропустити щось випадково не вийде.</p>
     <h3>Головне</h3>
@@ -1070,12 +1096,14 @@ npm run dev | build | lint | typecheck | test:e2e
       <li>Утиліти на будь-який момент: словник термінів, розбір бага (відтворити → тест → мінімальне виправлення), дорожня карта.</li>
     </ul>
     <p class="us"><b>Для нас.</b> Це доросла версія того, що ми робимо руками: спершу домовитися, що будуємо, потім код. «Екран у всіх станах» — саме те, що дизайнер має описати до того, як з'явиться перший рядок.</p>
+    </details>
     <a class="open" href="https://github.com/genkovich/sdd/blob/main/README.md" target="_blank" rel="noopener">Читати оригінал<svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </article>
 
   <article class="item speckit" id="speckit">
     <p class="src"><i></i>GitHub · github/spec-kit</p>
     <h2>Spec Kit: специфікація, яка стає кодом</h2>
+    <details class="more"><summary>Що це, головне і що брати нам</summary>
     <h3>Що це</h3>
     <p>Відкритий інструментарій від GitHub для роботи з будь-яким AI-агентом (понад 30 підтримуваних). Головна думка: десятиліттями код був головним, а описи — тимчасовими риштуваннями. Spec Kit перевертає це: <b>специфікація стає виконуваною</b>, з неї народжуються план, задачі і код.</p>
     <h3>Головне</h3>
@@ -1086,12 +1114,14 @@ npm run dev | build | lint | typecheck | test:e2e
       <li>Філософія: намір і «що» раніше за «як»; уточнення кількома кроками замість одного великого промпта.</li>
     </ul>
     <p class="us"><b>Для нас.</b> Constitution — це наш <code>AGENTS.md</code>. Assess — спосіб не будувати те, що не потрібне. Converge — звірити результат з домовленістю, а не з відчуттям «начебто готово».</p>
+    </details>
     <a class="open" href="https://github.com/github/spec-kit/blob/main/README.md" target="_blank" rel="noopener">Читати оригінал<svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </article>
 
   <article class="item superpowers" id="superpowers">
     <p class="src"><i></i>Jesse Vincent, Prime Radiant · obra/superpowers</p>
     <h2>Superpowers: навички, які спрацьовують самі</h2>
+    <details class="more"><summary>Що це, головне і що брати нам</summary>
     <h3>Що це</h3>
     <p>Методологія розробки для агентів у вигляді набору навичок. Щойно агент бачить, що ти щось будуєш, він <b>не кидається писати код</b>: спершу питає, що ти насправді хочеш, показує дизайн частинами, які можна прочитати, і лише після твого «так» складає план і береться за роботу. Навички вмикаються автоматично, нічого спеціально викликати не треба.</p>
     <h3>Головне</h3>
@@ -1102,6 +1132,7 @@ npm run dev | build | lint | typecheck | test:e2e
       <li>Філософія: тести спершу, процес замість вгадування, простота як мета, докази замість заяв.</li>
     </ul>
     <p class="us"><b>Для нас.</b> Саме ці навички працюють у цьому репозиторії: брейншторм перед лого, системний пошук причини, коли зникала музика. Це відповідь на питання «чому Claude питає, а не робить одразу».</p>
+    </details>
     <a class="open" href="https://github.com/obra/superpowers/blob/main/README.md" target="_blank" rel="noopener">Читати оригінал<svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </article>
   </div>
@@ -1118,6 +1149,11 @@ npm run dev | build | lint | typecheck | test:e2e
     <p><a href="https://github.com/karpathy/autoresearch">autoresearch</a> <span>· Andrej Karpathy</span></p>
     <p><a href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a> <span>· Addy Osmani, 19.04.2026</span></p>
     <p><a href="https://yegge.ai/essays/welcome-to-gas-town/">Welcome to Gas Town</a> <span>· Steve Yegge, 1.01.2026</span></p>
+    <p><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">LLM Wiki</a> <span>· Andrej Karpathy, gist</span></p>
+    <p><a href="https://agents.md/">AGENTS.md</a> <span>· agents.md, відкритий формат</span></p>
+    <p><a href="https://github.com/genkovich/sdd/blob/main/README.md">SDD</a> <span>· genkovich/sdd</span></p>
+    <p><a href="https://github.com/github/spec-kit/blob/main/README.md">Spec Kit</a> <span>· GitHub</span></p>
+    <p><a href="https://github.com/obra/superpowers/blob/main/README.md">Superpowers</a> <span>· Jesse Vincent, obra/superpowers</span></p>
   </div>
 </section>
 
@@ -1168,6 +1204,21 @@ npm run dev | build | lint | typecheck | test:e2e
     btn.addEventListener('click', function(){
       writeClipboard(p.innerText.trim()).then(function(){ flash(btn, 'Скопійовано'); })
         .catch(function(){ selectNode(p); flash(btn, 'Виділено, натисніть ⌘C'); });
+    });
+  });
+
+  // на телефоні довгі запити згорнуті до чотирьох рядків
+  document.querySelectorAll('.bstep .prompt').forEach(function(box){
+    var p = box.querySelector('p'), copyBtn = box.querySelector('.copy');
+    var more = document.createElement('button');
+    more.type = 'button'; more.className = 'pmore'; more.textContent = 'Показати весь запит';
+    more.setAttribute('aria-expanded', 'false');
+    box.insertBefore(more, copyBtn);
+    box.classList.add('clamp');
+    more.addEventListener('click', function(){
+      var open = box.classList.toggle('clamp') === false;
+      more.textContent = open ? 'Згорнути' : 'Показати весь запит';
+      more.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   });
 
