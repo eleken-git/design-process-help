@@ -84,7 +84,7 @@ refresh the public preview — not in every PR.
 
 | Path | What it is |
 | --- | --- |
-| `docs/index.html` | landing with three tabs: frontend map (`#map`), the "Верстак" designer harness (`#harness`), cards for every section (`#materials`) |
+| `docs/index.html` | landing with three tabs: home with cards for every section (`#home`, default), frontend map (`#frontend`), the "Верстак" designer harness (`#harness`) |
 | `docs/presentation/` | the slide deck |
 | `docs/3d/` | the 3D player: `engine.js`, `backlog.js`, `episodes/<id>.js` + `<id>.mp3` |
 | `docs/podcast/` | podcast player, episodes are `.m4a` files next to `index.html` |
