@@ -12,8 +12,8 @@ files load fully every session and get followed more closely. Rules live in `AGE
 | Slide deck | ✅ 13 slides, `docs/presentation/` |
 | 3D episodes | 🟡 5 shipped (00, 01, 02, 03, 05), 26 topics queued in `ANIMATIONS.md` |
 | Podcast | ✅ 2 episodes, `docs/podcast/` |
-| Harness reading page | ✅ 5 materials, `docs/harness/` + NotebookLM sources |
-| Landing | ✅ three tabs: home (default), frontend map (16 stations), "Верстак" designer harness |
+| Harness page | ✅ `docs/harness/`: file tree, setup prompts, 5 people, 5 materials + NotebookLM sources |
+| Site structure | ✅ shared nav on every page; home launcher, `prompts/` (24 prompts), `harness/`, `map/` (16 stations), `learn/` |
 | GitHub Pages | ✅ live at https://eleken-git.github.io/design-process-help/ |
 | Tests | ✅ Playwright: app, landing, deck, player, 3D overlap checks |
 
@@ -217,3 +217,21 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Tests: `npm run typecheck && npm run build` green; `npm run test:e2e` green.
 - Merged: https://github.com/eleken-git/design-process-help/pull/15
 - Notes / follow-ups: requested in an artifact comment on the "Усі матеріали" tab.
+
+### 2026-09-29 — Site restructured as a reference with one nav (PR #17)
+
+- Built: one centered nav on every `docs/` page (Запити · Харнес · Карта · Вчитися, logo to home, skip link),
+  replacing the landing tabs, the deck/podcast crumbs and the 3D 🏠 button. New pages: `prompts/` (all 24
+  prompts fetched from `map/` and `harness/` at runtime, search that ignores apostrophe variants, group
+  chips, URL state, copy buttons, the prompt formula moved from the map), `map/` (the frontend map with
+  the PR #16 table of contents), `harness/` (Верстак + the five materials of the old reading page),
+  `learn/` (deck → 3D episodes via `3d/?ep=` → podcast → Nimbus exercises). The home page is a launcher
+  that fits one screen. Old hashes on `/` redirect to the new pages. The 3D stage sizes itself below the
+  nav; the nav hides in fullscreen and `?capture=1`.
+- Files: `docs/index.html`, `docs/{prompts,map,harness,learn}/index.html`, `docs/presentation/index.html`,
+  `docs/podcast/index.html`, `docs/3d/{index.html,engine.js}`, `tests/{site-nav,prompts,landing}.spec.ts`,
+  `specs/2026-09-29-site-ux-{design,plan}.md`, `README.md`, `AGENTS.md`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green.
+- Opened: https://github.com/eleken-git/design-process-help/pull/17
+- Notes / follow-ups: PR #16 closed (its TOC is inside this PR). Next: harness order and collapsed
+  people/materials, nav in the Nimbus shell, `docs/app/` rebuild.

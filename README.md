@@ -4,11 +4,15 @@
 
 | Що | Де |
 |---|---|
-| Головна: карта фронтенду, харнес «Верстак» і всі матеріали | [`docs/index.html`](docs/index.html) — корінь GitHub Pages: https://eleken-git.github.io/design-process-help/. Три вкладки: «Головна» (дві головні картки і картки на розділи нижче), «Карта фронтенду» (16 зупинок від меж проєкту до здачі клієнту, готові запити до Claude англійською, чекліст) і «Харнес «Верстак»» (універсальний харнес дизайнера за практиками Huntley, Hashimoto, Karpathy, Osmani і Yegge) |
+| Сайт-довідник | https://eleken-git.github.io/design-process-help/ — угорі на кожній сторінці однакове меню: **Запити · Харнес · Карта · Вчитися**, лого веде на головну |
+| Головна | [`docs/index.html`](docs/index.html) — поле «Що треба зробити?» (веде в запити), три входи і рядок «Вчитися» |
+| Запити для Claude | [`docs/prompts/index.html`](docs/prompts/index.html) — усі 24 запити з карти й харнесу: пошук, фільтр за етапом, копіювання в один клік, формула «Як скласти свій запит». Запити збираються з карти й харнесу, тож окремо їх оновлювати не треба |
+| Харнес | [`docs/harness/index.html`](docs/harness/index.html) — універсальний харнес дизайнера (шаблон «Верстак»): дерево файлів, шість запитів на старт, робочий день, ворота якості, пʼять людей і пʼять матеріалів (LLM Wiki, AGENTS.md, SDD, Spec Kit, Superpowers); переказ і промпти для NotebookLM — у [`docs/harness/notebooklm/`](docs/harness/notebooklm/) |
+| Карта фронтенду | [`docs/map/index.html`](docs/map/index.html) — 16 зупинок від меж проєкту до здачі клієнту, що перевірити на кожній, готові запити англійською і чекліст здачі |
+| Вчитися | [`docs/learn/index.html`](docs/learn/index.html) — маршрут: презентація → 3D-епізоди → подкаст → вправи в Nimbus |
 | Презентація (10 хвилин, слайди) | [`docs/presentation/index.html`](docs/presentation/index.html) |
-| 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
+| 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами; епізод можна відкрити посиланням `3d/?ep=conflict` |
 | Подкаст (2 епізоди, 31 хвилина) | [`docs/podcast/index.html`](docs/podcast/index.html) — «Спільна робота дизайнерів у Git через Claude» і «Як приборкати Claude для дизайну інтерфейсів»; плеєр: плей, ±15 с, швидкість, запамʼятовує позицію в кожному |
-| Корисна інформація: будуємо харнес | [`docs/harness/index.html`](docs/harness/index.html) — пʼять матеріалів (LLM Wiki, AGENTS.md, SDD, Spec Kit, Superpowers) простими словами; переказ і промпти для NotebookLM — у [`docs/harness/notebooklm/`](docs/harness/notebooklm/) |
 | Тренувальний проєкт наживо, без встановлення | `docs/app/` — статична збірка, оновлюється командою `npm run build:pages` |
 | Тренувальний проєкт локально | `npm run dev` → `#/dashboard`, `#/settings`, `#/ui-kit` |
 | Вправи для двох | [`PRACTICE.md`](PRACTICE.md) |
@@ -59,7 +63,8 @@ npm run dev        # http://localhost:5173
 .
 ├── README.md, PRACTICE.md         ← для тебе, українською
 ├── AGENTS.md, progress.log        ← для агента, англійською (CLAUDE.md відсилає до AGENTS.md)
-├── docs/index.html                ← головна GitHub Pages: «Головна», карта фронтенду, «Верстак»
+├── docs/index.html                ← головна GitHub Pages: пошук запиту, три входи, рядок «Вчитися»
+├── docs/prompts/, harness/, map/, learn/ ← запити, харнес, карта фронтенду, маршрут навчання
 ├── docs/presentation/index.html   ← презентація
 ├── docs/3d/                       ← Git у 3D: епізоди, музика, спільний плеєр
 ├── docs/app/                      ← статична збірка Nimbus для перегляду наживо (npm run build:pages)
@@ -220,7 +225,7 @@ git push
 1. GitHub → Settings → Rules → New branch ruleset для `main`: Require a pull request (1 approval) · Require review from Code Owners · Require status checks: `build` · Block force pushes.
 2. Settings → General → Pull Requests: залишити лише **Allow squash merging**, увімкнути **Automatically delete head branches**.
 3. У `.github/CODEOWNERS` вписати реальні GitHub-логіни.
-4. Settings → Pages → Deploy from a branch → `main` / `docs` — на корені відкриється головна з картою фронтенду, харнесом «Верстак» і лінками на всі розділи.
+4. Settings → Pages → Deploy from a branch → `main` / `docs` — на корені відкриється головна з пошуком запиту і входами в запити, харнес, карту фронтенду і навчання.
 5. Після будь-якої зміни в `src/`, яку варто показати на лендінгу: `npm run build:pages` оновлює `docs/app/` і закомітити цей результат разом зі змінами. Не запускай цю команду в кожному PR — лише коли свідомо оновлюєш публічне прев'ю.
 
 ## 10. Чого не робимо зараз
