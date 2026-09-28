@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Карта фронтенду · design-process-help</title>
-<meta name="description" content="Карта фронтенду від домовленості з клієнтом до здачі, харнес «Верстак» для дизайнерів і всі матеріали тренувального репозиторію eleken-git/design-process-help.">
+<title>Дизайн у коді, крок за кроком · design-process-help</title>
+<meta name="description" content="Тренувальний репозиторій eleken-git/design-process-help: карта фронтенду від домовленості з клієнтом до здачі, харнес «Верстак» для дизайнерів, презентація, Git у 3D, подкаст і застосунок Nimbus.">
 <style>
 :root{
   /* палітра GitHub Dark, як на інших сторінках design-process-help */
@@ -562,18 +562,34 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
   .ring{padding:10px}
   .branch{margin-left:24px}
 }
+
+/* головна: дві головні картки */
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.hub-card.feature{gap:12px;padding:24px;border-top:4px solid var(--hc)}
+.hub-card.feature h2{font-size:22px;letter-spacing:-.01em}
+.f-map{--hc:var(--blue)}.f-harness{--hc:var(--green)}
+.mini-metro{display:flex;align-items:center;gap:12px;height:40px}
+.mini-metro i{position:relative;flex:1;height:6px;border-radius:3px;background:var(--c)}
+.mini-metro i::before,.mini-metro i::after{content:"";position:absolute;top:50%;width:16px;height:16px;border:3px solid var(--c);border-radius:50%;background:var(--surface);transform:translateY(-50%);box-sizing:border-box}
+.mini-metro i::before{left:-2px}.mini-metro i::after{right:-2px}
+.mini-rings{display:flex;align-items:center;height:40px}
+.mini-rings span{display:flex;align-items:center;justify-content:center;padding:4px;border:2px solid var(--yellow);border-radius:10px}
+.mini-rings span span{border-color:var(--purple);border-radius:8px}
+.mini-rings span span span{border-color:var(--green);border-radius:6px}
+.mini-rings span span span span{width:34px;height:12px;padding:0;border-color:var(--blue);border-radius:4px;background:var(--surface-2)}
+@media (max-width:640px){.feature-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <nav class="jump" aria-label="Навігація">
   <div class="wrap">
     <div class="seg" role="tablist" aria-label="Вкладки">
-      <button type="button" role="tab" id="t-map" data-tab="map" aria-controls="tab-map" aria-selected="true">Карта фронтенду</button>
+      <button type="button" role="tab" id="t-home" data-tab="home" aria-controls="home" aria-selected="true">Головна</button>
+      <button type="button" role="tab" id="t-map" data-tab="map" aria-controls="frontend" aria-selected="false" tabindex="-1">Карта фронтенду</button>
       <button type="button" role="tab" id="t-harness" data-tab="harness" aria-controls="harness" aria-selected="false" tabindex="-1">Харнес «Верстак»</button>
-      <button type="button" role="tab" id="t-materials" data-tab="materials" aria-controls="materials" aria-selected="false" tabindex="-1">Усі матеріали</button>
     </div>
-    <span class="sep" aria-hidden="true"></span>
-    <div class="links" data-for="map">
+    <span class="sep" aria-hidden="true" hidden></span>
+    <div class="links" data-for="map" hidden>
     <a href="#map">Карта</a>
     <a href="#ask">Як просити Claude</a>
     <a href="#phase-a" class="ph-a"><i></i>Домовитись</a>
@@ -598,7 +614,84 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
 </nav>
 
 <div class="wrap">
-<div class="panel" id="tab-map" data-tab="map" role="tabpanel" aria-labelledby="t-map">
+<div class="panel" id="home" data-tab="home" role="tabpanel" aria-labelledby="t-home">
+
+<header class="top">
+  <span class="crumb">eleken-git / design-process-help</span>
+  <p class="kicker">тренувальний репозиторій для UX/UI дизайнерів</p>
+  <h1>Дизайн у коді, крок за кроком</h1>
+  <p class="lede">Тренувальний репозиторій: дизайнери роблять дизайн у коді через Claude і вчаться працювати вдвох через гілки й Pull Request.</p>
+</header>
+
+<section class="block" id="m-start">
+  <div class="sec-head">
+    <h2>Почніть тут</h2>
+    <p>Дві головні частини сайту: що перевірити у фронтенді від старту до здачі і як зібрати харнес, з яким Claude працює однаково в кожному проєкті.</p>
+  </div>
+  <div class="feature-grid">
+    <a class="hub-card feature f-map" href="#frontend">
+      <span class="hub-tag">Карта фронтенду</span>
+      <h2>Від меж проєкту до здачі клієнту</h2>
+      <span class="mini-metro" aria-hidden="true"><i class="ph-a"></i><i class="ph-b"></i><i class="ph-c"></i><i class="ph-d"></i></span>
+      <p class="hub-desc">16 зупинок у чотирьох етапах. На кожній пояснення простими словами, що перевірити, і готовий запит для Claude. Наприкінці чекліст здачі.</p>
+      <span class="hub-meta">4 етапи · 16 зупинок · 17 запитів</span>
+      <span class="hub-go">Відкрити карту →</span>
+    </a>
+    <a class="hub-card feature f-harness" href="#harness">
+      <span class="hub-tag">Харнес «Верстак»</span>
+      <h2>Універсальний харнес дизайнера</h2>
+      <span class="mini-rings" aria-hidden="true"><span><span><span><span></span></span></span></span></span>
+      <p class="hub-desc">Правила, пам'ять у файлах, скіли й ворота якості, з якими ви починаєте будь-який клієнтський проєкт. Зібрано з практик Huntley, Hashimoto, Karpathy, Osmani і Yegge.</p>
+      <span class="hub-meta">5 ідей · дерево файлів · 7 запитів</span>
+      <span class="hub-go">Відкрити Верстак →</span>
+    </a>
+  </div>
+</section>
+
+<section class="block" id="m-cards">
+  <div class="sec-head"><h2>Інші матеріали</h2></div>
+  <div class="hub-grid">
+    <a class="hub-card presentation" href="presentation/">
+      <span class="hub-tag">Презентація</span>
+      <h2>Працюємо вдвох і не ламаємо одне одного</h2>
+      <p class="hub-desc">Як влаштований репозиторій, навіщо гілки й Pull Request, як змінювати спільні компоненти і що робити, коли двоє змінили той самий рядок.</p>
+      <span class="hub-meta">13 слайдів · ~10 хвилин</span>
+      <span class="hub-go">Відкрити →</span>
+    </a>
+    <a class="hub-card threed" href="3d/">
+      <span class="hub-tag">Git у 3D</span>
+      <h2>Як Git зберігає і зливає твою роботу</h2>
+      <p class="hub-desc">П'ять анімованих епізодів: три стани файлу, шлях Pull Request від Draft до merge, захищений main, конфлікт, коли двоє змінили один рядок, і merge main проти rebase main.</p>
+      <span class="hub-meta">5 епізодів · до 2 хвилин кожен</span>
+      <span class="hub-go">Дивитись →</span>
+    </a>
+    <a class="hub-card app" href="app/">
+      <span class="hub-tag">Тренувальний застосунок</span>
+      <h2>Nimbus: застосунок, який не страшно зламати</h2>
+      <p class="hub-desc">Три екрани, зібрані з токенів і спільних компонентів. Тут робиш вправи з PRACTICE.md: зміна → гілка → Pull Request → ревʼю колеги.</p>
+      <span class="hub-meta">Dashboard · Settings · UI kit</span>
+      <span class="hub-go">Відкрити →</span>
+    </a>
+    <a class="hub-card podcast" href="podcast/">
+      <span class="hub-tag">Подкаст</span>
+      <h2>Дизайн у коді з Claude, голосом</h2>
+      <p class="hub-desc">Два епізоди: спільна робота дизайнерів у Git через Claude і як приборкати Claude для дизайну інтерфейсів. Плеєр запамʼятовує, де ти зупинився у кожному.</p>
+      <span class="hub-meta">2 епізоди · 13:21 і 17:30</span>
+      <span class="hub-go">Слухати →</span>
+    </a>
+    <a class="hub-card harness wide" href="harness/">
+      <span class="hub-tag">Корисна інформація</span>
+      <h2>Будуємо харнес</h2>
+      <p class="hub-desc">Правила, файли й навички навколо AI-агента, які роблять його передбачуваним: CLAUDE.md чи AGENTS.md, опис перед кодом, тест перед виправленням. П'ять матеріалів простими словами: LLM Wiki, AGENTS.md, SDD, Spec Kit і Superpowers.</p>
+      <span class="hub-meta">5 матеріалів · оригінали англійською</span>
+      <span class="hub-go">Читати →</span>
+    </a>
+  </div>
+</section>
+
+</div>
+
+<div class="panel" id="frontend" data-tab="map" role="tabpanel" aria-labelledby="t-map" hidden>
 
 <header class="top">
   <span class="crumb">eleken-git / design-process-help</span>
@@ -1890,56 +1983,6 @@ npm run dev | build | lint | typecheck | test:e2e
 
 </div>
 
-<div class="panel" id="materials" data-tab="materials" role="tabpanel" aria-labelledby="t-materials" hidden>
-
-<header class="top">
-  <span class="crumb">eleken-git / design-process-help</span>
-  <p class="kicker">усі матеріали репозиторію</p>
-  <h1>Дизайн у коді, крок за кроком</h1>
-  <p class="lede">Тренувальний репозиторій: дизайнери роблять дизайн у коді через Claude і вчаться працювати вдвох через гілки й Pull Request.</p>
-</header>
-
-<section class="block" id="m-cards">
-  <div class="hub-grid">
-    <a class="hub-card presentation" href="presentation/">
-      <span class="hub-tag">Презентація</span>
-      <h2>Працюємо вдвох і не ламаємо одне одного</h2>
-      <p class="hub-desc">Як влаштований репозиторій, навіщо гілки й Pull Request, як змінювати спільні компоненти і що робити, коли двоє змінили той самий рядок.</p>
-      <span class="hub-meta">13 слайдів · ~10 хвилин</span>
-      <span class="hub-go">Відкрити →</span>
-    </a>
-    <a class="hub-card threed" href="3d/">
-      <span class="hub-tag">Git у 3D</span>
-      <h2>Як Git зберігає і зливає твою роботу</h2>
-      <p class="hub-desc">П'ять анімованих епізодів: три стани файлу, шлях Pull Request від Draft до merge, захищений main, конфлікт, коли двоє змінили один рядок, і merge main проти rebase main.</p>
-      <span class="hub-meta">5 епізодів · до 2 хвилин кожен</span>
-      <span class="hub-go">Дивитись →</span>
-    </a>
-    <a class="hub-card app" href="app/">
-      <span class="hub-tag">Тренувальний застосунок</span>
-      <h2>Nimbus: застосунок, який не страшно зламати</h2>
-      <p class="hub-desc">Три екрани, зібрані з токенів і спільних компонентів. Тут робиш вправи з PRACTICE.md: зміна → гілка → Pull Request → ревʼю колеги.</p>
-      <span class="hub-meta">Dashboard · Settings · UI kit</span>
-      <span class="hub-go">Відкрити →</span>
-    </a>
-    <a class="hub-card podcast" href="podcast/">
-      <span class="hub-tag">Подкаст</span>
-      <h2>Дизайн у коді з Claude, голосом</h2>
-      <p class="hub-desc">Два епізоди: спільна робота дизайнерів у Git через Claude і як приборкати Claude для дизайну інтерфейсів. Плеєр запамʼятовує, де ти зупинився у кожному.</p>
-      <span class="hub-meta">2 епізоди · 13:21 і 17:30</span>
-      <span class="hub-go">Слухати →</span>
-    </a>
-    <a class="hub-card harness wide" href="harness/">
-      <span class="hub-tag">Корисна інформація</span>
-      <h2>Будуємо харнес</h2>
-      <p class="hub-desc">Правила, файли й навички навколо AI-агента, які роблять його передбачуваним: CLAUDE.md чи AGENTS.md, опис перед кодом, тест перед виправленням. П'ять матеріалів простими словами: LLM Wiki, AGENTS.md, SDD, Spec Kit і Superpowers.</p>
-      <span class="hub-meta">5 матеріалів · оригінали англійською</span>
-      <span class="hub-go">Читати →</span>
-    </a>
-  </div>
-</section>
-
-</div>
 
 </div>
 
@@ -2060,7 +2103,6 @@ npm run dev | build | lint | typecheck | test:e2e
   var panels = [].slice.call(document.querySelectorAll('[role=tabpanel]'));
   var linkGroups = [].slice.call(document.querySelectorAll('.jump .links'));
   var sep = document.querySelector('.jump .sep');
-  var TAB_KEY = 'frontend-map-tab';
   function show(name, focus){
     tabs.forEach(function(t){
       var on = t.dataset.tab === name;
@@ -2072,7 +2114,6 @@ npm run dev | build | lint | typecheck | test:e2e
     var any = false;
     linkGroups.forEach(function(g){ g.hidden = g.dataset.for !== name; if(!g.hidden) any = true; });
     if(sep) sep.hidden = !any;
-    try{ localStorage.setItem(TAB_KEY, name); }catch(e){}
   }
   function go(id){
     var el = id && document.getElementById(id);
@@ -2084,7 +2125,11 @@ npm run dev | build | lint | typecheck | test:e2e
     return true;
   }
   tabs.forEach(function(t, i){
-    t.addEventListener('click', function(){ show(t.dataset.tab); window.scrollTo(0, 0); });
+    t.addEventListener('click', function(){
+      show(t.dataset.tab); window.scrollTo(0, 0);
+      var id = t.getAttribute('aria-controls');
+      try{ history.replaceState(null, '', id === 'home' ? location.pathname : '#' + id); }catch(e){}
+    });
     t.addEventListener('keydown', function(e){
       var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
       if(!d) return;
@@ -2108,11 +2153,7 @@ npm run dev | build | lint | typecheck | test:e2e
     }
   });
   window.addEventListener('hashchange', function(){ go(location.hash.slice(1)); });
-  if(!go(location.hash.slice(1))){
-    var saved = null;
-    try{ saved = localStorage.getItem(TAB_KEY); }catch(e){}
-    show(tabs.some(function(t){ return t.dataset.tab === saved; }) ? saved : 'map');
-  }
+  if(!go(location.hash.slice(1))) show('home');
 
   // дерево файлів верстака
   var FILES = {

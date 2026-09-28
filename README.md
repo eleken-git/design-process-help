@@ -4,7 +4,7 @@
 
 | Що | Де |
 |---|---|
-| Головна: карта фронтенду, харнес «Верстак» і всі матеріали | [`docs/index.html`](docs/index.html) — корінь GitHub Pages: https://eleken-git.github.io/design-process-help/. Три вкладки: «Карта фронтенду» (16 зупинок від меж проєкту до здачі клієнту, готові запити до Claude англійською, чекліст), «Харнес «Верстак»» (універсальний харнес дизайнера за практиками Huntley, Hashimoto, Karpathy, Osmani і Yegge) і «Усі матеріали» (картки на розділи нижче) |
+| Головна: карта фронтенду, харнес «Верстак» і всі матеріали | [`docs/index.html`](docs/index.html) — корінь GitHub Pages: https://eleken-git.github.io/design-process-help/. Три вкладки: «Головна» (дві головні картки і картки на розділи нижче), «Карта фронтенду» (16 зупинок від меж проєкту до здачі клієнту, готові запити до Claude англійською, чекліст) і «Харнес «Верстак»» (універсальний харнес дизайнера за практиками Huntley, Hashimoto, Karpathy, Osmani і Yegge) |
 | Презентація (10 хвилин, слайди) | [`docs/presentation/index.html`](docs/presentation/index.html) |
 | 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
 | Подкаст (2 епізоди, 31 хвилина) | [`docs/podcast/index.html`](docs/podcast/index.html) — «Спільна робота дизайнерів у Git через Claude» і «Як приборкати Claude для дизайну інтерфейсів»; плеєр: плей, ±15 с, швидкість, запамʼятовує позицію в кожному |
@@ -59,7 +59,7 @@ npm run dev        # http://localhost:5173
 .
 ├── README.md, PRACTICE.md         ← для тебе, українською
 ├── AGENTS.md, progress.log        ← для агента, англійською (CLAUDE.md відсилає до AGENTS.md)
-├── docs/index.html                ← головна GitHub Pages: карта фронтенду, «Верстак», усі матеріали
+├── docs/index.html                ← головна GitHub Pages: «Головна», карта фронтенду, «Верстак»
 ├── docs/presentation/index.html   ← презентація
 ├── docs/3d/                       ← Git у 3D: епізоди, музика, спільний плеєр
 ├── docs/app/                      ← статична збірка Nimbus для перегляду наживо (npm run build:pages)

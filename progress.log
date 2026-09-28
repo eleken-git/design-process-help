@@ -13,7 +13,7 @@ files load fully every session and get followed more closely. Rules live in `AGE
 | 3D episodes | 🟡 5 shipped (00, 01, 02, 03, 05), 26 topics queued in `ANIMATIONS.md` |
 | Podcast | ✅ 2 episodes, `docs/podcast/` |
 | Harness reading page | ✅ 5 materials, `docs/harness/` + NotebookLM sources |
-| Landing | ✅ three tabs: frontend map (16 stations), "Верстак" designer harness, all materials |
+| Landing | ✅ three tabs: home (default), frontend map (16 stations), "Верстак" designer harness |
 | GitHub Pages | ✅ live at https://eleken-git.github.io/design-process-help/ |
 | Tests | ✅ Playwright: app, landing, deck, player, 3D overlap checks |
 
@@ -206,3 +206,14 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Notes / follow-ups: every prompt to Claude on the page is English, the rest is Ukrainian. Facts about
   the five sources were checked against the original pages on 2026-09-28. The same page is published as
   a claude.ai artifact.
+
+### 2026-09-28 — Home tab first on the landing (PR #15)
+
+- Built: the landing opens on a "Головна" tab: two featured cards (frontend map, "Верстак") above the
+  old section cards. The map panel moved to `#frontend`; `#home` is the default. Clicking a tab writes
+  its hash to the address bar so a tab can be shared. The last-opened-tab memory was removed so every
+  visit without a hash starts on the home tab.
+- Files: `docs/index.html`, `tests/landing.spec.ts`, `README.md`, `AGENTS.md`.
+- Tests: `npm run typecheck && npm run build` green; `npm run test:e2e` green.
+- Merged: https://github.com/eleken-git/design-process-help/pull/15
+- Notes / follow-ups: requested in an artifact comment on the "Усі матеріали" tab.
