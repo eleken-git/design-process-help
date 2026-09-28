@@ -5,19 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Nimbus · тренувальний проєкт</title>
     <style>
-      /* Хлібна крихта назад до лендінгу — лише на опублікованому прев'ю (docs/app/), не заважає локальній розробці */
-      #hub-crumb{display:none;align-items:center;padding:8px 20px;background:#0D1117;border-bottom:1px solid #30363D;font:13px ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
-      #hub-crumb a{color:#8B949E;text-decoration:none}
-      #hub-crumb a:hover{color:#E6EDF3}
+      /* Спільне меню сайту design-process-help — лише на опублікованому прев'ю (docs/app/), не заважає локальній розробці.
+         Та сама розмітка, що на сторінках docs/, кольори GitHub Dark вписані напряму, бо в оболонці немає токенів сторінки. */
+      #hub-nav{display:none;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:52px;padding:0 20px;background:#0D1117;border-bottom:1px solid #21262D;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif}
+      #hub-nav.on{display:grid}
+      #hub-nav .site-logo{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-width:0;color:#E6EDF3;font:600 13px ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;text-decoration:none;white-space:nowrap}
+      #hub-nav .site-mark{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:#E6EDF3;color:#0D1117;font:700 14px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+      #hub-nav nav{display:flex;gap:2px;max-width:100%;padding:3px;overflow-x:auto;scrollbar-width:none;border:1px solid #30363D;border-radius:10px;background:#161B22}
+      #hub-nav nav a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:7px;color:#8B949E;font:500 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:nowrap;text-decoration:none}
+      #hub-nav nav a:hover{color:#E6EDF3;background:rgba(110,118,129,.14)}
+      #hub-nav nav a[aria-current="page"]{background:#1C2128;color:#E6EDF3;box-shadow:inset 0 0 0 1px #30363D}
+      #hub-nav a:focus-visible{outline:2px solid #58A6FF;outline-offset:2px}
+      #hub-nav .site-gh{justify-self:end;display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:#8B949E}
+      #hub-nav .site-gh:hover{color:#E6EDF3;background:rgba(110,118,129,.14)}
+      #hub-nav .site-gh svg{width:18px;height:18px;fill:currentColor}
+      @media (max-width:640px){
+        #hub-nav{grid-template-columns:auto minmax(0,1fr);padding:0 12px}
+        #hub-nav .site-name,#hub-nav .site-gh{display:none}
+        #hub-nav nav{justify-self:end}
+        #hub-nav nav a{padding:0 9px}
+      }
     </style>
     <script type="module" crossorigin src="./assets/index-ZSPIgrw4.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-DplDzQuz.css">
   </head>
   <body>
-    <div id="hub-crumb"><a href="../">← design-process-help</a></div>
+    <header id="hub-nav" class="site-nav">
+      <a class="site-logo" href="../" aria-label="design-process-help, на головну"><span class="site-mark" aria-hidden="true">d</span><span class="site-name">design-process-help</span></a>
+      <nav aria-label="Розділи сайту">
+        <a href="../prompts/">Запити</a>
+        <a href="../harness/">Харнес</a>
+        <a href="../map/">Карта</a>
+        <a href="../learn/" aria-current="page">Вчитися</a>
+      </nav>
+      <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+    </header>
     <script>
       if (location.pathname.indexOf('/app/') !== -1) {
-        document.getElementById('hub-crumb').style.display = 'flex';
+        document.getElementById('hub-nav').classList.add('on');
       }
     </script>
     <div id="root"></div>

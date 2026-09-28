@@ -106,16 +106,13 @@ test.describe('шлях назад на головну', () => {
     await expect(page).toHaveURL(BASE + '/');
   });
 
-  test('тренувальний застосунок: крихта видима на /app/, прихована при локальній розробці', async ({ page }) => {
+  test('тренувальний застосунок: меню сайту на /app/, лого веде на головну', async ({ page }) => {
     await page.goto(BASE + '/app/');
-    const crumb = page.locator('#hub-crumb');
-    await expect(crumb).toBeVisible();
-    await expect(crumb.locator('a')).toHaveAttribute('href', '../');
-    await crumb.locator('a').click();
+    const nav = page.locator('#hub-nav');
+    await expect(nav).toBeVisible();
+    await expect(page.locator('#hub-crumb')).toHaveCount(0);
+    await nav.locator('a.site-logo').click();
     await expect(page).toHaveURL(BASE + '/');
-
-    await page.goto('http://127.0.0.1:5173/');
-    await expect(page.locator('#hub-crumb')).toBeHidden();
   });
 });
 
