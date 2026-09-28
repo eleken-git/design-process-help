@@ -13,6 +13,7 @@ files load fully every session and get followed more closely. Rules live in `AGE
 | 3D episodes | 🟡 5 shipped (00, 01, 02, 03, 05), 26 topics queued in `ANIMATIONS.md` |
 | Podcast | ✅ 2 episodes, `docs/podcast/` |
 | Harness reading page | ✅ 5 materials, `docs/harness/` + NotebookLM sources |
+| Landing | ✅ three tabs: frontend map (16 stations), "Верстак" designer harness, all materials |
 | GitHub Pages | ✅ live at https://eleken-git.github.io/design-process-help/ |
 | Tests | ✅ Playwright: app, landing, deck, player, 3D overlap checks |
 
@@ -189,3 +190,19 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Merged: https://github.com/eleken-git/design-process-help/pull/12
 - Notes / follow-ups: everything a designer sees — `README.md`, `PRACTICE.md`, every page under `docs/`,
   UI strings, code comments, commit messages — stays Ukrainian.
+
+### 2026-09-28 — Landing becomes the frontend map and the "Верстак" harness (PR #14)
+
+- Built: `docs/index.html` is now a three-tab page. "Карта фронтенду": 16 stations from scope to client
+  sign-off, each with a picture, checks and a copyable prompt; skill ideas; a Definition of Done checklist
+  that copies the open items as a prompt. "Харнес «Верстак»": a reusable designer harness assembled from
+  Huntley (Ralph structure and loop), Hashimoto (mistakes become rules), Karpathy (measure, keep or revert),
+  Osmani (quality gates over prompts) and Yegge (state survives sessions), with a clickable file tree and
+  six prompts to build the template. "Усі матеріали": the old landing cards. Deep links: `#map`,
+  `#harness`, `#materials`, `#s1`–`#s16`.
+- Files: rewrote `docs/index.html`; extended `tests/landing.spec.ts`; updated `README.md`, `AGENTS.md`.
+- Tests: `npm run typecheck && npm run build` green; `npm run test:e2e` 30/30.
+- Merged: https://github.com/eleken-git/design-process-help/pull/14
+- Notes / follow-ups: every prompt to Claude on the page is English, the rest is Ukrainian. Facts about
+  the five sources were checked against the original pages on 2026-09-28. The same page is published as
+  a claude.ai artifact.
