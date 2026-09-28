@@ -119,3 +119,69 @@ test.describe('хлібні крихти назад на лендінг', () => 
     await expect(page.locator('#hub-crumb')).toBeHidden();
   });
 });
+
+test.describe('головна: карта фронтенду і харнес «Верстак»', () => {
+  test('три вкладки, за замовчуванням карта з 16 зупинками, запити англійською, без помилок JS', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/');
+    await expect(page.getByRole('tab')).toHaveCount(3);
+    await expect(page.getByRole('tab', { name: 'Карта фронтенду' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Карта фронтенду');
+    await expect(page.locator('#tab-map .station')).toHaveCount(16);
+    await expect(page.locator('#tab-map .prompt p[lang="en"]')).toHaveCount(17);
+    expect(errors, 'помилки JS').toEqual([]);
+  });
+
+  test('вкладка «Верстак»: пʼять людей, дерево файлів перемикає опис', async ({ page }) => {
+    await page.goto(BASE + '/');
+    await page.getByRole('tab', { name: 'Харнес «Верстак»' }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Верстак');
+    await expect(page.locator('#harness .person')).toHaveCount(5);
+    await expect(page.locator('#tab-map')).toBeHidden();
+    await page.locator('.ftree button[data-f="settings"]').click();
+    await expect(page.locator('#fd-name')).toHaveText('.claude/settings.json');
+    await expect(page.locator('.ftree button[aria-pressed="true"]')).toHaveCount(1);
+    await expect(page.locator('#fd-code')).toContainText('"Stop"');
+  });
+
+  test('посилання #harness відкриває верстак, посилання з верстака на карту перемикає вкладку', async ({ page }) => {
+    await page.goto(BASE + '/#harness');
+    await expect(page.getByRole('tab', { name: 'Харнес «Верстак»' })).toHaveAttribute('aria-selected', 'true');
+    await page.locator('#h-build a[href="#map"]').click();
+    await expect(page.getByRole('tab', { name: 'Карта фронтенду' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#map')).toBeVisible();
+  });
+
+  test('чекліст рахує відмітки і збирає незакриті пункти в запит англійською', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+    await page.goto(BASE + '/');
+    await expect(page.locator('#total')).toHaveText('0 з 31');
+    await page.locator('#d-a1').check();
+    await expect(page.locator('#total')).toHaveText('1 з 31');
+    await page.locator('#copy-open').click();
+    await expect(page.locator('#status')).toHaveText(/Скопійовано/);
+    const text = await page.evaluate(() => navigator.clipboard.readText());
+    expect(text).toContain('Check the project against the items below');
+    expect(text).toContain('Agree:');
+    expect(text).not.toContain('Project scope written down and agreed');
+  });
+
+  test('«Усі матеріали»: картки на кожен розділ сайту', async ({ page }) => {
+    await page.goto(BASE + '/#materials');
+    await expect(page.locator('#materials .hub-card')).toHaveCount(5);
+    for (const href of ['presentation/', '3d/', 'app/', 'podcast/', 'harness/']) {
+      await expect(page.locator(`#materials a.hub-card[href="${href}"]`)).toHaveCount(1);
+    }
+  });
+
+  test('на 375 px жодна вкладка не скролиться вбік', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/');
+    for (const name of ['Карта фронтенду', 'Харнес «Верстак»', 'Усі матеріали']) {
+      await page.getByRole('tab', { name }).click();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow, `горизонтальний скрол у вкладці «${name}»`).toBeLessThanOrEqual(0);
+    }
+  });
+});
