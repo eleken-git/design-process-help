@@ -38,7 +38,7 @@ The user asked for a centered, good-looking top menu and a site that is comforta
   anywhere from 320 to 1920 px.
 - Every old URL keeps working (section 7).
 - The harness page on mobile is at most half the current Верстак height (≤ 9,000 px at 375 px).
-- Nothing is lost: 16 stations, 23 prompts, 5 people, 5 materials, the checklist and its saved state
+- Nothing is lost: 16 stations, 24 prompts, 5 people, 5 materials, the checklist and its saved state
   (`localStorage` key `frontend-map-done-v1`).
 
 ## 2. Scope
@@ -181,7 +181,7 @@ are kept on the merged harness page.
 ### Single source
 
 Prompts stay where they are, next to their explanation, in `map/index.html` (17: stations 1–16 and the
-`#skills` section) and `harness/index.html` (6: the "Зібрати" steps). The library page fetches both
+`#skills` section) and `harness/index.html` (7: the six "Зібрати" steps and one in "Помилка стає правилом"). The library page fetches both
 pages, parses them with `DOMParser`, and renders a list. A prompt added to the map appears in the
 library with no second copy.
 
@@ -189,8 +189,8 @@ For each `.prompt` it derives:
 
 | Field | Map | Harness |
 | --- | --- | --- |
-| group | the closest `.phase` → Домовитись (2), Будувати (5), Перевірити (5), Здати (4); the `#skills` prompt → Харнес, because skills are part of the harness | Харнес (6, so 7 with `#skills`) |
-| title | station number + `h3` of the closest `.station`; `#skills` uses its `h2` | step number + `h3` of the closest `.bstep` |
+| group | the closest `.phase` → Домовитись (2), Будувати (5), Перевірити (5), Здати (4); the `#skills` prompt → Харнес, because skills are part of the harness | Харнес (7, so 8 with `#skills`) |
+| title | station number + `h3` of the closest `.station`; `#skills` uses its `h2` | step number + `h3` of the closest `.bstep`, otherwise the section `h2` |
 | link | `../map/#<station id>` or `../map/#skills` | `../harness/#h-build` |
 | search text | title, `.checks li`, `.self`, the English prompt text, the group name | title, prompt text, group |
 
@@ -279,7 +279,7 @@ An ordered route of four steps, each with duration, one line on what you can do 
   goes to the root; at 375 px the nav is not clipped and the page has no horizontal overflow.
 - Redirects: `/#s4` → `map/#s4`, `/#h-tree` → `harness/#h-tree`, `/#frontend` → `map/`,
   `/#ask` → `prompts/#ask` with the formula open, `/#h-universal` → `harness/#h-tree`.
-- New `tests/prompts.spec.ts`: 23 prompts; `?q=доступність` keeps station 4; a chip filters by group;
+- New `tests/prompts.spec.ts`: 24 prompts; `?q=доступність` keeps station 4; a chip filters by group;
   "Скопіювати" writes the prompt to the clipboard; the empty state and "Показати всі".
 - Update `tests/landing.spec.ts`: home cards and search form; the crumb tests become nav tests; the map
   test moves to `/map/` (16 stations, 17 prompts); the harness test moves to `/harness/` (5 people, the

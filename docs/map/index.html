@@ -109,6 +109,8 @@ section{scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
 .rules b{display:block;font-size:15px}
 .rules p{margin-top:4px;font-size:14px;color:var(--muted)}
 
+.ask-link{margin-top:18px;color:var(--muted);font-size:14px}
+
 /* етапи і зупинки */
 .phase{padding-block:56px 8px;border-top:1px solid var(--border-muted)}
 .phase-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -624,7 +626,6 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
   <p class="toc-title">Зміст</p>
   <ol>
     <li><a href="#map"><span>Карта</span></a></li>
-    <li><a href="#ask"><span>Як просити Claude</span></a></li>
     <li class="ph-a"><a href="#phase-a"><i></i><span>Домовитись</span></a>
       <ol>
         <li><a href="#s1"><b>1</b><span>Межі проєкту</span></a></li>
@@ -716,27 +717,9 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
       </ol>
     </div>
   </div>
+  <p class="ask-link">Усі запити на карті зібрані за однією формулою: <a href="../prompts/#ask">як скласти свій запит →</a></p>
 </section>
 
-<!-- ЯК ПРОСИТИ -->
-<section id="ask" class="block">
-  <div class="sec-head">
-    <h2>Як просити Claude</h2>
-    <p>Добрий запит має чотири частини. Усі запити на цій карті зібрані за цією формулою і написані англійською: копіюйте їх і підставляйте своє замість [дужок].</p>
-  </div>
-  <div class="formula">
-    <div class="f-step fc1"><b>Що</b><p>«Check» або «Build», і що саме</p></div>
-    <div class="f-step fc2"><b>Де</b><p>Сторінка, компонент або ширина екрана</p></div>
-    <div class="f-step fc3"><b>Доказ</b><p>Скріншот, таблиця, вивід команди або тест</p></div>
-    <div class="f-step fc4"><b>Далі</b><p>«Wait for my OK» або «Fix it right away»</p></div>
-  </div>
-  <p class="example"><span class="lbl">приклад</span><span lang="en"><span class="fc1">Check keyboard navigation</span> <span class="fc2">on the settings page</span>, <span class="fc3">show a screenshot of the focus on every button</span> <span class="fc4">and wait for my OK before fixing</span>.</span></p>
-  <div class="rules">
-    <div><b>Спочатку звіт</b><p>Ви бачите проблеми до того, як змінюється код, і самі вирішуєте, що виправляти. Дозвіл дає ваше OK.</p></div>
-    <div><b>Доказ замість слова «готово»</b><p>Скріншот, вивід команди або зелений тест. Фраза «я перевірив» доказом не є.</p></div>
-    <div><b>Закріпіть тестом</b><p>Попросіть Playwright-тест, і ту саму перевірку можна повторити однією командою.</p></div>
-  </div>
-</section>
 
 <!-- ЕТАП A -->
 <section id="phase-a" class="phase ph-a">
