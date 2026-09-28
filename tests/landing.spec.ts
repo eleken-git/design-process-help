@@ -266,3 +266,60 @@ test.describe('карта і харнес на широкому екрані і 
     expect(r).not.toBe('0px');
   });
 });
+
+test.describe('харнес: спершу користуватися, потім розібратися', () => {
+  test('розділи по порядку, люди й матеріали згорнуті, сторінка вдвічі коротша', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/harness/');
+    const ids = await page.locator('main section[id]').evaluateAll((s) => s.map((x) => x.id));
+    expect(ids).toEqual(['h-tree', 'h-build', 'h-loop', 'h-rules', 'h-gates', 'h-skip', 'h-what', 'h-people', 'h-materials', 'h-sources']);
+    await expect(page.locator('.person details:not([open])')).toHaveCount(5);
+    await expect(page.locator('.person .eli')).toHaveCount(5);
+    await expect(page.locator('article.item details:not([open])')).toHaveCount(5);
+    await expect(page.locator('article.item a.open')).toHaveCount(5);
+    // було: вкладка «Верстак» 17 878 px + сторінка «Будуємо харнес» 7 005 px на 375 px
+    expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(13500);
+    await expect(page.locator('.toc-group')).toHaveText(['Користуватися', 'Розібратися']);
+  });
+
+  test('картку людини можна розгорнути, старий якір #h-universal веде у файли', async ({ page }) => {
+    await page.goto(BASE + '/harness/#h-hashimoto');
+    const card = page.locator('#h-hashimoto');
+    await card.locator('summary').click();
+    await expect(card.locator('details')).toHaveAttribute('open', '');
+    await expect(card.locator('.checks')).toBeVisible();
+    await expect(page.locator('#h-tree #h-universal')).toHaveCount(1);
+  });
+
+  test('на телефоні запит згорнутий, але копіюється повністю', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/harness/#h-build');
+    const box = page.locator('#h-build .prompt').first();
+    const p = box.locator('p');
+    const clipped = await p.evaluate((n) => n.scrollHeight - n.clientHeight);
+    expect(clipped).toBeGreaterThan(10);
+    await box.locator('.copy').click();
+    const copied = (await page.evaluate(() => navigator.clipboard.readText())).trim();
+    expect(copied).toContain('Do not add any client-specific content.');
+    await box.locator('.pmore').click();
+    await expect(box.locator('.pmore')).toHaveAttribute('aria-expanded', 'true');
+    expect(await p.evaluate((n) => n.scrollHeight - n.clientHeight)).toBeLessThanOrEqual(1);
+  });
+
+  test('номери кроків і рамки запитів мають колір харнесу', async ({ page }) => {
+    await page.goto(BASE + '/harness/');
+    const num = await page.locator('#h-build .bstep .num').first().evaluate((n) => getComputedStyle(n).borderTopWidth);
+    expect(num).not.toBe('0px');
+    const edge = await page.locator('#h-build .prompt').first().evaluate((n) => getComputedStyle(n).borderLeftWidth);
+    expect(edge).toBe('3px');
+    await expect(page.locator('#toc-harness .toc-title')).toHaveCount(0);
+  });
+
+  test('джерела зведені в один список без повторів', async ({ page }) => {
+    await page.goto(BASE + '/harness/');
+    const hrefs = await page.locator('#h-sources a').evaluateAll((as) => as.map((a) => (a as HTMLAnchorElement).href));
+    expect(hrefs.length).toBeGreaterThanOrEqual(10);
+    expect(new Set(hrefs).size).toBe(hrefs.length);
+  });
+});
