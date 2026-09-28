@@ -46,14 +46,14 @@ test.describe('спільне меню', () => {
     }
   });
 
-  test('375 px: меню не обрізане, сторінки не скроляться вбік', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 });
-    for (const p of PAGES) {
+  test('320 і 375 px: меню не обрізане, сторінки не скроляться вбік', async ({ page }) => {
+    for (const p of PAGES) for (const width of [375, 320]) {
+      await page.setViewportSize({ width, height: 812 });
       await page.goto(BASE + p.path);
       const clipped = await page.locator('header.site-nav nav').evaluate((n) => n.scrollWidth - n.clientWidth);
-      expect(clipped, `меню обрізане на /${p.path}`).toBeLessThanOrEqual(0);
+      if (width === 375) expect(clipped, `меню обрізане на /${p.path}`).toBeLessThanOrEqual(0);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      expect(overflow, `горизонтальний скрол на /${p.path}`).toBeLessThanOrEqual(0);
+      expect(overflow, `горизонтальний скрол на /${p.path} при ${width} px`).toBeLessThanOrEqual(0);
     }
   });
 });
@@ -94,6 +94,15 @@ test.describe('меню в 3D-плеєрі', () => {
     await expect(page.locator('#btnHome')).toHaveCount(0);
   });
 
+  test('на весь екран (клас fs, зокрема старий Safari) меню сховане, полотно на весь екран', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.goto(BASE + '3d/');
+    await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.ready, null, { timeout: 60_000 });
+    await page.evaluate(() => { document.body.classList.add('fs'); window.dispatchEvent(new Event('resize')); });
+    await expect(page.locator('header.site-nav')).toBeHidden();
+    await expect.poll(async () => Math.round((await page.locator('#c').boundingBox())!.height)).toBe(720);
+  });
+
   test('у режимі запису (?capture=1) меню сховане, полотно на весь екран', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto(BASE + '3d/?capture=1');
@@ -102,5 +111,34 @@ test.describe('меню в 3D-плеєрі', () => {
     const canvas = await page.locator('#c').boundingBox();
     expect(Math.round(canvas!.y)).toBe(0);
     expect(Math.round(canvas!.height)).toBe(720);
+  });
+});
+
+test.describe('посилання всередині сайту', () => {
+  const PAGES_WITH_LINKS = ['', 'prompts/', 'harness/', 'map/', 'learn/', 'presentation/', 'podcast/'];
+  test('кожне відносне посилання веде на існуючу сторінку і розділ', async ({ page, request }) => {
+    const html = new Map<string, string>();
+    const get = async (url: string) => {
+      if (!html.has(url)) {
+        const res = await request.get(url);
+        expect(res.status(), `статус ${url}`).toBe(200);
+        html.set(url, await res.text());
+      }
+      return html.get(url)!;
+    };
+    for (const p of PAGES_WITH_LINKS) {
+      await page.goto(BASE + p);
+      const hrefs = await page.locator('a[href]').evaluateAll((as) =>
+        as.map((a) => [a.getAttribute('href')!, (a as HTMLAnchorElement).href]));
+      for (const [raw, abs] of hrefs) {
+        if (/^(https?:|mailto:)/.test(raw)) continue;
+        const u = new URL(abs);
+        const body = await get(u.origin + u.pathname + u.search);
+        if (u.hash.length > 1) {
+          const id = decodeURIComponent(u.hash.slice(1));
+          expect(body.includes(`id="${id}"`), `/${p}: ${raw} — немає id="${id}"`).toBe(true);
+        }
+      }
+    }
   });
 });

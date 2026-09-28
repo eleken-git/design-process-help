@@ -16,6 +16,7 @@ test.describe('сторінка «Запити»', () => {
     await expect(page.locator('.chip[data-t="Перевірити"] .n')).toHaveText('5');
     await expect(page.locator('.chip[data-t="Здати"] .n')).toHaveText('4');
     await expect(page.locator('.chip[data-t="Харнес"] .n')).toHaveText('8');
+    await expect(page.locator('.found')).toHaveText('24 запити');
     expect(errors, 'помилки JS').toEqual([]);
   });
 
@@ -37,6 +38,8 @@ test.describe('сторінка «Запити»', () => {
     await page.getByRole('searchbox').fill("ім'я");
     await expect(page.locator('.pr')).toHaveCount(typographic);
     await page.getByRole('searchbox').fill('імʼя');
+    await expect(page.locator('.pr')).toHaveCount(typographic);
+    await page.getByRole('searchbox').fill('ім‘я');
     await expect(page.locator('.pr')).toHaveCount(typographic);
   });
 
@@ -83,5 +86,26 @@ test.describe('сторінка «Запити»', () => {
     await page.goto('http://127.0.0.1:8765/map/');
     await expect(page.locator('#ask')).toHaveCount(0);
     await expect(page.locator('a[href="../prompts/#ask"]')).toHaveCount(1);
+  });
+
+  test('після помилки завантаження пошук не показує «Нічого не знайшлося»', async ({ page }) => {
+    await page.route('**/map/', (r) => r.abort());
+    await page.goto(BASE);
+    await expect(page.locator('.load-error')).toBeVisible();
+    await expect(page.locator('.tools')).toBeHidden();
+    await expect(page.locator('.empty')).toBeHidden();
+  });
+
+  test('один зламаний блок запиту не ламає весь список', async ({ page }) => {
+    await page.route('**/map/', async (route) => {
+      const res = await route.fetch();
+      const body = (await res.text()).replace('</main>',
+        '<div class="prompt"><span>зламаний блок без абзацу</span></div><div class="prompt"><p lang="en">Orphan prompt outside any section</p></div></main>');
+      await route.fulfill({ response: res, body });
+    });
+    await page.goto(BASE);
+    await expect(page.locator('.load-error')).toBeHidden();
+    await expect(page.locator('.pr')).toHaveCount(25);
+    await expect(page.locator('.pr', { hasText: 'Orphan prompt outside any section' })).toHaveCount(1);
   });
 });

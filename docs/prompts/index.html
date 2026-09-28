@@ -261,31 +261,39 @@ footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:va
   var loadError = document.querySelector('.load-error');
   var chips = [].slice.call(document.querySelectorAll('.chip'));
   var ask = document.getElementById('ask');
-  var ITEMS = [];
+  var ITEMS = [], loaded = false;
 
-  function norm(s){ return (s || '').toLowerCase().replace(/[’ʼ`]/g, "'").replace(/\s+/g, ' ').trim(); }
+  function norm(s){ return (s || '').toLowerCase().replace(/[’‘ʼ`]/g, "'").replace(/\s+/g, ' ').trim(); }
+  function plural(n){
+    var d = n % 10, h = n % 100;
+    return n + (d === 1 && h !== 11 ? ' запит' : d >= 2 && d <= 4 && (h < 12 || h > 14) ? ' запити' : ' запитів');
+  }
   function text(el){ return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
 
   function collect(doc, src){
-    return [].map.call(doc.querySelectorAll('.prompt'), function(box){
+    var out = [];
+    [].forEach.call(doc.querySelectorAll('.prompt'), function(box){
+      // один зламаний блок не має ховати решту запитів
       var p = box.querySelector('p');
+      if(!p || !text(p)) return;
       var st = box.closest('.station'), ph = box.closest('.phase'), step = box.closest('.bstep'), sec = box.closest('section[id]');
-      var item = { html: p.innerHTML, text: text(p), group: 'Харнес', title: '', href: src.url, where: src.where, extra: '' };
-      if(st){
+      var item = { html: p.innerHTML, text: text(p), group: 'Харнес', title: 'Запит', href: src.url, where: src.where, extra: '' };
+      if(st && st.id){
         item.group = PHASES[ph && ph.id] || 'Харнес';
         item.title = text(st.querySelector('.num')) + ' · ' + text(st.querySelector('h3'));
         item.href = src.url + '#' + st.id;
         item.extra = [].map.call(st.querySelectorAll('.checks li, .self, .eli'), text).join(' ');
       } else if(step){
         item.title = text(step.querySelector('.num')) + ' · ' + text(step.querySelector('h3'));
-        item.href = src.url + '#' + sec.id;
-      } else {
-        item.title = text(sec.querySelector('h2'));
+        if(sec) item.href = src.url + '#' + sec.id;
+      } else if(sec){
+        item.title = text(sec.querySelector('h2')) || item.title;
         item.href = src.url + '#' + sec.id;
       }
       item.hay = norm([item.title, item.group, item.text, item.extra].join(' '));
-      return item;
+      out.push(item);
     });
+    return out;
   }
 
   function state(){
@@ -323,6 +331,7 @@ footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:va
   }
 
   function render(){
+    if(!loaded) return;
     var s = state(), words = norm(s.q).split(' ').filter(Boolean);
     var byQuery = ITEMS.filter(function(it){ return matches(it, words); });
     chips.forEach(function(c){
@@ -332,7 +341,7 @@ footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:va
     var shown = s.t ? byQuery.filter(function(it){ return it.group === s.t; }) : byQuery;
     list.textContent = '';
     shown.forEach(function(it){ list.appendChild(row(it)); });
-    found.textContent = (words.length || s.t) ? 'Знайдено ' + shown.length + ' з ' + ITEMS.length : ITEMS.length + ' запитів';
+    found.textContent = (words.length || s.t) ? 'Знайдено ' + shown.length + ' з ' + ITEMS.length : plural(ITEMS.length);
     empty.hidden = shown.length > 0;
     writeUrl(s);
   }
@@ -385,9 +394,11 @@ footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:va
       .then(function(html){ return collect(new DOMParser().parseFromString(html, 'text/html'), src); });
   })).then(function(lists){
     ITEMS = lists[0].concat(lists[1]);
+    loaded = true;
     render();
   }).catch(function(){
     loadError.hidden = false;
+    document.querySelector('.tools').hidden = true;
     found.textContent = '';
   });
 })();

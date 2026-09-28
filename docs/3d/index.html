@@ -19,9 +19,9 @@ html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden}
 button{font-family:inherit}
 #stage{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0}
-body.capture{--nav-h:0px}
-body.capture .site-nav,:root:fullscreen .site-nav{display:none}
-:root:fullscreen{--nav-h:0px}
+/* у режимі запису і на весь екран меню ховається (клас fs ставить engine.js, зокрема для старого Safari) */
+body.capture,body.fs{--nav-h:0px}
+body.capture .site-nav,body.fs .site-nav{display:none}
 canvas{display:block;width:100%;height:100%}
 
 .hud{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;pointer-events:none}

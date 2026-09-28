@@ -226,3 +226,43 @@ test.describe('сторінка «Вчитися»', () => {
     await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.episode === 'protected-main', null, { timeout: 60_000 });
   });
 });
+
+test.describe('карта і харнес на широкому екрані і під липкими панелями', () => {
+  test('на 1440 px колонка змісту широка, як була у вкладках', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    for (const path of ['/map/', '/harness/']) {
+      await page.goto(BASE + path);
+      const w = await page.locator('.panel-main').evaluate((n) => n.getBoundingClientRect().width);
+      expect(w, `ширина колонки на ${path}`).toBeGreaterThanOrEqual(1000);
+    }
+  });
+
+  test('1024 px: липка панель опису файлу не ховається під рядок «Зміст»', async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 800 });
+    await page.goto(BASE + '/harness/');
+    await page.locator('.ftree button[data-f="agents"]').click();
+    await page.evaluate(() => {
+      const tree = document.getElementById('h-tree')!;
+      window.scrollTo(0, tree.getBoundingClientRect().top + window.scrollY + 260);
+    });
+    await page.waitForTimeout(400);
+    const barBottom = await page.locator('.toc-bar').evaluate((n) => n.getBoundingClientRect().bottom);
+    const panelTop = await page.locator('#fdetail').evaluate((n) => n.getBoundingClientRect().top);
+    expect(panelTop).toBeGreaterThanOrEqual(barBottom);
+  });
+
+  test('375 px: старе посилання harness/#karpathy не ховає заголовок під панелями', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/harness/#karpathy');
+    await page.waitForTimeout(1500);
+    const barBottom = await page.locator('.toc-bar').evaluate((n) => n.getBoundingClientRect().bottom);
+    const top = await page.locator('#karpathy .src').evaluate((n) => n.getBoundingClientRect().top);
+    expect(top).toBeGreaterThanOrEqual(barBottom);
+  });
+
+  test('/harness/: виноски в матеріалах мають заокруглені кути', async ({ page }) => {
+    await page.goto(BASE + '/harness/');
+    const r = await page.locator('#h-materials .us').first().evaluate((n) => getComputedStyle(n).borderTopRightRadius);
+    expect(r).not.toBe('0px');
+  });
+});
