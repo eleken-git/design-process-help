@@ -4,7 +4,7 @@
 
 | Що | Де |
 |---|---|
-| Лендінг з лінками нижче | [`docs/index.html`](docs/index.html) — корінь GitHub Pages: https://eleken-git.github.io/design-process-help/ |
+| Головна: карта фронтенду, харнес «Верстак» і всі матеріали | [`docs/index.html`](docs/index.html) — корінь GitHub Pages: https://eleken-git.github.io/design-process-help/. Три вкладки: «Карта фронтенду» (16 зупинок від меж проєкту до здачі клієнту, готові запити до Claude англійською, чекліст), «Харнес «Верстак»» (універсальний харнес дизайнера за практиками Huntley, Hashimoto, Karpathy, Osmani і Yegge) і «Усі матеріали» (картки на розділи нижче) |
 | Презентація (10 хвилин, слайди) | [`docs/presentation/index.html`](docs/presentation/index.html) |
 | 3D-епізоди про Git + відео | [`docs/3d/index.html`](docs/3d/index.html) — плеєр з перемикачем епізодів, музикою і розділами |
 | Подкаст (2 епізоди, 31 хвилина) | [`docs/podcast/index.html`](docs/podcast/index.html) — «Спільна робота дизайнерів у Git через Claude» і «Як приборкати Claude для дизайну інтерфейсів»; плеєр: плей, ±15 с, швидкість, запамʼятовує позицію в кожному |
@@ -59,7 +59,7 @@ npm run dev        # http://localhost:5173
 .
 ├── README.md, PRACTICE.md         ← для тебе, українською
 ├── AGENTS.md, progress.log        ← для агента, англійською (CLAUDE.md відсилає до AGENTS.md)
-├── docs/index.html                ← лендінг GitHub Pages: три лінки нижче
+├── docs/index.html                ← головна GitHub Pages: карта фронтенду, «Верстак», усі матеріали
 ├── docs/presentation/index.html   ← презентація
 ├── docs/3d/                       ← Git у 3D: епізоди, музика, спільний плеєр
 ├── docs/app/                      ← статична збірка Nimbus для перегляду наживо (npm run build:pages)
@@ -220,7 +220,7 @@ git push
 1. GitHub → Settings → Rules → New branch ruleset для `main`: Require a pull request (1 approval) · Require review from Code Owners · Require status checks: `build` · Block force pushes.
 2. Settings → General → Pull Requests: залишити лише **Allow squash merging**, увімкнути **Automatically delete head branches**.
 3. У `.github/CODEOWNERS` вписати реальні GitHub-логіни.
-4. Settings → Pages → Deploy from a branch → `main` / `docs` — на корені відкриється лендінг із трьома лінками (презентація, 3D, тренувальний застосунок).
+4. Settings → Pages → Deploy from a branch → `main` / `docs` — на корені відкриється головна з картою фронтенду, харнесом «Верстак» і лінками на всі розділи.
 5. Після будь-якої зміни в `src/`, яку варто показати на лендінгу: `npm run build:pages` оновлює `docs/app/` і закомітити цей результат разом зі змінами. Не запускай цю команду в кожному PR — лише коли свідомо оновлюєш публічне прев'ю.
 
 ## 10. Чого не робимо зараз
