@@ -8,7 +8,7 @@
 <style>
 :root{
   color-scheme:dark;
-  --bg:#0D1117;--surface:#161B22;--inset:#010409;--border:#30363D;--border-muted:#21262D;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--inset:#010409;--border:#30363D;--border-muted:#21262D;
   --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
   --green:#238636;--green-fg:#3FB950;--green-bg:rgba(46,160,67,.15);
   --blue:#58A6FF;--blue-bg:rgba(56,139,253,.15);
@@ -24,7 +24,7 @@
 }
 :root[data-theme="light"]{
   color-scheme:light;
-  --bg:#ffffff;--surface:#f6f8fa;--inset:#eff2f5;--border:#d0d7de;--border-muted:#d8dee4;
+  --bg:#ffffff;--surface:#f6f8fa;--surface-2:#EAEEF2;--inset:#eff2f5;--border:#d0d7de;--border-muted:#d8dee4;
   --text:#1f2328;--muted:#656d76;--faint:#8c959f;
   --green:#1f883d;--green-fg:#1a7f37;--green-bg:rgba(31,136,61,.12);
   --blue:#0969da;--blue-bg:rgba(9,105,218,.1);
@@ -57,11 +57,8 @@ strong{font-weight:600}
 
 /* layout: left sidebar + content */
 .layout{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
-.sidenav{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto}
+.sidenav{position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));display:flex;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto}
 .side-head{padding:16px 16px 14px;border-bottom:1px solid var(--border);display:grid;gap:6px;justify-items:start}
-.crumb-home{font:12px var(--mono);color:var(--muted);text-decoration:none;margin-bottom:2px}
-.crumb-home:hover{color:var(--text)}
-.crumb-home:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:var(--r)}
 .repo-owner{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;line-height:18px}
 .repo-owner .icon{width:14px;height:14px}
 .repo-name{font-size:15px;line-height:22px;font-weight:600;color:var(--text);overflow-wrap:anywhere}
@@ -97,7 +94,7 @@ strong{font-weight:600}
 
 /* slides */
 .page{max-width:1120px;margin:0 auto;padding:0 40px}
-.slide{padding:56px 0 64px;border-bottom:1px solid var(--border-muted);scroll-margin-top:24px}
+.slide{padding:56px 0 64px;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--nav-h) + 24px)}
 .slide:last-of-type{border-bottom:0;min-height:calc(100vh - 24px)}
 .eyebrow{display:flex;align-items:center;gap:10px;color:var(--muted);font:12px var(--mono);margin-bottom:14px;flex-wrap:wrap}
 .eyebrow .num{color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1px 7px}
@@ -315,9 +312,43 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
   .sidenav{display:none}
   .slide{break-after:page;border-bottom:0}
 }
+/* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
+:root{--nav-h:52px}
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100;padding:8px 12px;border-radius:6px;background:var(--surface);color:var(--text);font:13px var(--sans);text-decoration:none}
+.skip-link:focus{top:10px}
+.site-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:var(--nav-h);padding:0 20px;background:var(--bg);border-bottom:1px solid var(--border-muted);font-family:var(--sans)}
+.site-logo{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-width:0;color:var(--text);font:600 13px var(--mono);text-decoration:none;white-space:nowrap}
+.site-logo:hover{color:var(--text);text-decoration:none}
+.site-mark{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:var(--text);color:var(--bg);font:700 14px/1 var(--sans)}
+.site-nav nav{display:flex;gap:2px;max-width:100%;padding:3px;overflow-x:auto;scrollbar-width:none;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.site-nav nav::-webkit-scrollbar{display:none}
+.site-nav nav a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:7px;color:var(--muted);font:500 13px var(--sans);white-space:nowrap;text-decoration:none}
+.site-nav nav a:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14));text-decoration:none}
+.site-nav nav a[aria-current="page"]{background:var(--surface-2,#1C2128);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+.site-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.site-gh{justify-self:end;display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:var(--muted)}
+.site-gh:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14))}
+.site-gh svg{width:18px;height:18px;fill:currentColor}
+@media (max-width:640px){
+  .site-nav{grid-template-columns:auto minmax(0,1fr);padding:0 12px}
+  .site-name,.site-gh{display:none}
+  .site-nav nav{justify-self:end}
+  .site-nav nav a{padding:0 9px}
+}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-nav">
+  <a class="site-logo" href="../" aria-label="design-process-help, на головну"><span class="site-mark" aria-hidden="true">d</span><span class="site-name">design-process-help</span></a>
+  <nav aria-label="Розділи сайту">
+    <a href="../prompts/">Запити</a>
+    <a href="../harness/">Харнес</a>
+    <a href="../map/">Карта</a>
+    <a href="../learn/" aria-current="page">Вчитися</a>
+  </nav>
+  <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+</header>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -340,7 +371,6 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 <div class="layout">
 <aside class="sidenav">
   <div class="side-head">
-    <a class="crumb-home" href="../" title="На головну design-process-help">← design-process-help</a>
     <span class="repo-owner"><svg class="icon"><use href="#i-repo"/></svg>eleken-git</span>
     <span class="repo-name">design-process-help</span>
     <span class="badge"><svg class="icon" style="width:12px;height:12px"><use href="#i-lock"/></svg>Private</span>
@@ -373,7 +403,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
 </aside>
 <div class="content">
 
-<main class="page">
+<main class="page" id="main">
 
 <!-- 1 -->
 <section class="slide" id="s1">
@@ -912,7 +942,7 @@ footer{max-width:1120px;margin:0 auto;padding:24px 40px 48px;color:var(--faint);
   var slides = [].slice.call(document.querySelectorAll('.slide'));
   var links = [].slice.call(document.querySelectorAll('.side-nav a'));
   var counter = document.getElementById('counter');
-  var OFFSET = 24; // = scroll-margin-top слайда
+  var OFFSET = 24 + (document.querySelector('.site-nav') || {offsetHeight: 0}).offsetHeight; // = scroll-margin-top слайда
   var current = 0;
   var pending = null;   // слайд, до якого зараз їде анімація
   var settleTimer = null;

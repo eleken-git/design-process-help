@@ -2,6 +2,20 @@
 <html lang="uk">
 <head>
 <meta charset="utf-8">
+<script>
+// старі посилання з часів вкладок (/#s4, /#harness, /#ask…) ведуть на нові сторінки
+(function(){
+  var h = location.hash.slice(1);
+  if(!h) return;
+  var to = /^(frontend|map)$/.test(h) ? 'map/' :
+    /^(phase-[a-d]|s([1-9]|1[0-6])|skills|done|sources)$/.test(h) ? 'map/#' + h :
+    h === 'ask' ? 'prompts/#ask' :
+    h === 'harness' ? 'harness/' :
+    h === 'h-universal' ? 'harness/#h-tree' :
+    /^h-[a-z-]+$/.test(h) ? 'harness/#' + h : null;
+  if(to) location.replace(to);
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Дизайн у коді, крок за кроком · design-process-help</title>
 <meta name="description" content="Тренувальний репозиторій eleken-git/design-process-help: карта фронтенду від домовленості з клієнтом до здачі, харнес «Верстак» для дизайнерів, презентація, Git у 3D, подкаст і застосунок Nimbus.">
@@ -612,18 +626,46 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
 .mini-rings span span span{border-color:var(--green);border-radius:6px}
 .mini-rings span span span span{width:34px;height:12px;padding:0;border-color:var(--blue);border-radius:4px;background:var(--surface-2)}
 @media (max-width:640px){.feature-grid{grid-template-columns:1fr}}
+/* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
+:root{--nav-h:52px}
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100;padding:8px 12px;border-radius:6px;background:var(--surface);color:var(--text);font:13px var(--sans);text-decoration:none}
+.skip-link:focus{top:10px}
+.site-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:var(--nav-h);padding:0 20px;background:var(--bg);border-bottom:1px solid var(--border-muted);font-family:var(--sans)}
+.site-logo{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-width:0;color:var(--text);font:600 13px var(--mono);text-decoration:none;white-space:nowrap}
+.site-logo:hover{color:var(--text);text-decoration:none}
+.site-mark{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:var(--text);color:var(--bg);font:700 14px/1 var(--sans)}
+.site-nav nav{display:flex;gap:2px;max-width:100%;padding:3px;overflow-x:auto;scrollbar-width:none;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.site-nav nav::-webkit-scrollbar{display:none}
+.site-nav nav a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:7px;color:var(--muted);font:500 13px var(--sans);white-space:nowrap;text-decoration:none}
+.site-nav nav a:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14));text-decoration:none}
+.site-nav nav a[aria-current="page"]{background:var(--surface-2,#1C2128);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+.site-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.site-gh{justify-self:end;display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:var(--muted)}
+.site-gh:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14))}
+.site-gh svg{width:18px;height:18px;fill:currentColor}
+@media (max-width:640px){
+  .site-nav{grid-template-columns:auto minmax(0,1fr);padding:0 12px}
+  .site-name,.site-gh{display:none}
+  .site-nav nav{justify-self:end}
+  .site-nav nav a{padding:0 9px}
+}
 </style>
 </head>
 <body>
-<nav class="jump" aria-label="Навігація">
-  <div class="wrap">
-    <a href="map/">Карта фронтенду</a>
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-nav">
+  <a class="site-logo" href="./" aria-label="design-process-help, на головну"><span class="site-mark" aria-hidden="true">d</span><span class="site-name">design-process-help</span></a>
+  <nav aria-label="Розділи сайту">
+    <a href="prompts/">Запити</a>
     <a href="harness/">Харнес</a>
-  </div>
-</nav>
+    <a href="map/">Карта</a>
+    <a href="learn/">Вчитися</a>
+  </nav>
+  <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+</header>
 
 <div class="wrap">
-<div class="panel" id="home" data-tab="home">
+<main class="panel" id="main">
 
 <header class="top">
   <span class="crumb">eleken-git / design-process-help</span>
@@ -698,7 +740,7 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
   </div>
 </section>
 
-</div>
+</main>
 
 </div>
 
