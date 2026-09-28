@@ -261,3 +261,13 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Files: `index.html`, `tests/landing.spec.ts`.
 - Tests: `npm run typecheck && npm run build && npm run test:e2e` green (78).
 - Opened: https://github.com/eleken-git/design-process-help/pull/19
+
+### 2026-09-29 — docs/app rebuilt with the site nav (PR #20)
+
+- Built: `npm run build:pages` so the published Nimbus preview shows the shared site nav. The nav drift
+  test now covers `app/` too (without the skip link: the app has its own `<main>`). The Nimbus top bar
+  itself still scrolls sideways at 375 px because of its code-path label (`src/`), so the page-overflow
+  check skips `app/`; fixing the app shell is a separate task.
+- Files: `docs/app/index.html`, `tests/site-nav.spec.ts`, `tests/landing.spec.ts`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green (79).
+- Opened: https://github.com/eleken-git/design-process-help/pull/20
