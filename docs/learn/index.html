@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Вчитися · design-process-help</title>
+<meta name="description" content="Маршрут для дизайнерів: презентація про роботу вдвох у Git, п'ять 3D-епізодів, подкаст і вправи в тренувальному застосунку Nimbus.">
+<style>
+:root{
+  /* палітра GitHub Dark, як на інших сторінках design-process-help */
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;--btn-text:#FFFFFF;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+    --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+    --text:#1F2328;--muted:#59636E;--faint:#818B98;
+    --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+    --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+    --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+  }
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+  --text:#1F2328;--muted:#59636E;--faint:#818B98;
+  --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+  --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+  --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,p,ol,ul{margin:0}
+ol,ul{padding:0;list-style:none}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+.wrap{max-width:880px;margin:0 auto;padding-inline:24px}
+
+/* маршрут */
+.learn{padding-block:40px 64px}
+.learn h1{font-size:36px;line-height:1.15;letter-spacing:-.02em}
+.lede{margin-top:10px;max-width:62ch;color:var(--muted);font-size:16px}
+.route{position:relative;display:grid;gap:18px;margin-top:32px}
+.route::before{content:"";position:absolute;left:19px;top:24px;bottom:24px;width:2px;background:var(--border)}
+.step{position:relative;display:grid;grid-template-columns:40px minmax(0,1fr);gap:16px}
+.step>.num{position:relative;z-index:1;display:grid;place-items:center;width:40px;height:40px;border:2px solid var(--c);border-radius:50%;background:var(--bg);font:700 14px var(--mono)}
+.card{min-width:0;padding:18px 20px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.card-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px}
+.card h2{font-size:20px;line-height:1.25;letter-spacing:-.01em}
+.card .dur{font:12px var(--mono);color:var(--faint)}
+.card p{margin-top:6px;color:var(--muted);max-width:62ch}
+.card .after{margin-top:10px;font-size:14px;color:var(--text)}
+.card .after b{color:var(--c)}
+.go{display:inline-flex;align-items:center;gap:6px;margin-top:14px;height:34px;padding:0 14px;border:1px solid var(--border);border-radius:6px;color:var(--text);font:600 13px var(--sans)}
+.go:hover{background:var(--hover);text-decoration:none}
+.go+.go{margin-left:8px}
+.eps{display:grid;gap:6px;margin-top:14px}
+.eps a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 12px;border:1px solid var(--border-muted);border-radius:8px;color:var(--text)}
+.eps a:hover{border-color:var(--border);background:var(--hover);text-decoration:none}
+.eps b{font-weight:600;font-size:14px}
+.eps .t{font:12px var(--mono);color:var(--faint)}
+.eps .d{grid-column:1 / -1;color:var(--muted);font-size:13px}
+.ex{display:grid;gap:6px;margin-top:14px}
+.ex li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:baseline;font-size:14px}
+.ex .n{font:12px var(--mono);color:var(--faint)}
+.ex b{font-weight:500}
+.ex .t{font:12px var(--mono);color:var(--faint)}
+.s1{--c:var(--blue)}.s2{--c:var(--purple)}.s3{--c:var(--orange)}.s4{--c:var(--green)}
+
+footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:var(--muted);font-size:13px}
+footer .wrap{max-width:1040px}
+.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:10px}
+.foot-links a{color:var(--text)}
+
+@media (max-width:640px){
+  .wrap{padding-inline:16px}
+  .learn{padding-block:28px 48px}
+  .learn h1{font-size:30px}
+  .route::before{left:15px}
+  .step{grid-template-columns:32px minmax(0,1fr);gap:12px}
+  .step>.num{width:32px;height:32px;font-size:13px}
+  .card{padding:16px}
+  .go+.go{margin-left:0;margin-top:8px}
+  .ex li{grid-template-columns:18px minmax(0,1fr)}
+  .ex .t{grid-column:2}
+}
+/* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
+:root{--nav-h:52px}
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100;padding:8px 12px;border-radius:6px;background:var(--surface);color:var(--text);font:13px var(--sans);text-decoration:none}
+.skip-link:focus{top:10px}
+.site-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:var(--nav-h);padding:0 20px;background:var(--bg);border-bottom:1px solid var(--border-muted);font-family:var(--sans)}
+.site-logo{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-width:0;color:var(--text);font:600 13px var(--mono);text-decoration:none;white-space:nowrap}
+.site-logo:hover{color:var(--text);text-decoration:none}
+.site-mark{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:var(--text);color:var(--bg);font:700 14px/1 var(--sans)}
+.site-nav nav{display:flex;gap:2px;max-width:100%;padding:3px;overflow-x:auto;scrollbar-width:none;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.site-nav nav::-webkit-scrollbar{display:none}
+.site-nav nav a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:7px;color:var(--muted);font:500 13px var(--sans);white-space:nowrap;text-decoration:none}
+.site-nav nav a:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14));text-decoration:none}
+.site-nav nav a[aria-current="page"]{background:var(--surface-2,#1C2128);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+.site-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.site-gh{justify-self:end;display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:var(--muted)}
+.site-gh:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14))}
+.site-gh svg{width:18px;height:18px;fill:currentColor}
+@media (max-width:640px){
+  .site-nav{grid-template-columns:auto minmax(0,1fr);padding:0 12px}
+  .site-name,.site-gh{display:none}
+  .site-nav nav{justify-self:end}
+  .site-nav nav a{padding:0 9px}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-nav">
+  <a class="site-logo" href="../" aria-label="design-process-help, на головну"><span class="site-mark" aria-hidden="true">d</span><span class="site-name">design-process-help</span></a>
+  <nav aria-label="Розділи сайту">
+    <a href="../prompts/">Запити</a>
+    <a href="../harness/">Харнес</a>
+    <a href="../map/">Карта</a>
+    <a href="../learn/" aria-current="page">Вчитися</a>
+  </nav>
+  <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+</header>
+<div class="wrap">
+<main class="learn" id="main">
+  <h1>Вчитися</h1>
+  <p class="lede">Маршрут для тих, хто тільки починає працювати вдвох у Git через Claude. Кроки йдуть по порядку, але кожен можна відкрити окремо.</p>
+
+  <ol class="route">
+    <li class="step s1">
+      <span class="num" aria-hidden="true">1</span>
+      <div class="card">
+        <div class="card-head"><h2>Презентація</h2><span class="dur">13 слайдів · ~10 хв</span></div>
+        <p>Як влаштований репозиторій, навіщо гілки й Pull Request, як змінювати спільні компоненти і що робити, коли двоє змінили той самий рядок.</p>
+        <p class="after"><b>Після:</b> ви знаєте правила гри і слова, якими користуються розробники.</p>
+        <a class="go" href="../presentation/">Відкрити презентацію →</a>
+      </div>
+    </li>
+    <li class="step s2">
+      <span class="num" aria-hidden="true">2</span>
+      <div class="card">
+        <div class="card-head"><h2>Git у 3D</h2><span class="dur">5 епізодів · до 2 хв кожен</span></div>
+        <p>Анімовані епізоди з музикою: що Git робить, коли Claude зберігає, пушить і зливає вашу роботу.</p>
+        <ul class="eps">
+        <li><a href="../3d/?ep=conflict"><b>Конфлікт у Git</b><span class="t">1:46</span><span class="d">Двоє змінили той самий рядок: що покаже git, як це виглядає у файлі і три способи розв’язати.</span></a></li>
+        <li><a href="../3d/?ep=file-states"><b>Три стани файлу</b><span class="t">1:32</span><span class="d">Куди дівається робота, коли ви кажете Claude «збережи» і «запуш».</span></a></li>
+        <li><a href="../3d/?ep=pull-request"><b>Життєвий цикл Pull Request</b><span class="t">1:41</span><span class="d">Очима рев’юерки: diff, скриншоти, коментар на рядку, схвалення і злиття.</span></a></li>
+        <li><a href="../3d/?ep=protected-main"><b>Чому main захищений</b><span class="t">1:44</span><span class="d">Спроба запушити напряму, червона стіна і чотири правила, від яких вона рятує.</span></a></li>
+        <li><a href="../3d/?ep=merge-vs-rebase"><b>merge main vs rebase main</b><span class="t">1:44</span><span class="d">Два способи взяти свіжий main у свою гілку і чому rebase не роблять у спільній гілці.</span></a></li>
+        </ul>
+      </div>
+    </li>
+    <li class="step s3">
+      <span class="num" aria-hidden="true">3</span>
+      <div class="card">
+        <div class="card-head"><h2>Подкаст</h2><span class="dur">2 епізоди · 13:21 і 17:30</span></div>
+        <p>Те саме голосом, для дороги: спільна робота дизайнерів у Git через Claude і як приборкати Claude для дизайну інтерфейсів. Плеєр пам'ятає, де ви зупинились.</p>
+        <p class="after"><b>Після:</b> ви чули, як це звучить у живій розмові, і повторили головне.</p>
+        <a class="go" href="../podcast/">Слухати подкаст →</a>
+      </div>
+    </li>
+    <li class="step s4">
+      <span class="num" aria-hidden="true">4</span>
+      <div class="card">
+        <div class="card-head"><h2>Вправи в Nimbus</h2><span class="dur">вдвох · 1–2 години</span></div>
+        <p>Тренувальний застосунок, який не страшно зламати. Двоє дизайнерів роблять задачі в різних гілках і ревʼюють одне одного.</p>
+        <ol class="ex">
+        <li><span class="n">0</span><b>Підготовка</b><span class="t">10 хв</span></li>
+        <li><span class="n">1</span><b>Паралельні екрани без конфліктів</b><span class="t">20 хв</span></li>
+        <li><span class="n">2</span><b>Спільний компонент правильно</b><span class="t">25 хв</span></li>
+        <li><span class="n">3</span><b>Конфлікт навмисно</b><span class="t">15 хв</span></li>
+        <li><span class="n">4</span><b>Breaking change за процедурою</b><span class="t">20 хв, просунуте</span></li>
+        </ol>
+        <p class="after"><b>Після:</b> ви пройшли гілку, Pull Request, ревʼю і конфлікт на практиці.</p>
+        <a class="go" href="../app/">Відкрити Nimbus →</a>
+        <a class="go" href="https://github.com/eleken-git/design-process-help/blob/main/PRACTICE.md">Інструкція до вправ →</a>
+      </div>
+    </li>
+  </ol>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-links" aria-label="Усі сторінки">
+      <a href="../prompts/">Запити</a>
+      <a href="../harness/">Харнес</a>
+      <a href="../map/">Карта фронтенду</a>
+      <a href="../learn/">Вчитися</a>
+      <a href="../presentation/">Презентація</a>
+      <a href="../3d/">Git у 3D</a>
+      <a href="../podcast/">Подкаст</a>
+      <a href="../app/">Nimbus</a>
+    </nav>
+    <p>Код і історія змін у репозиторії <a href="https://github.com/eleken-git/design-process-help">github.com/eleken-git/design-process-help</a>.</p>
+  </div>
+</footer>
+</body>
+</html>

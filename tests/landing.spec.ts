@@ -203,3 +203,26 @@ test.describe('карта і харнес окремими сторінками'
     }
   });
 });
+
+test.describe('сторінка «Вчитися»', () => {
+  test('чотири кроки по порядку і пряме посилання на кожен 3D-епізод', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/learn/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Вчитися');
+    await expect(page.locator('.step')).toHaveCount(4);
+    await expect(page.locator('.step h2')).toHaveText(['Презентація', 'Git у 3D', 'Подкаст', 'Вправи в Nimbus']);
+    for (const ep of ['conflict', 'file-states', 'pull-request', 'protected-main', 'merge-vs-rebase']) {
+      await expect(page.locator(`a[href="../3d/?ep=${ep}"]`)).toHaveCount(1);
+    }
+    for (const href of ['../presentation/', '../podcast/', '../app/']) await expect(page.locator(`main a[href="${href}"]`).first()).toBeVisible();
+    await expect(page.locator('a[href="https://github.com/eleken-git/design-process-help/blob/main/PRACTICE.md"]')).toHaveCount(1);
+    expect(errors, 'помилки JS').toEqual([]);
+  });
+
+  test('посилання на епізод відкриває саме його', async ({ page }) => {
+    await page.goto(BASE + '/learn/');
+    await page.locator('a[href="../3d/?ep=protected-main"]').click();
+    await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.episode === 'protected-main', null, { timeout: 60_000 });
+  });
+});
