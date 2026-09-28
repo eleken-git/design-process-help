@@ -17,8 +17,8 @@
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Дизайн у коді, крок за кроком · design-process-help</title>
-<meta name="description" content="Тренувальний репозиторій eleken-git/design-process-help: карта фронтенду від домовленості з клієнтом до здачі, харнес «Верстак» для дизайнерів, презентація, Git у 3D, подкаст і застосунок Nimbus.">
+<title>Дизайн у коді з Claude · design-process-help</title>
+<meta name="description" content="Довідник для дизайнерів, які роблять фронтенд із Claude: готові запити, харнес для кожного проєкту, карта перевірок від меж проєкту до здачі і навчальні матеріали про Git.">
 <style>
 :root{
   /* палітра GitHub Dark, як на інших сторінках design-process-help */
@@ -60,572 +60,74 @@
 @media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
-h1,h2,h3,h4,p,ul,ol,figure,pre{margin:0}
-ul,ol{padding:0;list-style:none}
+h1,h2,p,ul{margin:0}
+ul{padding:0;list-style:none}
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
 code{font:.88em var(--mono);padding:.1em .35em;border-radius:4px;background:var(--hover)}
-pre code{padding:0;background:none;font-size:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:24px}
 
-.wrap{max-width:1120px;margin:0 auto;padding-inline:24px}
+/* головна: пошук запиту, три входи, рядок навчання */
+.home{padding-block:56px 48px}
+.home h1{font-size:40px;line-height:1.1;letter-spacing:-.025em;text-wrap:balance}
+.lede{margin-top:12px;max-width:60ch;color:var(--muted);font-size:17px;line-height:1.55}
+.find{display:flex;gap:8px;max-width:600px;margin:28px 0 36px}
+.find-field{position:relative;flex:1;min-width:0}
+.find-field svg{position:absolute;left:13px;top:50%;width:18px;height:18px;transform:translateY(-50%);fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;pointer-events:none}
+.find input{width:100%;height:44px;padding:0 14px 0 40px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:15px var(--sans)}
+.find input::placeholder{color:var(--faint)}
+.find input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(56,139,253,.25)}
+.find button{flex:none;height:44px;padding:0 18px;border:0;border-radius:8px;background:var(--btn);color:var(--btn-text);font:600 14px var(--sans);cursor:pointer}
+.find button:hover{background:var(--btn-hover)}
+.find button:active{background:var(--btn-active)}
 
-/* липка навігація */
-.jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--border-muted)}
-.jump .wrap{display:flex;flex-wrap:wrap;gap:8px;padding-block:8px}
+.entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.entry{display:grid;grid-template-rows:auto auto 1fr auto auto;gap:8px;padding:22px;border:1px solid var(--border);border-top:3px solid var(--hc);border-radius:10px;background:var(--surface);color:var(--text)}
+.entry:hover{border-color:var(--faint);border-top-color:var(--hc);text-decoration:none}
+.entry .ic{display:grid;place-items:center;width:36px;height:36px;border-radius:8px;background:var(--hover);color:var(--hc)}
+.entry .ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.entry h2{margin-top:6px;font-size:19px;line-height:1.25;letter-spacing:-.01em}
+.entry p{color:var(--muted);font-size:14px}
+.entry .meta{font:12px var(--mono);color:var(--faint)}
+.entry .go{color:var(--blue);font-size:14px;font-weight:600}
+.entry:hover .go{text-decoration:underline}
+.e-prompts{--hc:var(--blue)}.e-harness{--hc:var(--green)}.e-map{--hc:var(--yellow)}
+@media (prefers-reduced-motion: no-preference){.entry{transition:transform .12s ease,border-color .12s ease}.entry:hover{transform:translateY(-2px)}}
 
-/* шапка */
-.top{padding-block:36px 40px}
-.crumb{display:inline-block;font:12px var(--mono);color:var(--muted)}
-.crumb:hover{color:var(--text);text-decoration:none}
-.kicker{font:12px var(--mono);color:var(--faint);margin:32px 0 12px}
-h1{font-size:46px;line-height:1.08;letter-spacing:-.028em;text-wrap:balance}
-.lede{margin-top:18px;max-width:60ch;color:var(--muted);font-size:17px;line-height:1.55}
-.lede+.lede{margin-top:10px}
-.lede b{color:var(--text);font-weight:600}
+.learn-row{margin-top:36px}
+.learn-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.learn-head h2{font-size:16px}
+.learn-head a{font-size:14px}
+.learn-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.learn-list a{display:grid;gap:2px;padding:12px 14px;border:1px solid var(--border-muted);border-radius:8px;color:var(--text)}
+.learn-list a:hover{border-color:var(--border);background:var(--hover);text-decoration:none}
+.learn-list b{font-size:14px;font-weight:600}
+.learn-list span{font:12px var(--mono);color:var(--muted)}
 
-section{scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
-.block{padding-block:48px;border-top:1px solid var(--border-muted)}
-.sec-head{display:grid;gap:8px;margin-bottom:26px}
-.sec-head h2{font-size:28px;line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
-.sec-head p{color:var(--muted);max-width:64ch}
-
-/* кольори етапів */
-.ph-a{--c:var(--yellow)}
-.ph-b{--c:var(--blue)}
-.ph-c{--c:var(--purple)}
-.ph-d{--c:var(--green)}
-
-/* карта метро */
-.metro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
-.line{position:relative;border:1px solid var(--border);border-radius:8px;background:var(--surface);padding:16px 16px 18px}
-.line:not(:last-child)::after{content:"→";position:absolute;right:-18px;top:22px;width:14px;text-align:center;color:var(--faint);font-size:13px}
-.line-head{display:grid;gap:2px;padding-bottom:12px;margin-bottom:12px;border-bottom:3px solid var(--c)}
-.line-head b{font-size:18px;letter-spacing:-.01em}
-.line-head span{font:12px var(--mono);color:var(--muted)}
-.stops{position:relative;display:grid;gap:2px}
-.stops::before{content:"";position:absolute;left:13px;top:18px;bottom:18px;width:4px;border-radius:2px;background:var(--c)}
-.stops a{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:12px;padding:6px 0;color:var(--text)}
-.stops a:hover{text-decoration:none}
-.stops a:hover .nm{text-decoration:underline}
-.dot{width:30px;height:30px;border-radius:50%;border:4px solid var(--c);background:var(--bg);display:grid;place-items:center;font:700 11px var(--mono);color:var(--text)}
-.stops .end .dot{background:var(--c);color:var(--bg);font-size:13px}
-.nm{display:block;font-weight:600;font-size:14px;line-height:1.3}
-.tm{display:block;font:11.5px var(--mono);color:var(--muted)}
-
-/* формула запиту */
-.formula{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
-.f-step{position:relative;border:1px solid var(--border);border-top:3px solid var(--fc);border-radius:8px;background:var(--surface);padding:14px 16px}
-.f-step:not(:last-child)::after{content:"+";position:absolute;right:-17px;top:50%;transform:translateY(-50%);width:10px;text-align:center;color:var(--faint);font:600 15px var(--mono)}
-.f-step b{display:block;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fc)}
-.f-step p{margin-top:6px;font-size:14px;color:var(--muted)}
-.fc1{--fc:var(--blue)}.fc2{--fc:var(--purple)}.fc3{--fc:var(--green)}.fc4{--fc:var(--yellow)}
-.example{margin-top:18px;padding:16px 18px;border:1px dashed var(--border);border-radius:8px;font-size:16.5px;line-height:1.8}
-.example .lbl{display:block;font:12px var(--mono);color:var(--faint);line-height:1.4;margin-bottom:6px}
-.example span[class^="fc"]{padding-bottom:2px;border-bottom:2px solid var(--fc)}
-.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:26px}
-.rules b{display:block;font-size:15px}
-.rules p{margin-top:4px;font-size:14px;color:var(--muted)}
-
-/* етапи і зупинки */
-.phase{padding-block:56px 8px;border-top:1px solid var(--border-muted)}
-.phase-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.phase-head .bar{width:40px;height:6px;border-radius:3px;background:var(--c)}
-.phase-head h2{font-size:32px;line-height:1.15;letter-spacing:-.02em}
-.phase-head span{font:13px var(--mono);color:var(--muted)}
-.station{padding-block:36px;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
-.station:last-child{border-bottom:0}
-.st-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.num{flex:none;width:42px;height:42px;border-radius:50%;border:4px solid var(--c);display:grid;place-items:center;font:700 14px var(--mono)}
-.st-head h3{font-size:23px;line-height:1.2;letter-spacing:-.012em;text-wrap:balance}
-.st-head .tm{font-size:12px}
-.st-body{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:32px;align-items:start}
-.pic{min-width:0;display:grid;gap:14px;padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
-.pic figcaption{font-size:13px;color:var(--muted)}
-.st-text{min-width:0;display:grid;gap:14px}
-.eli{font-size:18px;line-height:1.5;font-weight:500;max-width:52ch;text-wrap:pretty}
-.st-text h4{margin-top:6px;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.checks{display:flex;flex-wrap:wrap;gap:6px}
-.checks li{font-size:13px;line-height:1.35;padding:5px 10px;border:1px solid var(--border);border-radius:999px;background:var(--bg)}
-.prompt{border:1px solid var(--border);border-left:3px solid var(--c);border-radius:0 8px 8px 0;background:var(--surface);padding:14px 16px}
-.prompt p{font-size:14.5px;line-height:1.6}
-.prompt .ph{color:var(--c);font-weight:600}
-.copy{margin-top:10px;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:600 12.5px var(--sans);cursor:pointer}
-.copy:hover{border-color:var(--faint)}
-.copy.done{color:var(--green);border-color:var(--green)}
-.copy svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.self{font-size:14px;color:var(--muted);max-width:60ch}
-.self b{color:var(--text);font-weight:600}
-.note{font-size:13.5px;color:var(--muted);padding-left:12px;border-left:2px solid var(--border);max-width:60ch}
-
-/* спільне для картинок */
-.cap{font:600 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.mono{font-family:var(--mono)}
-.pre{font:12.5px/1.65 var(--mono);background:var(--bg);border:1px solid var(--border-muted);border-radius:6px;padding:12px 14px;overflow-x:auto;white-space:pre;color:var(--text)}
-.g{color:var(--green)}.r{color:var(--red)}.y{color:var(--yellow)}.b{color:var(--blue)}.p{color:var(--purple)}.m{color:var(--muted)}
-
-/* 1. межі */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.two ul{display:grid}
-.two li{display:flex;gap:8px;font-size:13.5px;line-height:1.35;padding:6px 0;border-bottom:1px dashed var(--border-muted)}
-.two li:last-child{border-bottom:0}
-.two .ok li::before{content:"✓";color:var(--green);font-weight:700}
-.two .no li::before{content:"✕";color:var(--red);font-weight:700}
-.two .ok .cap{color:var(--green)}.two .no .cap{color:var(--red)}
-.two .cap{margin-bottom:6px;display:block}
-
-/* 2. пакет для Claude */
-.pack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.tile{display:grid;gap:4px;align-content:start;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
-.tile svg{width:22px;height:22px;fill:none;stroke:var(--c);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.tile b{font-size:14px}
-.tile span{font-size:12.5px;line-height:1.35;color:var(--muted)}
-.into{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
-.into .box{padding:6px 12px;border:1.5px solid var(--c);border-radius:6px;color:var(--text);font-weight:600}
-
-/* 3. семантика */
-.wire{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.wf{display:grid;gap:6px;padding:10px;border-radius:6px;background:var(--bg);border:1px solid var(--border-muted)}
-.wf .cap{margin-bottom:2px}
-.bx{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;padding:6px 7px;border:1.5px solid var(--c);border-radius:4px;font:11px/1.3 var(--mono);color:var(--c);min-height:30px}
-.wf .mid{display:grid;grid-template-columns:1fr 34%;gap:6px}
-.wf .mn{flex-direction:column;align-items:stretch;min-height:92px}
-.wf .mn .bx{min-height:24px}
-.soup .bx{border-color:var(--faint);border-style:dashed;color:var(--faint)}
-.tree{font-size:13px}
-
-/* 4. доступність */
-.focus-demo{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
-.key{display:inline-grid;place-items:center;min-width:46px;height:30px;padding:0 8px;border:1px solid var(--border);border-bottom-width:3px;border-radius:6px;background:var(--bg);font:600 12px var(--mono)}
-.arrow{color:var(--faint);font-family:var(--mono)}
-.mb{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:6px;font:600 13px var(--sans);white-space:nowrap}
-.mb.sec{border:1px solid var(--border);background:var(--surface-2);color:var(--text)}
-.mb.pri{background:var(--btn);color:var(--btn-text)}
-.mb.ring{outline:2px solid var(--blue);outline-offset:3px}
-.swatches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.sw{display:grid;gap:2px;padding:12px;border-radius:6px;background:#0D1117;border:1px solid #30363D}
-.sw .aa{font-size:30px;font-weight:700;line-height:1.1}
-.sw .ratio{font:600 12.5px var(--mono);color:#E6EDF3}
-.sw .verdict{font-size:12px;line-height:1.35;color:#E6EDF3}
-.principles{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--muted)}
-.principles span{padding:3px 8px;border-radius:4px;background:var(--bg);border:1px solid var(--border-muted)}
-
-/* 5. адаптивність */
-.ruler{position:relative;display:grid;gap:7px;padding-top:30px}
-.rw{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;gap:8px}
-.rw span{font:11.5px var(--mono);color:var(--muted);text-align:right}
-.rw i{display:block;height:12px;border-radius:3px;background:var(--c);width:calc(var(--w) / 1920 * 100%)}
-.brk{position:absolute;top:0;bottom:-4px;left:calc(60px + (100% - 60px) * 0.448);border-left:2px dashed var(--red)}
-.brk span{position:absolute;top:0;left:8px;white-space:nowrap;font:600 11.5px var(--mono);color:var(--red)}
-
-/* 6. стани */
-.states{display:flex;flex-wrap:wrap;gap:14px 10px}
-.st{display:grid;gap:6px;justify-items:start}
-.st .tm{font-size:11px}
-.mb.hov{background:var(--btn-hover)}
-.mb.act{background:var(--btn-active);transform:translateY(1px)}
-.mb.dis{opacity:.4}
-.spin{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#FFFFFF}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fld{display:grid;gap:4px;font-size:12.5px}
-.fld .lb{font-weight:600}
-.fld .in{height:32px;display:flex;align-items:center;padding:0 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:13px}
-.fld .in.ph{color:var(--faint)}
-.fld.bad .in{border-color:var(--red)}
-.fld.bad .msg{color:var(--red)}
-.fld.good .in{border-color:var(--green)}
-.fld.good .msg{color:var(--green)}
-.fld .msg{line-height:1.35}
-
-/* 7. код */
-.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cols2>div:not(.pre){display:grid;gap:6px;min-width:0;align-content:start}
-.cols2>.pre{min-width:0}
-.cap.g{color:var(--green)}.cap.r{color:var(--red)}
-
-/* 8. сценарії */
-.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.flow .n{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:13px;white-space:nowrap}
-.flow .n.hot{border-color:var(--red);color:var(--red);font-family:var(--mono);font-weight:600}
-.flow .n.win{border-color:var(--green);color:var(--green)}
-.flow .ar{color:var(--faint);font-family:var(--mono);font-size:12px}
-
-/* 9. браузери */
-.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.tab{border:1px solid var(--border);border-radius:8px;background:var(--bg);overflow:hidden}
-.tab-top{display:flex;gap:4px;align-items:center;height:20px;padding:0 8px;background:var(--surface-2)}
-.tab-top i{width:6px;height:6px;border-radius:50%;background:var(--faint)}
-.tab-body{display:grid;gap:2px;padding:12px 10px}
-.tab-body b{font-size:14px}
-.tab-body span{font:11.5px var(--mono);color:var(--muted)}
-.tab.hot{border-color:var(--c)}
-.tab.hot .tab-body em{font-style:normal;font-size:11.5px;line-height:1.3;color:var(--c);margin-top:4px}
-
-/* 10. швидкість */
-.weights{display:grid;gap:10px}
-.wt{display:grid;gap:4px}
-.wt span{font:12px var(--mono);color:var(--muted)}
-.wt i{display:block;height:14px;border-radius:3px}
-.wt.heavy i{width:100%;background:var(--red)}
-.wt.light i{width:3%;min-width:8px;background:var(--green)}
-.vitals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.vt{display:grid;gap:2px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
-.vt .mono{font-size:12px;font-weight:700;color:var(--c)}
-.vt b{font-size:22px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-.vt span{font-size:12px;line-height:1.35;color:var(--muted)}
-
-/* 11. пошук */
-.serp{display:grid;gap:4px;padding:14px 16px;border:1px solid var(--border-muted);border-radius:8px;background:var(--bg)}
-.serp .site{display:flex;align-items:center;gap:8px;font-size:12.5px}
-.fav{flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font:800 12px var(--sans);color:var(--blue)}
-.serp .site small{display:block;color:var(--muted);font-size:11.5px}
-.serp .t{margin-top:4px;color:var(--blue);font-size:17px;line-height:1.3}
-.serp .d{font-size:13px;line-height:1.45;color:var(--muted)}
-.tag{display:inline-block;margin-left:6px;padding:0 5px;border-radius:3px;background:var(--hover);font:600 10.5px/1.6 var(--mono);color:var(--c);vertical-align:1px;white-space:nowrap}
-.browtab{display:flex;align-items:center;gap:8px;max-width:260px;padding:8px 12px;border:1px solid var(--border-muted);border-bottom:0;border-radius:8px 8px 0 0;background:var(--bg);font-size:12.5px;white-space:nowrap;overflow:hidden}
-.browtab .fav{width:16px;height:16px;font-size:9px}
-
-/* 12. збірка */
-.consoles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cons{display:grid;gap:0;border:1px solid var(--border-muted);border-radius:6px;background:var(--bg);overflow:hidden;font:12px/1.5 var(--mono)}
-.cons .hd{padding:6px 10px;background:var(--surface-2);color:var(--muted)}
-.cons .ln{padding:3px 10px;border-top:1px solid var(--border-muted)}
-.cons .ln.w{background:rgba(210,153,34,.1);color:var(--yellow)}
-.cons .ln.e{background:var(--bad-bg);color:var(--red)}
-.cons .ln.ok{color:var(--green)}
-
-/* 14. доступи */
-.tbl-wrap{overflow-x:auto}
-.acc{width:100%;border-collapse:collapse;font-size:13px;min-width:380px}
-.acc th{text-align:left;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border)}
-.acc td{padding:7px 8px;border-bottom:1px solid var(--border-muted)}
-.acc td:nth-child(2){color:var(--green);font-weight:600}
-.warn{padding:10px 12px;border:1px dashed var(--red);border-radius:6px;background:var(--bad-bg);font-size:13px;line-height:1.45}
-.warn b{color:var(--red)}
-
-/* 15. інструкції */
-.howto{display:grid;gap:10px;padding:14px 16px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
-.howto b{font-size:15px}
-.howto ol{display:grid;gap:4px;counter-reset:s}
-.howto ol li{counter-increment:s;display:grid;grid-template-columns:22px 1fr;font-size:13.5px}
-.howto ol li::before{content:counter(s);font:700 12px/1.9 var(--mono);color:var(--c)}
-.specs{display:flex;flex-wrap:wrap;gap:6px}
-.specs span{padding:3px 9px;border-radius:4px;border:1px solid var(--c);font:600 12px var(--mono);color:var(--c)}
-
-/* 16. підтримка */
-.lanes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.lane{display:grid;gap:6px;align-content:start;padding:12px 14px;border-radius:6px;background:var(--bg);border:1px solid var(--border)}
-.lane b{font-size:15px}
-.lane p{font-size:13px;line-height:1.45;color:var(--muted)}
-.lane .res{justify-self:start;font:600 12px var(--mono);padding:2px 8px;border-radius:4px}
-.lane.fix{border-top:3px solid var(--green)}.lane.fix .res{color:var(--green);background:var(--ok-bg)}
-.lane.new{border-top:3px solid var(--yellow)}.lane.new .res{color:var(--yellow);background:rgba(210,153,34,.12)}
-.stamp{justify-self:start;display:grid;gap:2px;padding:10px 16px;border:2px solid var(--green);border-radius:6px;color:var(--green);transform:rotate(-2deg)}
-.stamp b{font:800 15px var(--mono);letter-spacing:.14em;text-transform:uppercase}
-.stamp span{font-size:12.5px;color:var(--text)}
-
-/* скіли */
-.skill-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
-.skill-flow .n{padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);font:13px var(--mono)}
-.skill-flow .n.cmd{border-color:var(--blue);color:var(--blue);font-weight:700}
-.skill-flow .ar{color:var(--faint);font-family:var(--mono)}
-.where{font-size:14px;color:var(--muted);max-width:70ch;margin-bottom:26px}
-.skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.sk{display:grid;gap:8px;align-content:start;padding:16px;border:1px solid var(--border);border-top:3px solid var(--c);border-radius:8px;background:var(--surface)}
-.sk .nmx{font:700 15px var(--mono)}
-.sk p{font-size:14px;color:var(--muted)}
-.sk .links{font-size:12.5px;color:var(--faint)}
-.sk .links a{font-family:var(--mono)}
-.skill-make{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;margin-top:32px;align-items:start}
-.skill-make h3{font-size:19px;margin-bottom:12px}
-.skill-rules{display:grid;gap:12px}
-.skill-rules li{display:grid;grid-template-columns:22px 1fr;font-size:14.5px}
-.skill-rules li::before{content:"✓";color:var(--green);font-weight:700}
-.skill-rules li span{color:var(--muted)}
-.ph-s{--c:var(--blue)}
-
-/* чекліст */
-.progress{display:grid;gap:8px;margin-bottom:20px;max-width:560px}
-.progress .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.progress b{font-size:22px;font-variant-numeric:tabular-nums}
-.progress span{font-size:13px;color:var(--muted)}
-.track{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
-.track i{display:block;height:100%;width:0;background:var(--green);border-radius:4px}
-@media (prefers-reduced-motion: no-preference){.track i{transition:width .25s ease}}
-.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.grp{padding:16px 18px 8px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
-.grp-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:10px;margin-bottom:4px;border-bottom:3px solid var(--c)}
-.grp-h h3{font-size:17px}
-.grp-h span{font:600 12.5px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
-.grp label{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;padding:8px 0;font-size:14px;line-height:1.4;border-bottom:1px dashed var(--border-muted);cursor:pointer}
-.grp label:last-child{border-bottom:0}
-.grp input{width:16px;height:16px;margin:2px 0 0;accent-color:var(--c);cursor:pointer}
-.grp input:checked+span{color:var(--muted)}
-.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px}
-.btn-main,.btn-ghost{height:36px;padding:0 16px;border-radius:6px;font:600 13.5px var(--sans);cursor:pointer}
-.btn-main{border:0;background:var(--btn);color:var(--btn-text)}
-.btn-main:hover{background:var(--btn-hover)}
-.btn-ghost{border:1px solid var(--border);background:var(--bg);color:var(--text)}
-.btn-ghost:hover{border-color:var(--faint)}
-.btn-ghost.warnme{border-color:var(--red);color:var(--red)}
-.status{font-size:13px;color:var(--muted)}
-#out{display:block;width:100%;min-height:180px;margin-top:14px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:12.5px/1.55 var(--mono);resize:vertical}
-
-/* підвал */
-footer{padding-block:32px 56px;border-top:1px solid var(--border-muted);color:var(--muted);font-size:13px}
-footer h2{font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 28px;margin-bottom:24px}
-.srcs a{color:var(--text)}
-.srcs span{color:var(--faint)}
-
-@media (max-width:920px){
-  .metro{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .line::after{display:none}
-  .formula{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .f-step::after{display:none}
-  .st-body,.skill-make{grid-template-columns:1fr}
-  .skills{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .rules{grid-template-columns:1fr;gap:14px}
-}
-@media (max-width:640px){
-  .wrap{padding-inline:16px}
-  h1{font-size:36px}
-  .phase-head h2{font-size:26px}
-  .metro,.formula,.skills,.groups,.srcs{grid-template-columns:1fr}
-  .pack{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .vitals{grid-template-columns:1fr}
-  .wire,.cols2,.consoles,.lanes,.fields{grid-template-columns:1fr}
-  .swatches{grid-template-columns:1fr}
-  .pic{padding:16px}
-  .eli{font-size:17px}
-}
-@media (max-width:400px){.two{grid-template-columns:1fr}}
-[hidden]{display:none!important}
-img{max-width:100%}
-
-/* вкладки у липкій панелі */
-.jump .wrap{align-items:center}
-.seg{flex:none;display:inline-flex;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none;padding:2px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
-.seg::-webkit-scrollbar{display:none}
-.seg button{height:28px;padding:0 12px;border:0;border-radius:6px;background:none;color:var(--muted);font:600 13px var(--sans);white-space:nowrap;cursor:pointer}
-.seg button:hover{color:var(--text)}
-.seg button[aria-selected="true"]{background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
-
-/* зміст вкладки: збоку від 1180 px, вужче за кнопкою «Зміст» у липкій панелі */
-.toc-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:340px;height:34px;padding:0 10px 0 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:13px var(--sans);cursor:pointer}
-.toc-btn:hover{background:var(--surface-2)}
-.toc-k{flex:none;color:var(--muted);font-weight:600}
-.toc-v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
-.toc-v:empty{display:none}
-.toc-btn svg{flex:none;margin-left:auto;color:var(--muted)}
-.toc-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
-
-.toc{display:none}
-.toc-title{margin:0 0 10px 12px;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.toc>ol{border-left:1px solid var(--border-muted)}
-.toc ol ol{margin:2px 0 6px}
-.toc a{display:flex;align-items:baseline;gap:9px;margin-left:-1px;padding:5px 10px 5px 12px;border-left:2px solid transparent;border-radius:0 6px 6px 0;color:var(--muted);font-size:13.5px;line-height:1.35}
-.toc a:hover{color:var(--text);background:var(--hover);text-decoration:none}
-.toc ol ol a{padding-left:22px;font-size:13px}
-.toc a i{flex:none;align-self:center;width:8px;height:8px;border-radius:50%;background:var(--c)}
-.toc a b{flex:none;min-width:16px;font:600 11px var(--mono);color:var(--faint);text-align:right}
-.toc li.cur>a{color:var(--text)}
-.toc a[aria-current]{color:var(--text);font-weight:600;border-left-color:var(--c,var(--blue));background:var(--hover)}
-.toc a[aria-current] b{color:var(--text)}
-.toc.js li:not(.cur)>ol{display:none}
-
-@media (min-width:1180px){
-  body[data-tab="map"] .wrap,body[data-tab="harness"] .wrap{max-width:1368px}
-  .panel.has-toc{display:grid;grid-template-columns:208px minmax(0,1fr);gap:48px;align-items:start}
-  .panel-main{min-width:0}
-  .toc{display:block;position:sticky;top:var(--jump-h,48px);max-height:calc(100vh - var(--jump-h,48px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-block:36px 32px}
-  .toc-btn{display:none}
-}
-@media (max-width:1179px){
-  .toc.open{display:block;position:fixed;z-index:20;top:calc(var(--jump-h,48px) + 6px);right:max(24px,calc((100vw - 1072px) / 2));width:min(340px,calc(100vw - 48px));max-height:calc(100dvh - var(--jump-h,48px) - 24px);overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 12px 8px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:0 16px 40px rgba(1,4,9,.4)}
-  .toc.open .toc-title{margin-left:14px}
-}
-@media (max-width:640px){
-  .toc-btn{flex:1 1 100%;max-width:none;margin-left:0}
-  .toc.open{left:16px;right:16px;width:auto}
-}
-
-/* харнес: кольори людей */
-.hz{--c:var(--blue)}
-.p-hunt{--c:var(--yellow)}.p-hash{--c:var(--blue)}.p-karp{--c:var(--purple)}.p-osm{--c:var(--green)}.p-yeg{--c:var(--orange)}
-.person .st-head{flex-wrap:wrap}
-.num.ini{font-size:12px}
-.verdict{margin-left:auto;flex:none;padding:3px 10px;border:1px solid var(--c);border-radius:999px;color:var(--c);font:600 12px var(--mono);white-space:nowrap}
-
-/* харнес: шари навколо моделі */
-.rings-pic{padding:24px}
-.ring{display:grid;gap:10px;padding:12px 14px 14px;border:1.5px solid var(--rc);border-radius:14px}
-.r4,.r2{background:var(--bg)}.r3,.r1{background:var(--surface)}
-.r4{--rc:var(--yellow)}.r3{--rc:var(--purple)}.r2{--rc:var(--green)}.r1{--rc:var(--blue)}
-.rl{font:700 11.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--rc)}
-.ri{font-size:13px;color:var(--muted)}
-.core{display:grid;justify-items:center;gap:2px;padding:18px;border-radius:10px;background:var(--surface-2);font-size:20px;font-weight:700}
-.core span{font:400 12px var(--mono);color:var(--muted)}
-
-/* харнес: сходинки, файли, порівняння, сесії */
-.ladder{display:grid;gap:6px}
-.rung{display:grid;gap:2px;padding:9px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
-.rung.s2{margin-left:8%}
-.rung.s3{margin-left:16%;border-color:var(--c)}
-.rung em{font:600 11px var(--mono);font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
-.rung b{font-size:14px}
-.rung span{font:12px var(--mono);color:var(--muted)}
-.ladder.big .rung{padding:12px 16px}
-.ladder.big .rung b{font-size:15.5px}
-.ladder.big .rung span{font:13.5px var(--sans)}
-.files3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.f3{display:grid;gap:2px;padding:10px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
-.f3 .mono{font-size:12.5px;font-weight:700}
-.f3 b{font-size:12px;font-weight:500;color:var(--muted)}
-.f3.hl{border-color:var(--c)}
-.f3.dim{opacity:.55}
-.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.vs>div{display:grid;gap:6px;align-content:start;min-width:0}
-.bubble{padding:10px 12px;border-radius:12px 12px 12px 2px;background:var(--surface-2);font-size:13.5px}
-.vs .m,.vs .g{font-size:12.5px}
-.formula-mini{padding:8px;border:1px dashed var(--border);border-radius:6px;text-align:center;font-size:15px;color:var(--muted)}
-.formula-mini b{color:var(--c)}
-.sessions{display:flex;gap:8px}
-.ses{flex:1;padding:10px 6px;border:1.5px dashed var(--faint);border-radius:6px;color:var(--faint);font:12.5px var(--mono);text-align:center}
-.ses.gone::after{content:" ✕"}
-.ses.live{border-style:solid;border-color:var(--c);color:var(--text)}
-.state{padding:10px 12px;border-radius:6px;background:var(--c);color:var(--bg);font:700 13px var(--mono);text-align:center}
-.stack{display:grid;gap:8px;margin-top:36px;max-width:820px}
-.sl{display:grid;grid-template-columns:100px 140px minmax(0,1fr);align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-left:4px solid var(--c);border-radius:8px;background:var(--surface)}
-.sl .who{font:600 12px var(--mono);color:var(--c)}
-.sl b{font-size:15px}
-.sl span:last-child{font-size:13.5px;color:var(--muted)}
-.sl.result{--c:var(--text);background:var(--surface-2)}
-
-/* харнес: постійне і змінне */
-.uni{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.uni-col{display:grid;gap:6px;align-content:start;padding:18px;border:1px solid var(--border);border-top:3px solid var(--uc);border-radius:8px;background:var(--surface)}
-.uni-col.keep{--uc:var(--blue)}.uni-col.vary{--uc:var(--yellow)}
-.uni-col h3{font-size:18px}
-.uni-col p{font-size:14px;color:var(--muted)}
-.uni-col ul{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.uni-col li{padding:4px 9px;border:1px solid var(--border);border-radius:4px;background:var(--bg);font:12.5px var(--mono)}
-.where2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:24px}
-.where2 b{display:block;font-size:15px}
-.where2 p{margin-top:4px;font-size:14px;color:var(--muted)}
-
-/* харнес: дерево файлів */
-.explorer{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:start}
-.ftree{padding:12px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font:13px/1.2 var(--mono);overflow-x:auto}
-.ftree .row{display:flex;align-items:center;min-height:26px;white-space:pre}
-.ftree .pfx{color:var(--faint)}
-.ftree .dir{padding:3px 6px;color:var(--muted)}
-.ftree button{display:inline-flex;align-items:center;gap:7px;padding:3px 7px;border:0;border-radius:4px;background:none;color:var(--text);font:inherit;cursor:pointer}
-.ftree button:hover{background:var(--hover)}
-.ftree button[aria-pressed="true"]{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--blue)}
-.ftree i,.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
-i.k{background:var(--blue)}i.v{background:var(--yellow)}
-.legend{display:flex;gap:16px;margin-top:10px;font-size:12.5px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.fdetail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px);min-width:0;display:grid;gap:12px;padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
-.fdetail h3{font:700 19px var(--mono)}
-.fmeta{display:flex;flex-wrap:wrap;gap:6px}
-.fmeta span{padding:3px 9px;border:1px solid var(--border);border-radius:999px;font-size:12.5px;color:var(--muted)}
-.fmeta span:first-child{color:var(--blue);border-color:var(--blue)}
-.fmeta span.v:first-child{color:var(--yellow);border-color:var(--yellow)}
-.fdetail p{font-size:15px}
-
-/* харнес: робочий день */
-.loop{display:grid;gap:8px;max-width:820px}
-.ls{display:grid;grid-template-columns:28px 76px minmax(0,1fr);align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
-.ls .k,.gate .k{font:700 12px var(--mono);color:var(--muted)}
-.actor{justify-self:start;padding:2px 8px;border-radius:4px;font:600 11.5px var(--mono)}
-.actor.you{color:var(--yellow);background:color-mix(in srgb,var(--yellow) 14%,transparent)}
-.actor.cl{color:var(--blue);background:color-mix(in srgb,var(--blue) 14%,transparent)}
-.actor.gw{color:var(--purple);background:color-mix(in srgb,var(--purple) 14%,transparent)}
-.ls p{font-size:15px}
-.ls p .mono{display:block;font-size:12px;color:var(--muted)}
-.branch{margin-left:40px;padding:6px 12px;border-left:2px dashed var(--red);color:var(--red);font-size:13.5px}
-.again{padding:6px 14px;color:var(--muted);font-size:14px}
-.loop-note{margin-top:16px}
-
-/* харнес: помилка → правило, ворота, збірка, чого не брати */
-.rules-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start}
-.rtbl{width:100%;min-width:420px;border-collapse:collapse;font-size:14px}
-.rtbl th{padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-.rtbl td{padding:9px 10px;border-bottom:1px solid var(--border-muted);vertical-align:top}
-.rtbl td.mono{font-size:12.5px;color:var(--c)}
-.rule-prompt{margin-top:24px;max-width:820px}
-.gates-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:center}
-.gates{border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.gate{display:grid;grid-template-columns:24px minmax(0,190px) minmax(0,1fr);align-items:baseline;gap:12px;padding:10px 14px;border-top:1px solid var(--border-muted);background:var(--surface)}
-.gate:first-child{border-top:0}
-.gate .mono{font-size:13px;font-weight:600}
-.gate span:last-child{font-size:13.5px;color:var(--muted)}
-.pull{max-width:24ch;padding-left:18px;border-left:4px solid var(--purple);font-size:24px;line-height:1.35;font-weight:600;letter-spacing:-.012em;text-wrap:balance}
-.bsteps{display:grid;gap:28px;max-width:860px}
-.bstep{display:grid;grid-template-columns:42px minmax(0,1fr);gap:16px;align-items:start}
-.bstep>div{display:grid;gap:12px;min-width:0}
-.bstep h3{padding-top:8px;font-size:19px;line-height:1.3}
-.newproj{display:grid;gap:10px;max-width:860px;margin-top:32px;padding:18px;border:1px dashed var(--border);border-radius:8px}
-.skip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.sk-no{display:grid;gap:4px;padding:16px 18px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
-.sk-no b{font-size:15.5px}
-.sk-no b::before{content:"✕ ";color:var(--red)}
-.sk-no p{font-size:14px;color:var(--muted)}
-
-/* усі матеріали: картки розділів */
-.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.hub-card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text)}
-.hub-card:hover{border-color:var(--faint);background:var(--hover);text-decoration:none}
-@media (prefers-reduced-motion: no-preference){.hub-card{transition:transform .12s ease,border-color .12s ease}.hub-card:hover{transform:translateY(-2px)}}
-.hub-tag{align-self:flex-start;padding:4px 10px;border:1px solid color-mix(in srgb,var(--hc) 45%,transparent);border-radius:999px;font:11px/1 var(--mono);color:var(--hc)}
-.hub-card h2{margin-top:4px;font-size:18px;line-height:1.3}
-.hub-desc{flex:1;color:var(--muted);font-size:14px;line-height:1.55}
-.hub-meta{font:12px var(--mono);color:var(--faint)}
-.hub-go{margin-top:6px;font-size:13px;font-weight:600;color:var(--blue)}
-.hub-card.presentation{--hc:var(--blue)}.hub-card.threed{--hc:var(--purple)}.hub-card.app{--hc:var(--green)}.hub-card.podcast{--hc:var(--orange)}.hub-card.harness{--hc:var(--yellow)}
-.hub-card.wide{grid-column:1/-1}
-
-/* підвал */
+footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:var(--muted);font-size:13px}
 .foot-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:10px}
 .foot-links a{color:var(--text)}
 
-@media (max-width:920px){
-  .explorer,.rules-grid,.gates-grid{grid-template-columns:1fr}
-  .fdetail{position:static}
-  .where2{grid-template-columns:1fr;gap:14px}
+@media (max-width:820px){
+  .entries{grid-template-columns:1fr;gap:10px}
+  .entry{grid-template-columns:36px minmax(0,1fr);grid-template-rows:none;column-gap:14px;row-gap:4px;padding:16px;border-top-width:1px;border-left:3px solid var(--hc)}
+  .entry:hover{border-left-color:var(--hc)}
+  .entry .ic{grid-row:1 / span 4}
+  .entry h2{margin-top:0;font-size:17px}
+  .entry > :not(.ic){grid-column:2}
+  .learn-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:640px){
-  .uni,.vs,.skip,.files3,.hub-grid{grid-template-columns:1fr}
-  .sl{grid-template-columns:1fr;gap:2px}
-  .ls{grid-template-columns:24px minmax(0,1fr)}
-  .ls .actor,.ls p{grid-column:2}
-  .gate{grid-template-columns:24px minmax(0,1fr)}
-  .gate span:last-child{grid-column:2}
-  .verdict{margin-left:0}
-  .pull{font-size:20px}
-  .rings-pic{padding:14px}
-  .ring{padding:10px}
-  .branch{margin-left:24px}
+  .wrap{padding-inline:16px}
+  .home{padding-block:32px 36px}
+  .home h1{font-size:32px}
+  .lede{font-size:16px}
+  .find{margin:22px 0 28px}
+  .find button{padding:0 14px}
 }
-
-/* головна: дві головні картки */
-.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.hub-card.feature{gap:12px;padding:24px;border-top:4px solid var(--hc)}
-.hub-card.feature h2{font-size:22px;letter-spacing:-.01em}
-.f-map{--hc:var(--blue)}.f-harness{--hc:var(--green)}
-.mini-metro{display:flex;align-items:center;gap:12px;height:40px}
-.mini-metro i{position:relative;flex:1;height:6px;border-radius:3px;background:var(--c)}
-.mini-metro i::before,.mini-metro i::after{content:"";position:absolute;top:50%;width:16px;height:16px;border:3px solid var(--c);border-radius:50%;background:var(--surface);transform:translateY(-50%);box-sizing:border-box}
-.mini-metro i::before{left:-2px}.mini-metro i::after{right:-2px}
-.mini-rings{display:flex;align-items:center;height:40px}
-.mini-rings span{display:flex;align-items:center;justify-content:center;padding:4px;border:2px solid var(--yellow);border-radius:10px}
-.mini-rings span span{border-color:var(--purple);border-radius:8px}
-.mini-rings span span span{border-color:var(--green);border-radius:6px}
-.mini-rings span span span span{width:34px;height:12px;padding:0;border-color:var(--blue);border-radius:4px;background:var(--surface-2)}
-@media (max-width:640px){.feature-grid{grid-template-columns:1fr}}
+@media (max-width:360px){.learn-list{grid-template-columns:1fr}}
 /* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
 :root{--nav-h:52px}
 .skip-link{position:absolute;left:12px;top:-60px;z-index:100;padding:8px 12px;border-radius:6px;background:var(--surface);color:var(--text);font:13px var(--sans);text-decoration:none}
@@ -663,123 +165,70 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
   </nav>
   <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
 </header>
-
 <div class="wrap">
-<main class="panel" id="main">
+<main class="home" id="main">
+  <h1>Дизайн у коді з Claude</h1>
+  <p class="lede">Довідник для дизайнерів: готові запити, харнес і карта перевірок фронтенду.</p>
 
-<header class="top">
-  <span class="crumb">eleken-git / design-process-help</span>
-  <p class="kicker">тренувальний репозиторій для UX/UI дизайнерів</p>
-  <h1>Дизайн у коді, крок за кроком</h1>
-  <p class="lede">Тренувальний репозиторій: дизайнери роблять дизайн у коді через Claude і вчаться працювати вдвох через гілки й Pull Request.</p>
-</header>
+  <form class="find" action="prompts/" method="get" role="search">
+    <label class="sr" for="q">Що треба зробити?</label>
+    <div class="find-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" name="q" placeholder="Що треба зробити? Наприклад, «перевірити доступність»" autocomplete="off"></div>
+    <button type="submit">Знайти</button>
+  </form>
 
-<section class="block" id="m-start">
-  <div class="sec-head">
-    <h2>Почніть тут</h2>
-    <p>Дві головні частини сайту: що перевірити у фронтенді від старту до здачі і як зібрати харнес, з яким Claude працює однаково в кожному проєкті.</p>
-  </div>
-  <div class="feature-grid">
-    <a class="hub-card feature f-map" href="map/">
-      <span class="hub-tag">Карта фронтенду</span>
-      <h2>Від меж проєкту до здачі клієнту</h2>
-      <span class="mini-metro" aria-hidden="true"><i class="ph-a"></i><i class="ph-b"></i><i class="ph-c"></i><i class="ph-d"></i></span>
-      <p class="hub-desc">16 зупинок у чотирьох етапах. На кожній пояснення простими словами, що перевірити, і готовий запит для Claude. Наприкінці чекліст здачі.</p>
-      <span class="hub-meta">4 етапи · 16 зупинок · 17 запитів</span>
-      <span class="hub-go">Відкрити карту →</span>
+  <div class="entries">
+    <a class="entry e-prompts" href="prompts/">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></span>
+      <h2>Запити для Claude</h2>
+      <p>Готові запити під задачу: знайдіть потрібний і скопіюйте в один клік.</p>
+      <span class="meta">23 запити · пошук і фільтр</span>
+      <span class="go">Відкрити →</span>
     </a>
-    <a class="hub-card feature f-harness" href="harness/">
-      <span class="hub-tag">Харнес «Верстак»</span>
-      <h2>Універсальний харнес дизайнера</h2>
-      <span class="mini-rings" aria-hidden="true"><span><span><span><span></span></span></span></span></span>
-      <p class="hub-desc">Правила, пам'ять у файлах, скіли й ворота якості, з якими ви починаєте будь-який клієнтський проєкт. Зібрано з практик Huntley, Hashimoto, Karpathy, Osmani і Yegge.</p>
-      <span class="hub-meta">5 ідей · дерево файлів · 7 запитів</span>
-      <span class="hub-go">Відкрити Верстак →</span>
+    <a class="entry e-harness" href="harness/">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5h6l2 2h10v11H3z"/><path d="M8 12h8M8 15.5h5"/></svg></span>
+      <h2>Харнес</h2>
+      <p>Які файли покласти в проєкт і що в них писати, щоб Claude працював однаково.</p>
+      <span class="meta">дерево файлів · 6 запитів на старт</span>
+      <span class="go">Відкрити →</span>
     </a>
-  </div>
-</section>
-
-<section class="block" id="m-cards">
-  <div class="sec-head"><h2>Інші матеріали</h2></div>
-  <div class="hub-grid">
-    <a class="hub-card presentation" href="presentation/">
-      <span class="hub-tag">Презентація</span>
-      <h2>Працюємо вдвох і не ламаємо одне одного</h2>
-      <p class="hub-desc">Як влаштований репозиторій, навіщо гілки й Pull Request, як змінювати спільні компоненти і що робити, коли двоє змінили той самий рядок.</p>
-      <span class="hub-meta">13 слайдів · ~10 хвилин</span>
-      <span class="hub-go">Відкрити →</span>
-    </a>
-    <a class="hub-card threed" href="3d/">
-      <span class="hub-tag">Git у 3D</span>
-      <h2>Як Git зберігає і зливає твою роботу</h2>
-      <p class="hub-desc">П'ять анімованих епізодів: три стани файлу, шлях Pull Request від Draft до merge, захищений main, конфлікт, коли двоє змінили один рядок, і merge main проти rebase main.</p>
-      <span class="hub-meta">5 епізодів · до 2 хвилин кожен</span>
-      <span class="hub-go">Дивитись →</span>
-    </a>
-    <a class="hub-card app" href="app/">
-      <span class="hub-tag">Тренувальний застосунок</span>
-      <h2>Nimbus: застосунок, який не страшно зламати</h2>
-      <p class="hub-desc">Три екрани, зібрані з токенів і спільних компонентів. Тут робиш вправи з PRACTICE.md: зміна → гілка → Pull Request → ревʼю колеги.</p>
-      <span class="hub-meta">Dashboard · Settings · UI kit</span>
-      <span class="hub-go">Відкрити →</span>
-    </a>
-    <a class="hub-card podcast" href="podcast/">
-      <span class="hub-tag">Подкаст</span>
-      <h2>Дизайн у коді з Claude, голосом</h2>
-      <p class="hub-desc">Два епізоди: спільна робота дизайнерів у Git через Claude і як приборкати Claude для дизайну інтерфейсів. Плеєр запамʼятовує, де ти зупинився у кожному.</p>
-      <span class="hub-meta">2 епізоди · 13:21 і 17:30</span>
-      <span class="hub-go">Слухати →</span>
-    </a>
-    <a class="hub-card harness wide" href="harness/">
-      <span class="hub-tag">Корисна інформація</span>
-      <h2>Будуємо харнес</h2>
-      <p class="hub-desc">Правила, файли й навички навколо AI-агента, які роблять його передбачуваним: CLAUDE.md чи AGENTS.md, опис перед кодом, тест перед виправленням. П'ять матеріалів простими словами: LLM Wiki, AGENTS.md, SDD, Spec Kit і Superpowers.</p>
-      <span class="hub-meta">5 матеріалів · оригінали англійською</span>
-      <span class="hub-go">Читати →</span>
+    <a class="entry e-map" href="map/">
+      <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/></svg></span>
+      <h2>Карта фронтенду</h2>
+      <p>16 зупинок від меж проєкту до здачі клієнту: що перевірити на кожній.</p>
+      <span class="meta">4 етапи · чекліст здачі</span>
+      <span class="go">Відкрити →</span>
     </a>
   </div>
-</section>
 
+  <section class="learn-row" aria-labelledby="learn-h">
+    <div class="learn-head">
+      <h2 id="learn-h">Вчитися</h2>
+      <a href="learn/">Усі матеріали →</a>
+    </div>
+    <ul class="learn-list">
+      <li><a href="presentation/"><b>Презентація</b><span>~10 хв</span></a></li>
+      <li><a href="3d/"><b>Git у 3D</b><span>5 епізодів</span></a></li>
+      <li><a href="podcast/"><b>Подкаст</b><span>2 епізоди</span></a></li>
+      <li><a href="app/"><b>Nimbus</b><span>вправи вдвох</span></a></li>
+    </ul>
+  </section>
 </main>
-
 </div>
 
 <footer>
   <div class="wrap">
-    <nav class="foot-links" aria-label="Розділи сайту">
+    <nav class="foot-links" aria-label="Усі сторінки">
+      <a href="prompts/">Запити</a>
+      <a href="harness/">Харнес</a>
+      <a href="map/">Карта фронтенду</a>
+      <a href="learn/">Вчитися</a>
       <a href="presentation/">Презентація</a>
       <a href="3d/">Git у 3D</a>
-      <a href="app/">Nimbus</a>
       <a href="podcast/">Подкаст</a>
-      <a href="harness/">Будуємо харнес</a>
+      <a href="app/">Nimbus</a>
     </nav>
     <p>Код і історія змін у репозиторії <a href="https://github.com/eleken-git/design-process-help">github.com/eleken-git/design-process-help</a>.</p>
   </div>
 </footer>
-
-<script>
-(function(){
-  function flash(btn, text){
-    if(!btn.dataset.html) btn.dataset.html = btn.innerHTML;
-    btn.textContent = text;
-    btn.classList.add('done');
-    clearTimeout(btn._t);
-    btn._t = setTimeout(function(){ btn.innerHTML = btn.dataset.html; btn.classList.remove('done'); }, 1800);
-  }
-  function selectNode(node){
-    try{
-      var range = document.createRange(); range.selectNodeContents(node);
-      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-    }catch(e){}
-  }
-  function writeClipboard(text){
-    try{
-      if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
-    }catch(e){}
-    return Promise.reject();
-  }
-
-})();
-</script>
 </body>
 </html>

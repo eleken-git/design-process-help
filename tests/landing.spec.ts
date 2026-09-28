@@ -61,6 +61,33 @@ test.describe('лендінг-хаб docs/', () => {
   });
 });
 
+test.describe('головна', () => {
+  test('пошук веде в запити, три входи і рядок «Вчитися» в одному екрані', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(BASE + '/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Дизайн у коді з Claude');
+    await expect(page.locator('a.entry')).toHaveCount(3);
+    for (const href of ['prompts/', 'harness/', 'map/']) await expect(page.locator(`a.entry[href="${href}"]`)).toHaveCount(1);
+    for (const href of ['presentation/', '3d/', 'podcast/', 'app/', 'learn/']) await expect(page.locator(`main a[href="${href}"]`)).toHaveCount(1);
+    const learnBottom = await page.locator('.learn-row').evaluate((n) => n.getBoundingClientRect().bottom);
+    expect(learnBottom, 'рядок «Вчитися» видно без прокрутки').toBeLessThanOrEqual(900);
+    await page.getByRole('searchbox').fill('доступність');
+    await page.getByRole('searchbox').press('Enter');
+    await expect(page).toHaveURL(/\/prompts\/\?q=/);
+    expect(errors, 'помилки JS').toEqual([]);
+  });
+
+  test('на 375 px входи стоять один під одним, без горизонтального скролу', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/');
+    const xs = await page.locator('a.entry').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().x)));
+    expect(new Set(xs).size).toBe(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  });
+});
+
 test.describe('шлях назад на головну', () => {
   for (const path of ['/presentation/', '/podcast/', '/harness/', '/map/']) {
     test(`${path}: лого в меню веде на головну`, async ({ page }) => {
