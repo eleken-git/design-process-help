@@ -58,11 +58,7 @@ pre code{padding:0;background:none;font-size:inherit}
 
 /* липка навігація */
 .jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--border-muted)}
-.jump .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
-.jump .wrap::-webkit-scrollbar{display:none}
-.jump a{flex:none;display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 11px;border-radius:999px;color:var(--muted);font-size:13px;white-space:nowrap}
-.jump a i{width:8px;height:8px;border-radius:50%;background:var(--c,var(--faint))}
-.jump a:hover{color:var(--text);background:var(--hover);text-decoration:none}
+.jump .wrap{display:flex;flex-wrap:wrap;gap:8px;padding-block:8px}
 
 /* шапка */
 .top{padding-block:36px 40px}
@@ -74,7 +70,7 @@ h1{font-size:46px;line-height:1.08;letter-spacing:-.028em;text-wrap:balance}
 .lede+.lede{margin-top:10px}
 .lede b{color:var(--text);font-weight:600}
 
-section{scroll-margin-top:56px}
+section{scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
 .block{padding-block:48px;border-top:1px solid var(--border-muted)}
 .sec-head{display:grid;gap:8px;margin-bottom:26px}
 .sec-head h2{font-size:28px;line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
@@ -123,7 +119,7 @@ section{scroll-margin-top:56px}
 .phase-head .bar{width:40px;height:6px;border-radius:3px;background:var(--c)}
 .phase-head h2{font-size:32px;line-height:1.15;letter-spacing:-.02em}
 .phase-head span{font:13px var(--mono);color:var(--muted)}
-.station{padding-block:36px;border-bottom:1px solid var(--border-muted);scroll-margin-top:56px}
+.station{padding-block:36px;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
 .station:last-child{border-bottom:0}
 .st-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
 .num{flex:none;width:42px;height:42px;border-radius:50%;border:4px solid var(--c);display:grid;place-items:center;font:700 14px var(--mono)}
@@ -396,12 +392,50 @@ img{max-width:100%}
 
 /* вкладки у липкій панелі */
 .jump .wrap{align-items:center}
-.seg{flex:none;display:inline-flex;gap:2px;padding:2px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.seg{flex:none;display:inline-flex;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none;padding:2px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.seg::-webkit-scrollbar{display:none}
 .seg button{height:28px;padding:0 12px;border:0;border-radius:6px;background:none;color:var(--muted);font:600 13px var(--sans);white-space:nowrap;cursor:pointer}
 .seg button:hover{color:var(--text)}
 .seg button[aria-selected="true"]{background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
-.jump .sep{flex:none;width:1px;height:20px;margin:0 6px;background:var(--border)}
-.jump .links{display:flex;gap:4px}
+
+/* зміст вкладки: збоку від 1180 px, вужче за кнопкою «Зміст» у липкій панелі */
+.toc-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:340px;height:34px;padding:0 10px 0 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:13px var(--sans);cursor:pointer}
+.toc-btn:hover{background:var(--surface-2)}
+.toc-k{flex:none;color:var(--muted);font-weight:600}
+.toc-v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.toc-v:empty{display:none}
+.toc-btn svg{flex:none;margin-left:auto;color:var(--muted)}
+.toc-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+.toc{display:none}
+.toc-title{margin:0 0 10px 12px;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.toc>ol{border-left:1px solid var(--border-muted)}
+.toc ol ol{margin:2px 0 6px}
+.toc a{display:flex;align-items:baseline;gap:9px;margin-left:-1px;padding:5px 10px 5px 12px;border-left:2px solid transparent;border-radius:0 6px 6px 0;color:var(--muted);font-size:13.5px;line-height:1.35}
+.toc a:hover{color:var(--text);background:var(--hover);text-decoration:none}
+.toc ol ol a{padding-left:22px;font-size:13px}
+.toc a i{flex:none;align-self:center;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.toc a b{flex:none;min-width:16px;font:600 11px var(--mono);color:var(--faint);text-align:right}
+.toc li.cur>a{color:var(--text)}
+.toc a[aria-current]{color:var(--text);font-weight:600;border-left-color:var(--c,var(--blue));background:var(--hover)}
+.toc a[aria-current] b{color:var(--text)}
+.toc.js li:not(.cur)>ol{display:none}
+
+@media (min-width:1180px){
+  body[data-tab="map"] .wrap,body[data-tab="harness"] .wrap{max-width:1368px}
+  .panel.has-toc{display:grid;grid-template-columns:208px minmax(0,1fr);gap:48px;align-items:start}
+  .panel-main{min-width:0}
+  .toc{display:block;position:sticky;top:var(--jump-h,48px);max-height:calc(100vh - var(--jump-h,48px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-block:36px 32px}
+  .toc-btn{display:none}
+}
+@media (max-width:1179px){
+  .toc.open{display:block;position:fixed;z-index:20;top:calc(var(--jump-h,48px) + 6px);right:max(24px,calc((100vw - 1072px) / 2));width:min(340px,calc(100vw - 48px));max-height:calc(100dvh - var(--jump-h,48px) - 24px);overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 12px 8px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:0 16px 40px rgba(1,4,9,.4)}
+  .toc.open .toc-title{margin-left:14px}
+}
+@media (max-width:640px){
+  .toc-btn{flex:1 1 100%;max-width:none;margin-left:0}
+  .toc.open{left:16px;right:16px;width:auto}
+}
 
 /* харнес: кольори людей */
 .hz{--c:var(--blue)}
@@ -588,28 +622,10 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
       <button type="button" role="tab" id="t-map" data-tab="map" aria-controls="frontend" aria-selected="false" tabindex="-1">Карта фронтенду</button>
       <button type="button" role="tab" id="t-harness" data-tab="harness" aria-controls="harness" aria-selected="false" tabindex="-1">Харнес «Верстак»</button>
     </div>
-    <span class="sep" aria-hidden="true" hidden></span>
-    <div class="links" data-for="map" hidden>
-    <a href="#map">Карта</a>
-    <a href="#ask">Як просити Claude</a>
-    <a href="#phase-a" class="ph-a"><i></i>Домовитись</a>
-    <a href="#phase-b" class="ph-b"><i></i>Будувати</a>
-    <a href="#phase-c" class="ph-c"><i></i>Перевірити</a>
-    <a href="#phase-d" class="ph-d"><i></i>Здати</a>
-    <a href="#skills">Скіли</a>
-    <a href="#done">Готово до здачі</a>
-    </div>
-    <div class="links" data-for="harness" hidden>
-      <a href="#h-what">Що таке харнес</a>
-      <a href="#h-people">П'ять людей</a>
-      <a href="#h-universal">Постійне і змінне</a>
-      <a href="#h-tree">Структура</a>
-      <a href="#h-loop">Робочий день</a>
-      <a href="#h-rules">Помилка → правило</a>
-      <a href="#h-gates">Ворота</a>
-      <a href="#h-build">Зібрати</a>
-      <a href="#h-skip">Не брати</a>
-    </div>
+    <button type="button" class="toc-btn" id="toc-btn" aria-expanded="false" hidden>
+      <span class="toc-k">Зміст</span><span class="toc-v"></span>
+      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
   </div>
 </nav>
 
@@ -691,7 +707,53 @@ i.k{background:var(--blue)}i.v{background:var(--yellow)}
 
 </div>
 
-<div class="panel" id="frontend" data-tab="map" role="tabpanel" aria-labelledby="t-map" hidden>
+<div class="panel has-toc" id="frontend" data-tab="map" role="tabpanel" aria-labelledby="t-map" hidden>
+
+<!-- ЗМІСТ КАРТИ: збоку на широкому екрані, за кнопкою «Зміст» на вузькому -->
+<nav class="toc" id="toc-map" aria-label="Зміст карти фронтенду">
+  <p class="toc-title">Зміст</p>
+  <ol>
+    <li><a href="#map"><span>Карта</span></a></li>
+    <li><a href="#ask"><span>Як просити Claude</span></a></li>
+    <li class="ph-a"><a href="#phase-a"><i></i><span>Домовитись</span></a>
+      <ol>
+        <li><a href="#s1"><b>1</b><span>Межі проєкту</span></a></li>
+        <li><a href="#s2"><b>2</b><span>Що дати Claude</span></a></li>
+      </ol>
+    </li>
+    <li class="ph-b"><a href="#phase-b"><i></i><span>Будувати</span></a>
+      <ol>
+        <li><a href="#s3"><b>3</b><span>Семантика</span></a></li>
+        <li><a href="#s4"><b>4</b><span>Доступність</span></a></li>
+        <li><a href="#s5"><b>5</b><span>Адаптивність</span></a></li>
+        <li><a href="#s6"><b>6</b><span>Стани</span></a></li>
+        <li><a href="#s7"><b>7</b><span>Порядок у коді</span></a></li>
+      </ol>
+    </li>
+    <li class="ph-c"><a href="#phase-c"><i></i><span>Перевірити</span></a>
+      <ol>
+        <li><a href="#s8"><b>8</b><span>Сценарії і форми</span></a></li>
+        <li><a href="#s9"><b>9</b><span>Браузери</span></a></li>
+        <li><a href="#s10"><b>10</b><span>Швидкість</span></a></li>
+        <li><a href="#s11"><b>11</b><span>Пошук і запуск</span></a></li>
+        <li><a href="#s12"><b>12</b><span>Чиста збірка</span></a></li>
+      </ol>
+    </li>
+    <li class="ph-d"><a href="#phase-d"><i></i><span>Здати</span></a>
+      <ol>
+        <li><a href="#s13"><b>13</b><span>Репозиторій і README</span></a></li>
+        <li><a href="#s14"><b>14</b><span>Доступи і власність</span></a></li>
+        <li><a href="#s15"><b>15</b><span>Інструкції для клієнта</span></a></li>
+        <li><a href="#s16"><b>16</b><span>Підтримка і прийняття</span></a></li>
+      </ol>
+    </li>
+    <li><a href="#skills"><span>Скіли</span></a></li>
+    <li><a href="#done"><span>Готово до здачі</span></a></li>
+    <li><a href="#sources"><span>Джерела</span></a></li>
+  </ol>
+</nav>
+
+<div class="panel-main">
 
 <header class="top">
   <span class="crumb">eleken-git / design-process-help</span>
@@ -1561,8 +1623,36 @@ npm run build
 </section>
 
 </div>
+</div>
 
-<div class="panel hz" id="harness" data-tab="harness" role="tabpanel" aria-labelledby="t-harness" hidden>
+<div class="panel hz has-toc" id="harness" data-tab="harness" role="tabpanel" aria-labelledby="t-harness" hidden>
+
+<!-- ЗМІСТ ВЕРСТАКА -->
+<nav class="toc" id="toc-harness" aria-label="Зміст верстака">
+  <p class="toc-title">Зміст</p>
+  <ol>
+    <li><a href="#h-what"><span>Що таке харнес</span></a></li>
+    <li><a href="#h-people"><span>П'ять людей</span></a>
+      <ol>
+        <li class="p-hunt"><a href="#h-huntley"><i></i><span>Geoffrey Huntley</span></a></li>
+        <li class="p-hash"><a href="#h-hashimoto"><i></i><span>Mitchell Hashimoto</span></a></li>
+        <li class="p-karp"><a href="#h-karpathy"><i></i><span>Andrej Karpathy</span></a></li>
+        <li class="p-osm"><a href="#h-osmani"><i></i><span>Addy Osmani</span></a></li>
+        <li class="p-yeg"><a href="#h-yegge"><i></i><span>Steve Yegge</span></a></li>
+      </ol>
+    </li>
+    <li><a href="#h-universal"><span>Постійне і змінне</span></a></li>
+    <li><a href="#h-tree"><span>Структура верстака</span></a></li>
+    <li><a href="#h-loop"><span>Робочий день</span></a></li>
+    <li><a href="#h-rules"><span>Помилка стає правилом</span></a></li>
+    <li><a href="#h-gates"><span>Ворота якості</span></a></li>
+    <li><a href="#h-build"><span>Зібрати за шість запитів</span></a></li>
+    <li><a href="#h-skip"><span>Що не брати на старті</span></a></li>
+    <li><a href="#h-sources"><span>Джерела</span></a></li>
+  </ol>
+</nav>
+
+<div class="panel-main">
 
 <header class="top">
   <span class="crumb">eleken-git / design-process-help</span>
@@ -1982,6 +2072,7 @@ npm run dev | build | lint | typecheck | test:e2e
 </section>
 
 </div>
+</div>
 
 
 </div>
@@ -2101,8 +2192,7 @@ npm run dev | build | lint | typecheck | test:e2e
   // вкладки: карта, верстак, усі матеріали
   var tabs = [].slice.call(document.querySelectorAll('.seg [role=tab]'));
   var panels = [].slice.call(document.querySelectorAll('[role=tabpanel]'));
-  var linkGroups = [].slice.call(document.querySelectorAll('.jump .links'));
-  var sep = document.querySelector('.jump .sep');
+  var current = null;
   function show(name, focus){
     tabs.forEach(function(t){
       var on = t.dataset.tab === name;
@@ -2111,10 +2201,79 @@ npm run dev | build | lint | typecheck | test:e2e
       if(on && focus) t.focus();
     });
     panels.forEach(function(p){ p.hidden = p.dataset.tab !== name; });
-    var any = false;
-    linkGroups.forEach(function(g){ g.hidden = g.dataset.for !== name; if(!g.hidden) any = true; });
-    if(sep) sep.hidden = !any;
+    current = name;
+    document.body.dataset.tab = name;
+    var toc = tocs[name];
+    tocBtn.hidden = !toc;
+    if(toc) tocBtn.setAttribute('aria-controls', toc.nav.id);
+    openToc(false);
+    measure();
+    spy(true);
   }
+
+  // зміст вкладки: підсвічує розділ, який зараз на екрані
+  var jump = document.querySelector('.jump');
+  var tocBtn = document.getElementById('toc-btn');
+  var tocLabel = tocBtn.querySelector('.toc-v');
+  var tocs = {};
+  document.querySelectorAll('.toc').forEach(function(nav){
+    var links = [].slice.call(nav.querySelectorAll('a[href^="#"]'));
+    nav.classList.add('js');
+    tocs[nav.closest('[role=tabpanel]').dataset.tab] = {
+      nav: nav, links: links, active: null,
+      targets: links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); })
+    };
+  });
+  function measure(){
+    document.documentElement.style.setProperty('--jump-h', jump.offsetHeight + 'px');
+  }
+  function keepInView(nav, a){
+    if(!a || nav.scrollHeight <= nav.clientHeight) return;
+    var top = a.offsetTop, pad = 48;
+    if(top < nav.scrollTop + pad) nav.scrollTop = top - pad;
+    else if(top + a.offsetHeight > nav.scrollTop + nav.clientHeight - pad) nav.scrollTop = top + a.offsetHeight - nav.clientHeight + pad;
+  }
+  function spy(force){
+    var toc = tocs[current];
+    if(!toc) return;
+    var line = jump.offsetHeight + 24, idx = null;
+    toc.targets.forEach(function(el, i){ if(el && el.getBoundingClientRect().top <= line) idx = i; });
+    if(idx !== null && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = toc.targets.length - 1;
+    var a = idx === null ? null : toc.links[idx];
+    if(a === toc.active && !force) return;
+    toc.active = a;
+    toc.links.forEach(function(l){ if(l === a) l.setAttribute('aria-current', 'location'); else l.removeAttribute('aria-current'); });
+    [].forEach.call(toc.nav.querySelectorAll(':scope > ol > li'), function(li){ li.classList.toggle('cur', !!a && li.contains(a)); });
+    var b = a && a.querySelector('b'), txt = a && a.querySelector('span');
+    tocLabel.textContent = a ? (b ? b.textContent + '. ' : '') + txt.textContent : '';
+    keepInView(toc.nav, a);
+  }
+  function openToc(on){
+    var toc = tocs[current];
+    if(!toc) on = false;
+    Object.keys(tocs).forEach(function(k){ tocs[k].nav.classList.toggle('open', !!on && k === current); });
+    tocBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    if(on) keepInView(toc.nav, toc.active);
+  }
+  tocBtn.addEventListener('click', function(){ openToc(tocBtn.getAttribute('aria-expanded') !== 'true'); });
+  document.addEventListener('click', function(e){
+    if(tocBtn.getAttribute('aria-expanded') !== 'true' || e.target.closest('#toc-btn')) return;
+    if(e.target.closest('.toc a') || !e.target.closest('.toc')) openToc(false);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && tocBtn.getAttribute('aria-expanded') === 'true'){ openToc(false); tocBtn.focus(); }
+  });
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ ticking = false; spy(); });
+  }, {passive: true});
+  window.addEventListener('resize', function(){
+    measure();
+    if(window.innerWidth >= 1180) openToc(false);
+    spy(true);
+  });
   function go(id){
     var el = id && document.getElementById(id);
     if(!el) return false;

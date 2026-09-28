@@ -180,6 +180,27 @@ test.describe('головна: вкладки «Головна», «Карта �
     expect(text).not.toContain('Project scope written down and agreed');
   });
 
+  test('зміст: збоку на широкому екрані підсвічує поточну зупинку, на телефоні відкривається кнопкою', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(BASE + '/#s4');
+    const toc = page.locator('#toc-map');
+    await expect(toc).toBeVisible();
+    await expect(page.locator('#toc-btn')).toBeHidden();
+    await expect(toc.locator('a[aria-current]')).toHaveAttribute('href', '#s4');
+    await expect(toc.locator('a[href="#s5"]')).toBeVisible();          // зупинки поточного етапу розгорнуті
+    await expect(toc.locator('a[href="#s13"]')).toBeHidden();          // інші етапи згорнуті
+
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.getByRole('tab', { name: 'Харнес «Верстак»' }).click();
+    const btn = page.locator('#toc-btn');
+    await expect(page.locator('#toc-harness')).toBeHidden();
+    await btn.click();
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    await page.locator('#toc-harness a[href="#h-gates"]').click();
+    await expect(page.locator('#toc-harness')).toBeHidden();
+    await expect(btn).toContainText('Ворота якості');
+  });
+
   test('на 375 px жодна вкладка не скролиться вбік', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(BASE + '/');
