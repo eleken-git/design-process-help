@@ -120,55 +120,34 @@ test.describe('хлібні крихти назад на лендінг', () => 
   });
 });
 
-test.describe('головна: вкладки «Головна», «Карта фронтенду», «Верстак»', () => {
-  test('за замовчуванням відкрита «Головна» з двома головними картками і рештою матеріалів, без помилок JS', async ({ page }) => {
+test.describe('карта і харнес окремими сторінками', () => {
+  test('/map/: 16 зупинок, 17 запитів, зміст збоку, без помилок JS', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
-    await page.goto(BASE + '/');
-    await expect(page.getByRole('tab')).toHaveCount(3);
-    await expect(page.getByRole('tab', { name: 'Головна' })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Дизайн у коді, крок за кроком');
-    await expect(page.locator('#home .feature')).toHaveCount(2);
-    for (const href of ['presentation/', '3d/', 'app/', 'podcast/', 'harness/']) {
-      await expect(page.locator(`#home a.hub-card[href="${href}"]`)).toHaveCount(1);
-    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(BASE + '/map/#s4');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Карта фронтенду');
+    await expect(page.locator('.station')).toHaveCount(16);
+    await expect(page.locator('.prompt p[lang="en"]')).toHaveCount(17);
+    const toc = page.locator('#toc-map');
+    await expect(toc).toBeVisible();
+    await expect(toc.locator('a[aria-current]')).toHaveAttribute('href', '#s4');
+    await expect(toc.locator('a[href="#s5"]')).toBeVisible();          // зупинки поточного етапу розгорнуті
+    await expect(toc.locator('a[href="#s13"]')).toBeHidden();          // інші етапи згорнуті
     expect(errors, 'помилки JS').toEqual([]);
   });
 
-  test('картка «Карта фронтенду» відкриває карту з 16 зупинками і запитами англійською', async ({ page }) => {
-    await page.goto(BASE + '/');
-    await page.locator('#home a.feature[href="#frontend"]').click();
-    await expect(page.getByRole('tab', { name: 'Карта фронтенду' })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Карта фронтенду');
-    await expect(page.locator('#frontend .station')).toHaveCount(16);
-    await expect(page.locator('#frontend .prompt p[lang="en"]')).toHaveCount(17);
-    await expect(page).toHaveURL(/#frontend$/);
+  test('/map/: чекліст бере відмітки, зроблені до переїзду', async ({ page }) => {
+    await page.goto(BASE + '/map/');
+    await page.evaluate(() => localStorage.setItem('frontend-map-done-v1', JSON.stringify({ 'd-a1': true })));
+    await page.reload();
+    await expect(page.locator('#total')).toHaveText('1 з 31');
+    await expect(page.locator('#d-a1')).toBeChecked();
   });
 
-  test('вкладка «Верстак»: пʼять людей, дерево файлів перемикає опис', async ({ page }) => {
-    await page.goto(BASE + '/');
-    await page.getByRole('tab', { name: 'Харнес «Верстак»' }).click();
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Верстак');
-    await expect(page.locator('#harness .person')).toHaveCount(5);
-    await expect(page.locator('#home')).toBeHidden();
-    await expect(page).toHaveURL(/#harness$/);
-    await page.locator('.ftree button[data-f="settings"]').click();
-    await expect(page.locator('#fd-name')).toHaveText('.claude/settings.json');
-    await expect(page.locator('.ftree button[aria-pressed="true"]')).toHaveCount(1);
-    await expect(page.locator('#fd-code')).toContainText('"Stop"');
-  });
-
-  test('посилання #harness відкриває верстак, посилання з верстака на карту перемикає вкладку', async ({ page }) => {
-    await page.goto(BASE + '/#harness');
-    await expect(page.getByRole('tab', { name: 'Харнес «Верстак»' })).toHaveAttribute('aria-selected', 'true');
-    await page.locator('#h-build a[href="#map"]').click();
-    await expect(page.getByRole('tab', { name: 'Карта фронтенду' })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('#map')).toBeVisible();
-  });
-
-  test('чекліст рахує відмітки і збирає незакриті пункти в запит англійською', async ({ page, context }) => {
+  test('/map/: чекліст збирає незакриті пункти в запит англійською', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
-    await page.goto(BASE + '/#done');
+    await page.goto(BASE + '/map/#done');
     await expect(page.locator('#total')).toHaveText('0 з 31');
     await page.locator('#d-a1').check();
     await expect(page.locator('#total')).toHaveText('1 з 31');
@@ -180,18 +159,33 @@ test.describe('головна: вкладки «Головна», «Карта �
     expect(text).not.toContain('Project scope written down and agreed');
   });
 
-  test('зміст: збоку на широкому екрані підсвічує поточну зупинку, на телефоні відкривається кнопкою', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(BASE + '/#s4');
-    const toc = page.locator('#toc-map');
-    await expect(toc).toBeVisible();
-    await expect(page.locator('#toc-btn')).toBeHidden();
-    await expect(toc.locator('a[aria-current]')).toHaveAttribute('href', '#s4');
-    await expect(toc.locator('a[href="#s5"]')).toBeVisible();          // зупинки поточного етапу розгорнуті
-    await expect(toc.locator('a[href="#s13"]')).toBeHidden();          // інші етапи згорнуті
+  test('/harness/: дерево файлів, 5 людей, 5 матеріалів з лінками на оригінали', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/harness/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Харнес');
+    await expect(page.locator('.person')).toHaveCount(5);
+    await expect(page.locator('article.item')).toHaveCount(5);
+    for (const href of ['gist.github.com/karpathy/442a6bf555914893e9891c11519de94f', 'agents.md', 'github.com/genkovich/sdd', 'github.com/github/spec-kit', 'github.com/obra/superpowers']) {
+      await expect(page.locator(`a.open[href*="${href}"]`)).toHaveCount(1);
+    }
+    await page.locator('.ftree button[data-f="settings"]').click();
+    await expect(page.locator('#fd-name')).toHaveText('.claude/settings.json');
+    await expect(page.locator('.ftree button[aria-pressed="true"]')).toHaveCount(1);
+    await expect(page.locator('#fd-code')).toContainText('"Stop"');
+    expect(errors, 'помилки JS').toEqual([]);
+  });
 
+  test('/harness/: посилання на карту ведуть на сторінку карти', async ({ page }) => {
+    await page.goto(BASE + '/harness/');
+    await page.locator('#h-build a[href="../map/#map"]').click();
+    await expect(page).toHaveURL(/\/map\/#map$/);
+    await expect(page.locator('#map')).toBeVisible();
+  });
+
+  test('/harness/ на телефоні: зміст відкривається кнопкою і закривається після вибору', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.getByRole('tab', { name: 'Харнес «Верстак»' }).click();
+    await page.goto(BASE + '/harness/');
     const btn = page.locator('#toc-btn');
     await expect(page.locator('#toc-harness')).toBeHidden();
     await btn.click();
@@ -201,13 +195,12 @@ test.describe('головна: вкладки «Головна», «Карта �
     await expect(btn).toContainText('Ворота якості');
   });
 
-  test('на 375 px жодна вкладка не скролиться вбік', async ({ page }) => {
+  test('на 375 px карта і харнес не скроляться вбік', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(BASE + '/');
-    for (const name of ['Головна', 'Карта фронтенду', 'Харнес «Верстак»']) {
-      await page.getByRole('tab', { name }).click();
+    for (const path of ['/map/', '/harness/']) {
+      await page.goto(BASE + path);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      expect(overflow, `горизонтальний скрол у вкладці «${name}»`).toBeLessThanOrEqual(0);
+      expect(overflow, `горизонтальний скрол на ${path}`).toBeLessThanOrEqual(0);
     }
   });
 });
