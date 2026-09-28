@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Запити для Claude · design-process-help</title>
+<meta name="description" content="Усі готові запити для Claude з карти фронтенду і харнесу в одному місці: пошук, фільтр за етапом і копіювання в один клік.">
+<style>
+:root{
+  /* палітра GitHub Dark, як на інших сторінках design-process-help */
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;--btn-text:#FFFFFF;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+    --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+    --text:#1F2328;--muted:#59636E;--faint:#818B98;
+    --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+    --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+    --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+  }
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+  --text:#1F2328;--muted:#59636E;--faint:#818B98;
+  --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+  --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+  --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;
+}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ol,ul{margin:0}
+ol,ul{padding:0;list-style:none}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+code{font:.88em var(--mono);padding:.1em .35em;border-radius:4px;background:var(--hover)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:24px}
+[hidden]{display:none!important}
+
+/* шапка */
+.pp{padding-block:40px 64px}
+.pp h1{font-size:36px;line-height:1.15;letter-spacing:-.02em}
+.lede{margin-top:10px;max-width:64ch;color:var(--muted);font-size:16px}
+
+/* як скласти свій запит */
+.ask{margin-top:22px;border:1px solid var(--border);border-radius:10px;background:var(--surface);scroll-margin-top:calc(var(--nav-h) + 12px)}
+.ask summary{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;font-weight:600;list-style:none}
+.ask summary::-webkit-details-marker{display:none}
+.ask summary::after{content:"";width:8px;height:8px;margin-left:auto;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px)}
+.ask[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.ask summary span{color:var(--muted);font-weight:400;font-size:14px}
+.ask-body{padding:4px 18px 18px}
+/* формула запиту */
+.formula{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.f-step{position:relative;border:1px solid var(--border);border-top:3px solid var(--fc);border-radius:8px;background:var(--surface);padding:14px 16px}
+.f-step:not(:last-child)::after{content:"+";position:absolute;right:-17px;top:50%;transform:translateY(-50%);width:10px;text-align:center;color:var(--faint);font:600 15px var(--mono)}
+.f-step b{display:block;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fc)}
+.f-step p{margin-top:6px;font-size:14px;color:var(--muted)}
+.fc1{--fc:var(--blue)}.fc2{--fc:var(--purple)}.fc3{--fc:var(--green)}.fc4{--fc:var(--yellow)}
+.example{margin-top:18px;padding:16px 18px;border:1px dashed var(--border);border-radius:8px;font-size:16.5px;line-height:1.8}
+.example .lbl{display:block;font:12px var(--mono);color:var(--faint);line-height:1.4;margin-bottom:6px}
+.example span[class^="fc"]{padding-bottom:2px;border-bottom:2px solid var(--fc)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:26px}
+.rules b{display:block;font-size:15px}
+.rules p{margin-top:4px;font-size:14px;color:var(--muted)}
+.ask .example{background:var(--bg)}
+
+/* пошук і фільтр */
+.tools{position:sticky;top:var(--nav-h);z-index:5;display:grid;gap:10px;margin-top:22px;padding:12px 0;background:var(--bg);border-bottom:1px solid var(--border-muted)}
+.find-field{position:relative}
+.find-field svg{position:absolute;left:13px;top:50%;width:18px;height:18px;transform:translateY(-50%);fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;pointer-events:none}
+.find-field input{width:100%;height:42px;padding:0 44px 0 40px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:15px var(--sans)}
+.find-field input::placeholder{color:var(--faint)}
+.find-field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(56,139,253,.25)}
+.find-field kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);padding:1px 7px;border:1px solid var(--border);border-radius:5px;font:12px var(--mono);color:var(--faint)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:999px;background:none;color:var(--muted);font:500 13px var(--sans);cursor:pointer}
+.chip:hover{color:var(--text);background:var(--hover)}
+.chip[aria-pressed="true"]{color:var(--text);border-color:var(--c,var(--text));background:var(--hover)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.chip .n{font:12px var(--mono);color:var(--faint)}
+.g-a{--c:var(--yellow)}.g-b{--c:var(--blue)}.g-c{--c:var(--purple)}.g-d{--c:var(--green)}.g-h{--c:var(--orange)}
+.found{margin:14px 0 4px;font:12px var(--mono);color:var(--faint)}
+
+/* список запитів */
+.pr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;padding:18px 0;border-bottom:1px solid var(--border-muted)}
+.pr-head{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+.pr-head i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--c)}
+.pr-title{font-size:16px;line-height:1.3;letter-spacing:-.005em}
+.pr-group{font:12px var(--mono);color:var(--faint)}
+.pr-text{grid-column:1;padding:12px 14px;border:1px solid var(--border);border-left:3px solid var(--c);border-radius:0 8px 8px 0;background:var(--surface);font:13.5px/1.65 var(--mono);color:var(--text);overflow-wrap:anywhere}
+.pr-text .ph{color:var(--blue);font-weight:600}
+.pr-actions{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.copy{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font:600 13px var(--sans);white-space:nowrap;cursor:pointer}
+.copy:hover{background:var(--surface-2)}
+.copy svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.copy.done{color:var(--green);border-color:var(--green)}
+.src{font-size:13px;white-space:nowrap}
+.empty,.load-error{margin-top:24px;padding:24px;border:1px dashed var(--border);border-radius:10px;text-align:center;color:var(--muted)}
+.empty p,.load-error p{margin-bottom:12px}
+.btn-ghost{height:34px;padding:0 14px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text);font:600 13px var(--sans);cursor:pointer}
+.btn-ghost:hover{background:var(--hover)}
+.load-error a{margin:0 8px}
+
+footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:var(--muted);font-size:13px}
+.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:10px}
+.foot-links a{color:var(--text)}
+
+@media (max-width:920px){
+  .formula{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .f-step::after{display:none}
+  .rules{grid-template-columns:1fr;gap:14px}
+}
+@media (max-width:640px){
+  .wrap{padding-inline:16px}
+  .pp{padding-block:28px 48px}
+  .pp h1{font-size:30px}
+  .formula{grid-template-columns:1fr}
+  .find-field kbd{display:none}
+  .find-field input{padding-right:14px}
+  .pr{grid-template-columns:minmax(0,1fr)}
+  .pr-actions{grid-column:1;grid-row:auto;flex-direction:row;align-items:center;justify-content:space-between}
+}
+/* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
+:root{--nav-h:52px}
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100;padding:8px 12px;border-radius:6px;background:var(--surface);color:var(--text);font:13px var(--sans);text-decoration:none}
+.skip-link:focus{top:10px}
+.site-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:var(--nav-h);padding:0 20px;background:var(--bg);border-bottom:1px solid var(--border-muted);font-family:var(--sans)}
+.site-logo{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-width:0;color:var(--text);font:600 13px var(--mono);text-decoration:none;white-space:nowrap}
+.site-logo:hover{color:var(--text);text-decoration:none}
+.site-mark{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:var(--text);color:var(--bg);font:700 14px/1 var(--sans)}
+.site-nav nav{display:flex;gap:2px;max-width:100%;padding:3px;overflow-x:auto;scrollbar-width:none;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.site-nav nav::-webkit-scrollbar{display:none}
+.site-nav nav a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:7px;color:var(--muted);font:500 13px var(--sans);white-space:nowrap;text-decoration:none}
+.site-nav nav a:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14));text-decoration:none}
+.site-nav nav a[aria-current="page"]{background:var(--surface-2,#1C2128);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+.site-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.site-gh{justify-self:end;display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:var(--muted)}
+.site-gh:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14))}
+.site-gh svg{width:18px;height:18px;fill:currentColor}
+@media (max-width:640px){
+  .site-nav{grid-template-columns:auto minmax(0,1fr);padding:0 12px}
+  .site-name,.site-gh{display:none}
+  .site-nav nav{justify-self:end}
+  .site-nav nav a{padding:0 9px}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-nav">
+  <a class="site-logo" href="../" aria-label="design-process-help, на головну"><span class="site-mark" aria-hidden="true">d</span><span class="site-name">design-process-help</span></a>
+  <nav aria-label="Розділи сайту">
+    <a href="../prompts/" aria-current="page">Запити</a>
+    <a href="../harness/">Харнес</a>
+    <a href="../map/">Карта</a>
+    <a href="../learn/">Вчитися</a>
+  </nav>
+  <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+</header>
+<div class="wrap">
+<main class="pp" id="main">
+  <h1>Запити для Claude</h1>
+  <p class="lede">Усі запити з карти й харнесу. Англійською, бо так Claude розуміє точніше. Замініть [дужки] своїм.</p>
+
+  <details class="ask" id="ask">
+    <summary>Як скласти свій запит <span>чотири частини</span></summary>
+    <div class="ask-body">
+  <div class="formula">
+    <div class="f-step fc1"><b>Що</b><p>«Check» або «Build», і що саме</p></div>
+    <div class="f-step fc2"><b>Де</b><p>Сторінка, компонент або ширина екрана</p></div>
+    <div class="f-step fc3"><b>Доказ</b><p>Скріншот, таблиця, вивід команди або тест</p></div>
+    <div class="f-step fc4"><b>Далі</b><p>«Wait for my OK» або «Fix it right away»</p></div>
+  </div>
+  <p class="example"><span class="lbl">приклад</span><span lang="en"><span class="fc1">Check keyboard navigation</span> <span class="fc2">on the settings page</span>, <span class="fc3">show a screenshot of the focus on every button</span> <span class="fc4">and wait for my OK before fixing</span>.</span></p>
+  <div class="rules">
+    <div><b>Спочатку звіт</b><p>Ви бачите проблеми до того, як змінюється код, і самі вирішуєте, що виправляти. Дозвіл дає ваше OK.</p></div>
+    <div><b>Доказ замість слова «готово»</b><p>Скріншот, вивід команди або зелений тест. Фраза «я перевірив» доказом не є.</p></div>
+    <div><b>Закріпіть тестом</b><p>Попросіть Playwright-тест, і ту саму перевірку можна повторити однією командою.</p></div>
+  </div>
+    </div>
+  </details>
+
+  <div class="tools">
+    <label class="sr" for="pq">Пошук запиту</label>
+    <div class="find-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="pq" type="search" placeholder="Пошук: доступність, форми, README…" autocomplete="off"><kbd aria-hidden="true">/</kbd></div>
+    <div class="chips" role="group" aria-label="Група запитів">
+      <button type="button" class="chip" data-t="" aria-pressed="true">Усі <span class="n"></span></button>
+      <button type="button" class="chip g-a" data-t="Домовитись" aria-pressed="false"><i></i>Домовитись <span class="n"></span></button>
+      <button type="button" class="chip g-b" data-t="Будувати" aria-pressed="false"><i></i>Будувати <span class="n"></span></button>
+      <button type="button" class="chip g-c" data-t="Перевірити" aria-pressed="false"><i></i>Перевірити <span class="n"></span></button>
+      <button type="button" class="chip g-d" data-t="Здати" aria-pressed="false"><i></i>Здати <span class="n"></span></button>
+      <button type="button" class="chip g-h" data-t="Харнес" aria-pressed="false"><i></i>Харнес <span class="n"></span></button>
+    </div>
+  </div>
+
+  <p class="found" aria-live="polite"></p>
+  <ol class="list" id="list"></ol>
+  <div class="empty" hidden>
+    <p>Нічого не знайшлося.</p>
+    <button type="button" class="btn-ghost" id="show-all">Показати всі</button>
+  </div>
+  <div class="load-error" hidden>
+    <p>Не вдалося завантажити запити.</p>
+    <a href="../map/">Карта фронтенду</a> · <a href="../harness/">Харнес</a>
+  </div>
+  <noscript><p class="load-error">Список збирається скриптом. Запити є на сторінках <a href="../map/">Карта фронтенду</a> і <a href="../harness/">Харнес</a>.</p></noscript>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-links" aria-label="Усі сторінки">
+      <a href="../prompts/">Запити</a>
+      <a href="../harness/">Харнес</a>
+      <a href="../map/">Карта фронтенду</a>
+      <a href="../learn/">Вчитися</a>
+      <a href="../presentation/">Презентація</a>
+      <a href="../3d/">Git у 3D</a>
+      <a href="../podcast/">Подкаст</a>
+      <a href="../app/">Nimbus</a>
+    </nav>
+    <p>Код і історія змін у репозиторії <a href="https://github.com/eleken-git/design-process-help">github.com/eleken-git/design-process-help</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // запити живуть на карті й у харнесі поруч із поясненнями; ця сторінка збирає їх звідти
+  var SOURCES = [
+    { url: '../map/', where: 'На карті' },
+    { url: '../harness/', where: 'У харнесі' }
+  ];
+  var PHASES = { 'phase-a': 'Домовитись', 'phase-b': 'Будувати', 'phase-c': 'Перевірити', 'phase-d': 'Здати' };
+  var GROUP_CLASS = { 'Домовитись': 'g-a', 'Будувати': 'g-b', 'Перевірити': 'g-c', 'Здати': 'g-d', 'Харнес': 'g-h' };
+  var COPY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>';
+
+  var input = document.getElementById('pq');
+  var list = document.getElementById('list');
+  var found = document.querySelector('.found');
+  var empty = document.querySelector('.empty');
+  var loadError = document.querySelector('.load-error');
+  var chips = [].slice.call(document.querySelectorAll('.chip'));
+  var ask = document.getElementById('ask');
+  var ITEMS = [], loaded = false;
+
+  function norm(s){ return (s || '').toLowerCase().replace(/[’‘ʼ`]/g, "'").replace(/\s+/g, ' ').trim(); }
+  function plural(n){
+    var d = n % 10, h = n % 100;
+    return n + (d === 1 && h !== 11 ? ' запит' : d >= 2 && d <= 4 && (h < 12 || h > 14) ? ' запити' : ' запитів');
+  }
+  function text(el){ return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
+
+  function collect(doc, src){
+    var out = [];
+    [].forEach.call(doc.querySelectorAll('.prompt'), function(box){
+      // один зламаний блок не має ховати решту запитів
+      var p = box.querySelector('p');
+      if(!p || !text(p)) return;
+      var st = box.closest('.station'), ph = box.closest('.phase'), step = box.closest('.bstep'), sec = box.closest('section[id]');
+      var item = { html: p.innerHTML, text: text(p), group: 'Харнес', title: 'Запит', href: src.url, where: src.where, extra: '' };
+      if(st && st.id){
+        item.group = PHASES[ph && ph.id] || 'Харнес';
+        item.title = text(st.querySelector('.num')) + ' · ' + text(st.querySelector('h3'));
+        item.href = src.url + '#' + st.id;
+        item.extra = [].map.call(st.querySelectorAll('.checks li, .self, .eli'), text).join(' ');
+      } else if(step){
+        item.title = text(step.querySelector('.num')) + ' · ' + text(step.querySelector('h3'));
+        if(sec) item.href = src.url + '#' + sec.id;
+      } else if(sec){
+        item.title = text(sec.querySelector('h2')) || item.title;
+        item.href = src.url + '#' + sec.id;
+      }
+      item.hay = norm([item.title, item.group, item.text, item.extra].join(' '));
+      out.push(item);
+    });
+    return out;
+  }
+
+  function state(){
+    var on = chips.filter(function(c){ return c.getAttribute('aria-pressed') === 'true'; })[0];
+    return { q: input.value, t: on ? on.dataset.t : '' };
+  }
+  function matches(item, words){
+    for(var i = 0; i < words.length; i++) if(item.hay.indexOf(words[i]) < 0) return false;
+    return true;
+  }
+  function writeUrl(s){
+    var params = new URLSearchParams();
+    if(s.q.trim()) params.set('q', s.q.trim());
+    if(s.t) params.set('t', s.t);
+    var qs = params.toString();
+    try{ history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); }catch(e){}
+  }
+
+  function row(item){
+    var li = document.createElement('li');
+    li.className = 'pr ' + GROUP_CLASS[item.group];
+    var head = document.createElement('div'); head.className = 'pr-head';
+    head.innerHTML = '<i aria-hidden="true"></i>';
+    var h = document.createElement('h2'); h.className = 'pr-title'; h.textContent = item.title;
+    var g = document.createElement('span'); g.className = 'pr-group'; g.textContent = item.group;
+    head.appendChild(h); head.appendChild(g);
+    var p = document.createElement('p'); p.className = 'pr-text'; p.lang = 'en'; p.innerHTML = item.html;
+    var actions = document.createElement('div'); actions.className = 'pr-actions';
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'copy'; btn.innerHTML = COPY_ICON + 'Скопіювати';
+    btn.addEventListener('click', function(){ copy(btn, p); });
+    var a = document.createElement('a'); a.className = 'src'; a.href = item.href; a.textContent = item.where + ' →';
+    actions.appendChild(btn); actions.appendChild(a);
+    li.appendChild(head); li.appendChild(p); li.appendChild(actions);
+    return li;
+  }
+
+  function render(){
+    if(!loaded) return;
+    var s = state(), words = norm(s.q).split(' ').filter(Boolean);
+    var byQuery = ITEMS.filter(function(it){ return matches(it, words); });
+    chips.forEach(function(c){
+      var n = c.dataset.t ? byQuery.filter(function(it){ return it.group === c.dataset.t; }).length : byQuery.length;
+      c.querySelector('.n').textContent = n;
+    });
+    var shown = s.t ? byQuery.filter(function(it){ return it.group === s.t; }) : byQuery;
+    list.textContent = '';
+    shown.forEach(function(it){ list.appendChild(row(it)); });
+    found.textContent = (words.length || s.t) ? 'Знайдено ' + shown.length + ' з ' + ITEMS.length : plural(ITEMS.length);
+    empty.hidden = shown.length > 0;
+    writeUrl(s);
+  }
+
+  function flash(btn, label){
+    btn.innerHTML = COPY_ICON + label; btn.classList.add('done');
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function(){ btn.innerHTML = COPY_ICON + 'Скопіювати'; btn.classList.remove('done'); }, 1800);
+  }
+  function copy(btn, p){
+    var t = p.innerText.trim();
+    var done = function(){ flash(btn, 'Скопійовано'); };
+    var fallback = function(){
+      try{ var r = document.createRange(); r.selectNodeContents(p); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }catch(e){}
+      flash(btn, 'Виділено, натисніть ⌘C');
+    };
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done, fallback); return; }
+    }catch(e){}
+    fallback();
+  }
+
+  chips.forEach(function(c){
+    c.addEventListener('click', function(){
+      chips.forEach(function(x){ x.setAttribute('aria-pressed', x === c ? 'true' : 'false'); });
+      render();
+    });
+  });
+  input.addEventListener('input', render);
+  document.getElementById('show-all').addEventListener('click', function(){
+    input.value = '';
+    chips.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.t ? 'false' : 'true'); });
+    render(); input.focus();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === '/' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){ e.preventDefault(); input.focus(); }
+  });
+  function openAsk(){ if(location.hash === '#ask') ask.open = true; }
+  window.addEventListener('hashchange', openAsk);
+  openAsk();
+
+  var params = new URLSearchParams(location.search);
+  input.value = params.get('q') || '';
+  var t0 = params.get('t') || '';
+  chips.forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.t === t0 ? 'true' : 'false'); });
+  if(!chips.some(function(x){ return x.getAttribute('aria-pressed') === 'true'; })) chips[0].setAttribute('aria-pressed', 'true');
+
+  Promise.all(SOURCES.map(function(src){
+    return fetch(src.url).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function(html){ return collect(new DOMParser().parseFromString(html, 'text/html'), src); });
+  })).then(function(lists){
+    ITEMS = lists[0].concat(lists[1]);
+    loaded = true;
+    render();
+  }).catch(function(){
+    loadError.hidden = false;
+    document.querySelector('.tools').hidden = true;
+    found.textContent = '';
+  });
+})();
+</script>
+</body>
+</html>

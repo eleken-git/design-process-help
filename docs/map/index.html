@@ -1,0 +1,1699 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Карта фронтенду · design-process-help</title>
+<meta name="description" content="Карта фронтенду для дизайнерів: 16 зупинок від меж проєкту до здачі клієнту, що перевірити на кожній і готовий запит для Claude. Наприкінці чекліст здачі.">
+<style>
+:root{
+  /* палітра GitHub Dark, як на інших сторінках design-process-help */
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;--btn-text:#FFFFFF;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+    --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+    --text:#1F2328;--muted:#59636E;--faint:#818B98;
+    --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+    --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+    --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+  }
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+  --text:#1F2328;--muted:#59636E;--faint:#818B98;
+  --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+  --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+  --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;
+}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,p,ul,ol,figure,pre{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+code{font:.88em var(--mono);padding:.1em .35em;border-radius:4px;background:var(--hover)}
+pre code{padding:0;background:none;font-size:inherit}
+
+.wrap{max-width:1120px;margin:0 auto;padding-inline:24px}
+
+/* шапка */
+.top{padding-block:36px 40px}
+.crumb{display:inline-block;font:12px var(--mono);color:var(--muted)}
+.crumb:hover{color:var(--text);text-decoration:none}
+.kicker{font:12px var(--mono);color:var(--faint);margin:32px 0 12px}
+h1{font-size:46px;line-height:1.08;letter-spacing:-.028em;text-wrap:balance}
+.lede{margin-top:18px;max-width:60ch;color:var(--muted);font-size:17px;line-height:1.55}
+.lede+.lede{margin-top:10px}
+.lede b{color:var(--text);font-weight:600}
+
+section{scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
+.block{padding-block:48px;border-top:1px solid var(--border-muted)}
+.sec-head{display:grid;gap:8px;margin-bottom:26px}
+.sec-head h2{font-size:28px;line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
+.sec-head p{color:var(--muted);max-width:64ch}
+
+/* кольори етапів */
+.ph-a{--c:var(--yellow)}
+.ph-b{--c:var(--blue)}
+.ph-c{--c:var(--purple)}
+.ph-d{--c:var(--green)}
+
+/* карта метро */
+.metro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.line{position:relative;border:1px solid var(--border);border-radius:8px;background:var(--surface);padding:16px 16px 18px}
+.line:not(:last-child)::after{content:"→";position:absolute;right:-18px;top:22px;width:14px;text-align:center;color:var(--faint);font-size:13px}
+.line-head{display:grid;gap:2px;padding-bottom:12px;margin-bottom:12px;border-bottom:3px solid var(--c)}
+.line-head b{font-size:18px;letter-spacing:-.01em}
+.line-head span{font:12px var(--mono);color:var(--muted)}
+.stops{position:relative;display:grid;gap:2px}
+.stops::before{content:"";position:absolute;left:13px;top:18px;bottom:18px;width:4px;border-radius:2px;background:var(--c)}
+.stops a{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:12px;padding:6px 0;color:var(--text)}
+.stops a:hover{text-decoration:none}
+.stops a:hover .nm{text-decoration:underline}
+.dot{width:30px;height:30px;border-radius:50%;border:4px solid var(--c);background:var(--bg);display:grid;place-items:center;font:700 11px var(--mono);color:var(--text)}
+.stops .end .dot{background:var(--c);color:var(--bg);font-size:13px}
+.nm{display:block;font-weight:600;font-size:14px;line-height:1.3}
+.tm{display:block;font:11.5px var(--mono);color:var(--muted)}
+
+/* формула запиту */
+.formula{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.f-step{position:relative;border:1px solid var(--border);border-top:3px solid var(--fc);border-radius:8px;background:var(--surface);padding:14px 16px}
+.f-step:not(:last-child)::after{content:"+";position:absolute;right:-17px;top:50%;transform:translateY(-50%);width:10px;text-align:center;color:var(--faint);font:600 15px var(--mono)}
+.f-step b{display:block;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fc)}
+.f-step p{margin-top:6px;font-size:14px;color:var(--muted)}
+.fc1{--fc:var(--blue)}.fc2{--fc:var(--purple)}.fc3{--fc:var(--green)}.fc4{--fc:var(--yellow)}
+.example{margin-top:18px;padding:16px 18px;border:1px dashed var(--border);border-radius:8px;font-size:16.5px;line-height:1.8}
+.example .lbl{display:block;font:12px var(--mono);color:var(--faint);line-height:1.4;margin-bottom:6px}
+.example span[class^="fc"]{padding-bottom:2px;border-bottom:2px solid var(--fc)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:26px}
+.rules b{display:block;font-size:15px}
+.rules p{margin-top:4px;font-size:14px;color:var(--muted)}
+
+.ask-link{margin-top:18px;color:var(--muted);font-size:14px}
+
+/* етапи і зупинки */
+.phase{padding-block:56px 8px;border-top:1px solid var(--border-muted)}
+.phase-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.phase-head .bar{width:40px;height:6px;border-radius:3px;background:var(--c)}
+.phase-head h2{font-size:32px;line-height:1.15;letter-spacing:-.02em}
+.phase-head span{font:13px var(--mono);color:var(--muted)}
+.station{padding-block:36px;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
+.station:last-child{border-bottom:0}
+.st-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.num{flex:none;width:42px;height:42px;border-radius:50%;border:4px solid var(--c);display:grid;place-items:center;font:700 14px var(--mono)}
+.st-head h3{font-size:23px;line-height:1.2;letter-spacing:-.012em;text-wrap:balance}
+.st-head .tm{font-size:12px}
+.st-body{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:32px;align-items:start}
+.pic{min-width:0;display:grid;gap:14px;padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.pic figcaption{font-size:13px;color:var(--muted)}
+.st-text{min-width:0;display:grid;gap:14px}
+.eli{font-size:18px;line-height:1.5;font-weight:500;max-width:52ch;text-wrap:pretty}
+.st-text h4{margin-top:6px;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks li{font-size:13px;line-height:1.35;padding:5px 10px;border:1px solid var(--border);border-radius:999px;background:var(--bg)}
+.prompt{border:1px solid var(--border);border-left:3px solid var(--c);border-radius:0 8px 8px 0;background:var(--surface);padding:14px 16px}
+.prompt p{font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.prompt .ph{color:var(--c);font-weight:600}
+.copy{margin-top:10px;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:600 12.5px var(--sans);cursor:pointer}
+.copy:hover{border-color:var(--faint)}
+.copy.done{color:var(--green);border-color:var(--green)}
+.copy svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.self{font-size:14px;color:var(--muted);max-width:60ch}
+.self b{color:var(--text);font-weight:600}
+.note{font-size:13.5px;color:var(--muted);padding-left:12px;border-left:2px solid var(--border);max-width:60ch}
+
+/* спільне для картинок */
+.cap{font:600 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+.pre{font:12.5px/1.65 var(--mono);background:var(--bg);border:1px solid var(--border-muted);border-radius:6px;padding:12px 14px;overflow-x:auto;white-space:pre;color:var(--text)}
+.g{color:var(--green)}.r{color:var(--red)}.y{color:var(--yellow)}.b{color:var(--blue)}.p{color:var(--purple)}.m{color:var(--muted)}
+
+/* 1. межі */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two ul{display:grid}
+.two li{display:flex;gap:8px;font-size:13.5px;line-height:1.35;padding:6px 0;border-bottom:1px dashed var(--border-muted)}
+.two li:last-child{border-bottom:0}
+.two .ok li::before{content:"✓";color:var(--green);font-weight:700}
+.two .no li::before{content:"✕";color:var(--red);font-weight:700}
+.two .ok .cap{color:var(--green)}.two .no .cap{color:var(--red)}
+.two .cap{margin-bottom:6px;display:block}
+
+/* 2. пакет для Claude */
+.pack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tile{display:grid;gap:4px;align-content:start;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
+.tile svg{width:22px;height:22px;fill:none;stroke:var(--c);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tile b{font-size:14px}
+.tile span{font-size:12.5px;line-height:1.35;color:var(--muted)}
+.into{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.into .box{padding:6px 12px;border:1.5px solid var(--c);border-radius:6px;color:var(--text);font-weight:600}
+
+/* 3. семантика */
+.wire{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.wf{display:grid;gap:6px;padding:10px;border-radius:6px;background:var(--bg);border:1px solid var(--border-muted)}
+.wf .cap{margin-bottom:2px}
+.bx{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;padding:6px 7px;border:1.5px solid var(--c);border-radius:4px;font:11px/1.3 var(--mono);color:var(--c);min-height:30px}
+.wf .mid{display:grid;grid-template-columns:1fr 34%;gap:6px}
+.wf .mn{flex-direction:column;align-items:stretch;min-height:92px}
+.wf .mn .bx{min-height:24px}
+.soup .bx{border-color:var(--faint);border-style:dashed;color:var(--faint)}
+.tree{font-size:13px}
+
+/* 4. доступність */
+.focus-demo{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.key{display:inline-grid;place-items:center;min-width:46px;height:30px;padding:0 8px;border:1px solid var(--border);border-bottom-width:3px;border-radius:6px;background:var(--bg);font:600 12px var(--mono)}
+.arrow{color:var(--faint);font-family:var(--mono)}
+.mb{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:6px;font:600 13px var(--sans);white-space:nowrap}
+.mb.sec{border:1px solid var(--border);background:var(--surface-2);color:var(--text)}
+.mb.pri{background:var(--btn);color:var(--btn-text)}
+.mb.ring{outline:2px solid var(--blue);outline-offset:3px}
+.swatches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sw{display:grid;gap:2px;padding:12px;border-radius:6px;background:#0D1117;border:1px solid #30363D}
+.sw .aa{font-size:30px;font-weight:700;line-height:1.1}
+.sw .ratio{font:600 12.5px var(--mono);color:#E6EDF3}
+.sw .verdict{font-size:12px;line-height:1.35;color:#E6EDF3}
+.principles{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--muted)}
+.principles span{padding:3px 8px;border-radius:4px;background:var(--bg);border:1px solid var(--border-muted)}
+
+/* 5. адаптивність */
+.ruler{position:relative;display:grid;gap:7px;padding-top:30px}
+.rw{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;gap:8px}
+.rw span{font:11.5px var(--mono);color:var(--muted);text-align:right}
+.rw i{display:block;height:12px;border-radius:3px;background:var(--c);width:calc(var(--w) / 1920 * 100%)}
+.brk{position:absolute;top:0;bottom:-4px;left:calc(60px + (100% - 60px) * 0.448);border-left:2px dashed var(--red)}
+.brk span{position:absolute;top:0;left:8px;white-space:nowrap;font:600 11.5px var(--mono);color:var(--red)}
+
+/* 6. стани */
+.states{display:flex;flex-wrap:wrap;gap:14px 10px}
+.st{display:grid;gap:6px;justify-items:start}
+.st .tm{font-size:11px}
+.mb.hov{background:var(--btn-hover)}
+.mb.act{background:var(--btn-active);transform:translateY(1px)}
+.mb.dis{opacity:.4}
+.spin{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#FFFFFF}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld{display:grid;gap:4px;font-size:12.5px}
+.fld .lb{font-weight:600}
+.fld .in{height:32px;display:flex;align-items:center;padding:0 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:13px}
+.fld .in.ph{color:var(--faint)}
+.fld.bad .in{border-color:var(--red)}
+.fld.bad .msg{color:var(--red)}
+.fld.good .in{border-color:var(--green)}
+.fld.good .msg{color:var(--green)}
+.fld .msg{line-height:1.35}
+
+/* 7. код */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cols2>div:not(.pre){display:grid;gap:6px;min-width:0;align-content:start}
+.cols2>.pre{min-width:0}
+.cap.g{color:var(--green)}.cap.r{color:var(--red)}
+
+/* 8. сценарії */
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.flow .n{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:13px;white-space:nowrap}
+.flow .n.hot{border-color:var(--red);color:var(--red);font-family:var(--mono);font-weight:600}
+.flow .n.win{border-color:var(--green);color:var(--green)}
+.flow .ar{color:var(--faint);font-family:var(--mono);font-size:12px}
+
+/* 9. браузери */
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tab{border:1px solid var(--border);border-radius:8px;background:var(--bg);overflow:hidden}
+.tab-top{display:flex;gap:4px;align-items:center;height:20px;padding:0 8px;background:var(--surface-2)}
+.tab-top i{width:6px;height:6px;border-radius:50%;background:var(--faint)}
+.tab-body{display:grid;gap:2px;padding:12px 10px}
+.tab-body b{font-size:14px}
+.tab-body span{font:11.5px var(--mono);color:var(--muted)}
+.tab.hot{border-color:var(--c)}
+.tab.hot .tab-body em{font-style:normal;font-size:11.5px;line-height:1.3;color:var(--c);margin-top:4px}
+
+/* 10. швидкість */
+.weights{display:grid;gap:10px}
+.wt{display:grid;gap:4px}
+.wt span{font:12px var(--mono);color:var(--muted)}
+.wt i{display:block;height:14px;border-radius:3px}
+.wt.heavy i{width:100%;background:var(--red)}
+.wt.light i{width:3%;min-width:8px;background:var(--green)}
+.vitals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.vt{display:grid;gap:2px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
+.vt .mono{font-size:12px;font-weight:700;color:var(--c)}
+.vt b{font-size:22px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.vt span{font-size:12px;line-height:1.35;color:var(--muted)}
+
+/* 11. пошук */
+.serp{display:grid;gap:4px;padding:14px 16px;border:1px solid var(--border-muted);border-radius:8px;background:var(--bg)}
+.serp .site{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.fav{flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font:800 12px var(--sans);color:var(--blue)}
+.serp .site small{display:block;color:var(--muted);font-size:11.5px}
+.serp .t{margin-top:4px;color:var(--blue);font-size:17px;line-height:1.3}
+.serp .d{font-size:13px;line-height:1.45;color:var(--muted)}
+.tag{display:inline-block;margin-left:6px;padding:0 5px;border-radius:3px;background:var(--hover);font:600 10.5px/1.6 var(--mono);color:var(--c);vertical-align:1px;white-space:nowrap}
+.browtab{display:flex;align-items:center;gap:8px;max-width:260px;padding:8px 12px;border:1px solid var(--border-muted);border-bottom:0;border-radius:8px 8px 0 0;background:var(--bg);font-size:12.5px;white-space:nowrap;overflow:hidden}
+.browtab .fav{width:16px;height:16px;font-size:9px}
+
+/* 12. збірка */
+.consoles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cons{display:grid;gap:0;border:1px solid var(--border-muted);border-radius:6px;background:var(--bg);overflow:hidden;font:12px/1.5 var(--mono)}
+.cons .hd{padding:6px 10px;background:var(--surface-2);color:var(--muted)}
+.cons .ln{padding:3px 10px;border-top:1px solid var(--border-muted)}
+.cons .ln.w{background:rgba(210,153,34,.1);color:var(--yellow)}
+.cons .ln.e{background:var(--bad-bg);color:var(--red)}
+.cons .ln.ok{color:var(--green)}
+
+/* 14. доступи */
+.tbl-wrap{overflow-x:auto}
+.acc{width:100%;border-collapse:collapse;font-size:13px;min-width:380px}
+.acc th{text-align:left;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border)}
+.acc td{padding:7px 8px;border-bottom:1px solid var(--border-muted)}
+.acc td:nth-child(2){color:var(--green);font-weight:600}
+.warn{padding:10px 12px;border:1px dashed var(--red);border-radius:6px;background:var(--bad-bg);font-size:13px;line-height:1.45}
+.warn b{color:var(--red)}
+
+/* 15. інструкції */
+.howto{display:grid;gap:10px;padding:14px 16px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+.howto b{font-size:15px}
+.howto ol{display:grid;gap:4px;counter-reset:s}
+.howto ol li{counter-increment:s;display:grid;grid-template-columns:22px 1fr;font-size:13.5px}
+.howto ol li::before{content:counter(s);font:700 12px/1.9 var(--mono);color:var(--c)}
+.specs{display:flex;flex-wrap:wrap;gap:6px}
+.specs span{padding:3px 9px;border-radius:4px;border:1px solid var(--c);font:600 12px var(--mono);color:var(--c)}
+
+/* 16. підтримка */
+.lanes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lane{display:grid;gap:6px;align-content:start;padding:12px 14px;border-radius:6px;background:var(--bg);border:1px solid var(--border)}
+.lane b{font-size:15px}
+.lane p{font-size:13px;line-height:1.45;color:var(--muted)}
+.lane .res{justify-self:start;font:600 12px var(--mono);padding:2px 8px;border-radius:4px}
+.lane.fix{border-top:3px solid var(--green)}.lane.fix .res{color:var(--green);background:var(--ok-bg)}
+.lane.new{border-top:3px solid var(--yellow)}.lane.new .res{color:var(--yellow);background:rgba(210,153,34,.12)}
+.stamp{justify-self:start;display:grid;gap:2px;padding:10px 16px;border:2px solid var(--green);border-radius:6px;color:var(--green);transform:rotate(-2deg)}
+.stamp b{font:800 15px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.stamp span{font-size:12.5px;color:var(--text)}
+
+/* скіли */
+.skill-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+.skill-flow .n{padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);font:13px var(--mono)}
+.skill-flow .n.cmd{border-color:var(--blue);color:var(--blue);font-weight:700}
+.skill-flow .ar{color:var(--faint);font-family:var(--mono)}
+.where{font-size:14px;color:var(--muted);max-width:70ch;margin-bottom:26px}
+.skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sk{display:grid;gap:8px;align-content:start;padding:16px;border:1px solid var(--border);border-top:3px solid var(--c);border-radius:8px;background:var(--surface)}
+.sk .nmx{font:700 15px var(--mono)}
+.sk p{font-size:14px;color:var(--muted)}
+.sk .links{font-size:12.5px;color:var(--faint)}
+.sk .links a{font-family:var(--mono)}
+.skill-make{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;margin-top:32px;align-items:start}
+.skill-make h3{font-size:19px;margin-bottom:12px}
+.skill-rules{display:grid;gap:12px}
+.skill-rules li{display:grid;grid-template-columns:22px 1fr;font-size:14.5px}
+.skill-rules li::before{content:"✓";color:var(--green);font-weight:700}
+.skill-rules li span{color:var(--muted)}
+.ph-s{--c:var(--blue)}
+
+/* чекліст */
+.progress{display:grid;gap:8px;margin-bottom:20px;max-width:560px}
+.progress .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.progress b{font-size:22px;font-variant-numeric:tabular-nums}
+.progress span{font-size:13px;color:var(--muted)}
+.track{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--green);border-radius:4px}
+@media (prefers-reduced-motion: no-preference){.track i{transition:width .25s ease}}
+.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grp{padding:16px 18px 8px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.grp-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:10px;margin-bottom:4px;border-bottom:3px solid var(--c)}
+.grp-h h3{font-size:17px}
+.grp-h span{font:600 12.5px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.grp label{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;padding:8px 0;font-size:14px;line-height:1.4;border-bottom:1px dashed var(--border-muted);cursor:pointer}
+.grp label:last-child{border-bottom:0}
+.grp input{width:16px;height:16px;margin:2px 0 0;accent-color:var(--c);cursor:pointer}
+.grp input:checked+span{color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px}
+.btn-main,.btn-ghost{height:36px;padding:0 16px;border-radius:6px;font:600 13.5px var(--sans);cursor:pointer}
+.btn-main{border:0;background:var(--btn);color:var(--btn-text)}
+.btn-main:hover{background:var(--btn-hover)}
+.btn-ghost{border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.btn-ghost:hover{border-color:var(--faint)}
+.btn-ghost.warnme{border-color:var(--red);color:var(--red)}
+.status{font-size:13px;color:var(--muted)}
+#out{display:block;width:100%;min-height:180px;margin-top:14px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:12.5px/1.55 var(--mono);resize:vertical}
+
+/* підвал */
+footer{padding-block:32px 56px;border-top:1px solid var(--border-muted);color:var(--muted);font-size:13px}
+footer h2{font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 28px;margin-bottom:24px}
+.srcs a{color:var(--text)}
+.srcs span{color:var(--faint)}
+
+@media (max-width:920px){
+  .metro{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .line::after{display:none}
+  .formula{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .f-step::after{display:none}
+  .st-body,.skill-make{grid-template-columns:1fr}
+  .skills{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rules{grid-template-columns:1fr;gap:14px}
+}
+@media (max-width:640px){
+  .wrap{padding-inline:16px}
+  h1{font-size:36px}
+  .phase-head h2{font-size:26px}
+  .metro,.formula,.skills,.groups,.srcs{grid-template-columns:1fr}
+  .pack{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vitals{grid-template-columns:1fr}
+  .wire,.cols2,.consoles,.lanes,.fields{grid-template-columns:1fr}
+  .swatches{grid-template-columns:1fr}
+  .pic{padding:16px}
+  .eli{font-size:17px}
+}
+@media (max-width:400px){.two{grid-template-columns:1fr}}
+[hidden]{display:none!important}
+img{max-width:100%}
+
+
+
+/* зміст сторінки: збоку від 1180 px, вужче за кнопкою «Зміст» під меню */
+.toc-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:340px;height:34px;padding:0 10px 0 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:13px var(--sans);cursor:pointer}
+.toc-btn:hover{background:var(--surface-2)}
+.toc-k{flex:none;color:var(--muted);font-weight:600}
+.toc-v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.toc-v:empty{display:none}
+.toc-btn svg{flex:none;margin-left:auto;color:var(--muted)}
+.toc-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+.toc{display:none}
+.toc-title{margin:0 0 10px 12px;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.toc>ol{border-left:1px solid var(--border-muted)}
+.toc ol ol{margin:2px 0 6px}
+.toc a{display:flex;align-items:baseline;gap:9px;margin-left:-1px;padding:5px 10px 5px 12px;border-left:2px solid transparent;border-radius:0 6px 6px 0;color:var(--muted);font-size:13.5px;line-height:1.35}
+.toc a:hover{color:var(--text);background:var(--hover);text-decoration:none}
+.toc ol ol a{padding-left:22px;font-size:13px}
+.toc a i{flex:none;align-self:center;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.toc a b{flex:none;min-width:16px;font:600 11px var(--mono);color:var(--faint);text-align:right}
+.toc li.cur>a{color:var(--text)}
+.toc a[aria-current]{color:var(--text);font-weight:600;border-left-color:var(--c,var(--blue));background:var(--hover)}
+.toc a[aria-current] b{color:var(--text)}
+.toc.js li:not(.cur)>ol{display:none}
+
+@media (min-width:1180px){
+  .wrap{max-width:1368px}
+  .panel.has-toc{display:grid;grid-template-columns:208px minmax(0,1fr);gap:48px;align-items:start}
+  .panel-main{min-width:0}
+  .toc{display:block;position:sticky;top:var(--jump-h,48px);max-height:calc(100vh - var(--jump-h,48px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-block:36px 32px}
+  .toc-btn{display:none}
+}
+@media (max-width:1179px){
+  .toc.open{display:block;position:fixed;z-index:20;top:calc(var(--jump-h,48px) + 6px);right:max(24px,calc((100vw - 1072px) / 2));width:min(340px,calc(100vw - 48px));max-height:calc(100dvh - var(--jump-h,48px) - 24px);overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 12px 8px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:0 16px 40px rgba(1,4,9,.4)}
+  .toc.open .toc-title{margin-left:14px}
+}
+@media (max-width:640px){
+  .toc-btn{flex:1 1 100%;max-width:none;margin-left:0}
+  .toc.open{left:16px;right:16px;width:auto}
+}
+
+/* харнес: кольори людей */
+.hz{--c:var(--blue)}
+.p-hunt{--c:var(--yellow)}.p-hash{--c:var(--blue)}.p-karp{--c:var(--purple)}.p-osm{--c:var(--green)}.p-yeg{--c:var(--orange)}
+.person .st-head{flex-wrap:wrap}
+.num.ini{font-size:12px}
+.verdict{margin-left:auto;flex:none;padding:3px 10px;border:1px solid var(--c);border-radius:999px;color:var(--c);font:600 12px var(--mono);white-space:nowrap}
+
+/* харнес: шари навколо моделі */
+.rings-pic{padding:24px}
+.ring{display:grid;gap:10px;padding:12px 14px 14px;border:1.5px solid var(--rc);border-radius:14px}
+.r4,.r2{background:var(--bg)}.r3,.r1{background:var(--surface)}
+.r4{--rc:var(--yellow)}.r3{--rc:var(--purple)}.r2{--rc:var(--green)}.r1{--rc:var(--blue)}
+.rl{font:700 11.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--rc)}
+.ri{font-size:13px;color:var(--muted)}
+.core{display:grid;justify-items:center;gap:2px;padding:18px;border-radius:10px;background:var(--surface-2);font-size:20px;font-weight:700}
+.core span{font:400 12px var(--mono);color:var(--muted)}
+
+/* харнес: сходинки, файли, порівняння, сесії */
+.ladder{display:grid;gap:6px}
+.rung{display:grid;gap:2px;padding:9px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
+.rung.s2{margin-left:8%}
+.rung.s3{margin-left:16%;border-color:var(--c)}
+.rung em{font:600 11px var(--mono);font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.rung b{font-size:14px}
+.rung span{font:12px var(--mono);color:var(--muted)}
+.ladder.big .rung{padding:12px 16px}
+.ladder.big .rung b{font-size:15.5px}
+.ladder.big .rung span{font:13.5px var(--sans)}
+.files3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.f3{display:grid;gap:2px;padding:10px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
+.f3 .mono{font-size:12.5px;font-weight:700}
+.f3 b{font-size:12px;font-weight:500;color:var(--muted)}
+.f3.hl{border-color:var(--c)}
+.f3.dim{opacity:.55}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs>div{display:grid;gap:6px;align-content:start;min-width:0}
+.bubble{padding:10px 12px;border-radius:12px 12px 12px 2px;background:var(--surface-2);font-size:13.5px}
+.vs .m,.vs .g{font-size:12.5px}
+.formula-mini{padding:8px;border:1px dashed var(--border);border-radius:6px;text-align:center;font-size:15px;color:var(--muted)}
+.formula-mini b{color:var(--c)}
+.sessions{display:flex;gap:8px}
+.ses{flex:1;padding:10px 6px;border:1.5px dashed var(--faint);border-radius:6px;color:var(--faint);font:12.5px var(--mono);text-align:center}
+.ses.gone::after{content:" ✕"}
+.ses.live{border-style:solid;border-color:var(--c);color:var(--text)}
+.state{padding:10px 12px;border-radius:6px;background:var(--c);color:var(--bg);font:700 13px var(--mono);text-align:center}
+.stack{display:grid;gap:8px;margin-top:36px;max-width:820px}
+.sl{display:grid;grid-template-columns:100px 140px minmax(0,1fr);align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-left:4px solid var(--c);border-radius:8px;background:var(--surface)}
+.sl .who{font:600 12px var(--mono);color:var(--c)}
+.sl b{font-size:15px}
+.sl span:last-child{font-size:13.5px;color:var(--muted)}
+.sl.result{--c:var(--text);background:var(--surface-2)}
+
+/* харнес: дерево файлів */
+.explorer{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:start}
+.ftree{padding:12px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font:13px/1.2 var(--mono);overflow-x:auto}
+.ftree .row{display:flex;align-items:center;min-height:26px;white-space:pre}
+.ftree .pfx{color:var(--faint)}
+.ftree .dir{padding:3px 6px;color:var(--muted)}
+.ftree button{display:inline-flex;align-items:center;gap:7px;padding:3px 7px;border:0;border-radius:4px;background:none;color:var(--text);font:inherit;cursor:pointer}
+.ftree button:hover{background:var(--hover)}
+.ftree button[aria-pressed="true"]{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--blue)}
+.ftree i,.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
+i.k{background:var(--blue)}i.v{background:var(--yellow)}
+.legend{display:flex;gap:16px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.fdetail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 64px);min-width:0;display:grid;gap:12px;padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.fdetail h3{font:700 19px var(--mono)}
+.fmeta{display:flex;flex-wrap:wrap;gap:6px}
+.fmeta span{padding:3px 9px;border:1px solid var(--border);border-radius:999px;font-size:12.5px;color:var(--muted)}
+.fmeta span:first-child{color:var(--blue);border-color:var(--blue)}
+.fmeta span.v:first-child{color:var(--yellow);border-color:var(--yellow)}
+.fdetail p{font-size:15px}
+
+/* харнес: робочий день */
+.loop{display:grid;gap:8px;max-width:820px}
+.ls{display:grid;grid-template-columns:28px 76px minmax(0,1fr);align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.ls .k,.gate .k{font:700 12px var(--mono);color:var(--muted)}
+.actor{justify-self:start;padding:2px 8px;border-radius:4px;font:600 11.5px var(--mono)}
+.actor.you{color:var(--yellow);background:color-mix(in srgb,var(--yellow) 14%,transparent)}
+.actor.cl{color:var(--blue);background:color-mix(in srgb,var(--blue) 14%,transparent)}
+.actor.gw{color:var(--purple);background:color-mix(in srgb,var(--purple) 14%,transparent)}
+.ls p{font-size:15px}
+.ls p .mono{display:block;font-size:12px;color:var(--muted)}
+.branch{margin-left:40px;padding:6px 12px;border-left:2px dashed var(--red);color:var(--red);font-size:13.5px}
+.again{padding:6px 14px;color:var(--muted);font-size:14px}
+.loop-note{margin-top:16px}
+
+/* харнес: помилка → правило, ворота, збірка, чого не брати */
+.rules-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start}
+.rtbl{width:100%;min-width:420px;border-collapse:collapse;font-size:14px}
+.rtbl th{padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.rtbl td{padding:9px 10px;border-bottom:1px solid var(--border-muted);vertical-align:top}
+.rtbl td.mono{font-size:12.5px;color:var(--c)}
+.rule-prompt{margin-top:24px;max-width:820px}
+.gates-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:center}
+.gates{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.gate{display:grid;grid-template-columns:24px minmax(0,190px) minmax(0,1fr);align-items:baseline;gap:12px;padding:10px 14px;border-top:1px solid var(--border-muted);background:var(--surface)}
+.gate:first-child{border-top:0}
+.gate .mono{font-size:13px;font-weight:600}
+.gate span:last-child{font-size:13.5px;color:var(--muted)}
+.pull{max-width:24ch;padding-left:18px;border-left:4px solid var(--purple);font-size:24px;line-height:1.35;font-weight:600;letter-spacing:-.012em;text-wrap:balance}
+.bsteps{display:grid;gap:28px;max-width:860px}
+.bstep{display:grid;grid-template-columns:42px minmax(0,1fr);gap:16px;align-items:start}
+.bstep>div{display:grid;gap:12px;min-width:0}
+.bstep h3{padding-top:8px;font-size:19px;line-height:1.3}
+.newproj{display:grid;gap:10px;max-width:860px;margin-top:32px;padding:18px;border:1px dashed var(--border);border-radius:8px}
+.skip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sk-no{display:grid;gap:4px;padding:16px 18px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.sk-no b{font-size:15.5px}
+.sk-no b::before{content:"✕ ";color:var(--red)}
+.sk-no p{font-size:14px;color:var(--muted)}
+
+/* підвал */
+.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:10px}
+.foot-links a{color:var(--text)}
+
+@media (max-width:920px){
+  .explorer,.rules-grid,.gates-grid{grid-template-columns:1fr}
+  .fdetail{position:static}
+  .where2{grid-template-columns:1fr;gap:14px}
+}
+@media (max-width:640px){
+  .uni,.vs,.skip,.files3,.hub-grid{grid-template-columns:1fr}
+  .sl{grid-template-columns:1fr;gap:2px}
+  .ls{grid-template-columns:24px minmax(0,1fr)}
+  .ls .actor,.ls p{grid-column:2}
+  .gate{grid-template-columns:24px minmax(0,1fr)}
+  .gate span:last-child{grid-column:2}
+  .verdict{margin-left:0}
+  .pull{font-size:20px}
+  .rings-pic{padding:14px}
+  .ring{padding:10px}
+  .branch{margin-left:24px}
+}
+
+/* рядок з кнопкою «Зміст» під меню, лише на вузьких екранах */
+.toc-bar{position:sticky;top:var(--nav-h,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--border-muted)}
+.toc-bar .wrap{display:flex;padding-block:8px}
+.toc-bar .toc-btn{margin-left:0}
+.stats{margin-top:12px;font:12px var(--mono);color:var(--faint)}
+@media (min-width:1180px){.toc-bar{display:none}}
+@media (max-width:1179px){.toc.open{right:auto;left:max(24px,calc((100vw - 1072px) / 2))}}
+@media (max-width:640px){.toc.open{left:16px;right:16px}}
+/* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
+:root{--nav-h:52px}
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100;padding:8px 12px;border-radius:6px;background:var(--surface);color:var(--text);font:13px var(--sans);text-decoration:none}
+.skip-link:focus{top:10px}
+.site-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:var(--nav-h);padding:0 20px;background:var(--bg);border-bottom:1px solid var(--border-muted);font-family:var(--sans)}
+.site-logo{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-width:0;color:var(--text);font:600 13px var(--mono);text-decoration:none;white-space:nowrap}
+.site-logo:hover{color:var(--text);text-decoration:none}
+.site-mark{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:var(--text);color:var(--bg);font:700 14px/1 var(--sans)}
+.site-nav nav{display:flex;gap:2px;max-width:100%;padding:3px;overflow-x:auto;scrollbar-width:none;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.site-nav nav::-webkit-scrollbar{display:none}
+.site-nav nav a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:7px;color:var(--muted);font:500 13px var(--sans);white-space:nowrap;text-decoration:none}
+.site-nav nav a:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14));text-decoration:none}
+.site-nav nav a[aria-current="page"]{background:var(--surface-2,#1C2128);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+.site-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.site-gh{justify-self:end;display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:var(--muted)}
+.site-gh:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14))}
+.site-gh svg{width:18px;height:18px;fill:currentColor}
+@media (max-width:640px){
+  .site-nav{grid-template-columns:auto minmax(0,1fr);padding:0 12px}
+  .site-name,.site-gh{display:none}
+  .site-nav nav{justify-self:end}
+  .site-nav nav a{padding:0 9px}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-nav">
+  <a class="site-logo" href="../" aria-label="design-process-help, на головну"><span class="site-mark" aria-hidden="true">d</span><span class="site-name">design-process-help</span></a>
+  <nav aria-label="Розділи сайту">
+    <a href="../prompts/">Запити</a>
+    <a href="../harness/">Харнес</a>
+    <a href="../map/" aria-current="page">Карта</a>
+    <a href="../learn/">Вчитися</a>
+  </nav>
+  <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+</header>
+<div class="toc-bar">
+  <div class="wrap">
+    <button type="button" class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-map">
+      <span class="toc-k">Зміст</span><span class="toc-v"></span>
+      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="wrap">
+<main class="panel has-toc" id="main">
+
+<!-- ЗМІСТ КАРТИ: збоку на широкому екрані, за кнопкою «Зміст» на вузькому -->
+<nav class="toc" id="toc-map" aria-label="Зміст карти фронтенду">
+  <p class="toc-title">Зміст</p>
+  <ol>
+    <li><a href="#map"><span>Карта</span></a></li>
+    <li class="ph-a"><a href="#phase-a"><i></i><span>Домовитись</span></a>
+      <ol>
+        <li><a href="#s1"><b>1</b><span>Межі проєкту</span></a></li>
+        <li><a href="#s2"><b>2</b><span>Що дати Claude</span></a></li>
+      </ol>
+    </li>
+    <li class="ph-b"><a href="#phase-b"><i></i><span>Будувати</span></a>
+      <ol>
+        <li><a href="#s3"><b>3</b><span>Семантика</span></a></li>
+        <li><a href="#s4"><b>4</b><span>Доступність</span></a></li>
+        <li><a href="#s5"><b>5</b><span>Адаптивність</span></a></li>
+        <li><a href="#s6"><b>6</b><span>Стани</span></a></li>
+        <li><a href="#s7"><b>7</b><span>Порядок у коді</span></a></li>
+      </ol>
+    </li>
+    <li class="ph-c"><a href="#phase-c"><i></i><span>Перевірити</span></a>
+      <ol>
+        <li><a href="#s8"><b>8</b><span>Сценарії і форми</span></a></li>
+        <li><a href="#s9"><b>9</b><span>Браузери</span></a></li>
+        <li><a href="#s10"><b>10</b><span>Швидкість</span></a></li>
+        <li><a href="#s11"><b>11</b><span>Пошук і запуск</span></a></li>
+        <li><a href="#s12"><b>12</b><span>Чиста збірка</span></a></li>
+      </ol>
+    </li>
+    <li class="ph-d"><a href="#phase-d"><i></i><span>Здати</span></a>
+      <ol>
+        <li><a href="#s13"><b>13</b><span>Репозиторій і README</span></a></li>
+        <li><a href="#s14"><b>14</b><span>Доступи і власність</span></a></li>
+        <li><a href="#s15"><b>15</b><span>Інструкції для клієнта</span></a></li>
+        <li><a href="#s16"><b>16</b><span>Підтримка і прийняття</span></a></li>
+      </ol>
+    </li>
+    <li><a href="#skills"><span>Скіли</span></a></li>
+    <li><a href="#done"><span>Готово до здачі</span></a></li>
+    <li><a href="#sources"><span>Джерела</span></a></li>
+  </ol>
+</nav>
+
+<div class="panel-main">
+
+<header class="top">
+  <h1>Карта фронтенду</h1>
+  <p class="lede">Шлях сайту від домовленості з клієнтом до здачі. На кожній зупинці пояснення простими словами, що перевірити, і готовий запит для Claude. Код пише Claude, ви вирішуєте, що перевірити, і вимагаєте доказ.</p>
+  <p class="stats">4 етапи · 16 зупинок · 17 запитів</p>
+</header>
+
+<!-- КАРТА -->
+<section id="map" class="block">
+  <div class="sec-head">
+    <h2>Чотири етапи, шістнадцять зупинок</h2>
+    <p>Знайдіть зупинку, на якій ви зараз, і натисніть її. Етапи йдуть зліва направо, зупинки згори донизу.</p>
+  </div>
+  <div class="metro">
+    <div class="line ph-a">
+      <div class="line-head"><b>Домовитись</b><span>до першого рядка коду</span></div>
+      <ol class="stops">
+        <li><a href="#s1"><span class="dot">1</span><span><span class="nm">Межі проєкту</span><span class="tm">scope</span></span></a></li>
+        <li><a href="#s2"><span class="dot">2</span><span><span class="nm">Що дати Claude</span><span class="tm">brief</span></span></a></li>
+      </ol>
+    </div>
+    <div class="line ph-b">
+      <div class="line-head"><b>Будувати</b><span>поки Claude верстає</span></div>
+      <ol class="stops">
+        <li><a href="#s3"><span class="dot">3</span><span><span class="nm">Семантика</span><span class="tm">semantic HTML</span></span></a></li>
+        <li><a href="#s4"><span class="dot">4</span><span><span class="nm">Доступність</span><span class="tm">accessibility</span></span></a></li>
+        <li><a href="#s5"><span class="dot">5</span><span><span class="nm">Адаптивність</span><span class="tm">responsive</span></span></a></li>
+        <li><a href="#s6"><span class="dot">6</span><span><span class="nm">Стани</span><span class="tm">UI states</span></span></a></li>
+        <li><a href="#s7"><span class="dot">7</span><span><span class="nm">Порядок у коді</span><span class="tm">maintainability</span></span></a></li>
+      </ol>
+    </div>
+    <div class="line ph-c">
+      <div class="line-head"><b>Перевірити</b><span>перед запуском</span></div>
+      <ol class="stops">
+        <li><a href="#s8"><span class="dot">8</span><span><span class="nm">Сценарії і форми</span><span class="tm">QA</span></span></a></li>
+        <li><a href="#s9"><span class="dot">9</span><span><span class="nm">Браузери</span><span class="tm">cross-browser</span></span></a></li>
+        <li><a href="#s10"><span class="dot">10</span><span><span class="nm">Швидкість</span><span class="tm">performance</span></span></a></li>
+        <li><a href="#s11"><span class="dot">11</span><span><span class="nm">Пошук і запуск</span><span class="tm">SEO, launch</span></span></a></li>
+        <li><a href="#s12"><span class="dot">12</span><span><span class="nm">Чиста збірка</span><span class="tm">build</span></span></a></li>
+      </ol>
+    </div>
+    <div class="line ph-d">
+      <div class="line-head"><b>Здати</b><span>у день здачі</span></div>
+      <ol class="stops">
+        <li><a href="#s13"><span class="dot">13</span><span><span class="nm">Репозиторій і README</span><span class="tm">repo</span></span></a></li>
+        <li><a href="#s14"><span class="dot">14</span><span><span class="nm">Доступи і власність</span><span class="tm">ownership</span></span></a></li>
+        <li><a href="#s15"><span class="dot">15</span><span><span class="nm">Інструкції для клієнта</span><span class="tm">docs</span></span></a></li>
+        <li><a href="#s16"><span class="dot">16</span><span><span class="nm">Підтримка і прийняття</span><span class="tm">support, sign-off</span></span></a></li>
+        <li class="end"><a href="#done"><span class="dot">✓</span><span><span class="nm">Готово до здачі</span><span class="tm">definition of done</span></span></a></li>
+      </ol>
+    </div>
+  </div>
+  <p class="ask-link">Усі запити на карті зібрані за однією формулою: <a href="../prompts/#ask">як скласти свій запит →</a></p>
+</section>
+
+
+<!-- ЕТАП A -->
+<section id="phase-a" class="phase ph-a">
+  <div class="phase-head"><span class="bar"></span><h2>Домовитись</h2><span>до першого рядка коду</span></div>
+
+  <article class="station" id="s1">
+    <div class="st-head"><span class="num">1</span><div><h3>Межі проєкту</h3><span class="tm">scope</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="two">
+          <div class="ok"><span class="cap">Входить</span>
+            <ul>
+              <li>верстка сторінок</li>
+              <li>адаптивність</li>
+              <li>анімації</li>
+              <li>перевірка форм у браузері</li>
+              <li>підключення до API</li>
+              <li>тест у браузерах</li>
+              <li>публікація, якщо домовились</li>
+            </ul>
+          </div>
+          <div class="no"><span class="cap">Не входить</span>
+            <ul>
+              <li>бекенд і база даних</li>
+              <li>перевірка форм на сервері</li>
+              <li>налаштування CMS</li>
+              <li>домен і хостинг</li>
+              <li>SEO-стратегія і тексти</li>
+              <li>аналітика</li>
+              <li>підтримка після здачі</li>
+            </ul>
+          </div>
+        </div>
+        <figcaption>Приклад для фронтенд-проєкту. Праву колонку пишуть, якщо цього немає в договорі.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Список того, що ви робите, і того, чого не робите. Його пишуть до коду, щоб «маленька правочка» не тягнулася три місяці.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Список сторінок і функцій</li>
+          <li>Що входить і що ні</li>
+          <li>Хто дає тексти й фото</li>
+          <li>Скільки кіл правок</li>
+          <li>Хто публікує сайт</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Create a SCOPE.md for this project: the list of pages and features, what is in scope and what is out of scope (backend, CMS, domain, hosting, SEO strategy, copywriting, analytics, maintenance). Mark anything I have not decided yet as a "question for the client".</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="self"><b>Навіщо:</b> кожен пункт із правої колонки колись попросять. Коли він записаний, розмова про нього займає хвилину.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s2">
+    <div class="st-head"><span class="num">2</span><div><h3>Що дати Claude на старті</h3><span class="tm">brief</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="pack">
+          <div class="tile"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12"/></svg><b>Макет</b><span>посилання на кадри Figma або скріншоти</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="16" r="4"/><path d="M15 4h5v5h-5z"/></svg><b>Токени</b><span>кольори, відступи, шрифти з назвами</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 11h16M4 16h10"/></svg><b>Контент</b><span>справжні тексти і фото, найдовші теж</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="4"/><circle cx="16" cy="12" r="2.5"/></svg><b>Стани</b><span>порожньо, завантаження, помилка</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8l-4 4 4 4M17 8l4 4-4 4M3 12h18"/></svg><b>Поведінка</b><span>що відбувається між мобільним і десктопом</span></div>
+          <div class="tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h6"/></svg><b>Правила</b><span>AGENTS.md: гілки, стилі, мова</span></div>
+        </div>
+        <div class="into"><span class="arrow">↓ усе це в одному запиті</span><span class="box">Claude</span></div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Claude будує з того, що ви дали. Чого бракує в матеріалах, він домальовує сам, і часто не так, як ви задумали.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Кадр Figma для кожного екрана</li>
+          <li>Токени замість «на око»</li>
+          <li>Найдовше ім'я і порожній список</li>
+          <li>Поведінка між брейкпоінтами</li>
+          <li>Анімації: що, коли, скільки мс</li>
+          <li>AGENTS.md у репозиторії</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Here is the design: <span class="ph">[Figma link]</span>. Before writing any code, list what you are missing: states, tablet behavior, copy, photos, and tokens that do not exist in our token set. Do not make anything up; ask me questions.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="self"><b>Перевірте самі:</b> якщо Claude не поставив жодного питання до складного екрана, попросіть його перелічити, що він припустив сам.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ЕТАП B -->
+<section id="phase-b" class="phase ph-b">
+  <div class="phase-head"><span class="bar"></span><h2>Будувати</h2><span>поки Claude верстає</span></div>
+
+  <article class="station" id="s3">
+    <div class="st-head"><span class="num">3</span><div><h3>Семантика</h3><span class="tm">semantic HTML</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="wire">
+          <div class="wf">
+            <span class="cap g">зрозуміло</span>
+            <div class="bx">&lt;header&gt; <span class="bx">&lt;nav&gt;</span></div>
+            <div class="mid">
+              <div class="bx mn">&lt;main&gt;<span class="bx">&lt;section&gt; h1</span><span class="bx">&lt;article&gt; h2</span></div>
+              <div class="bx">&lt;aside&gt;</div>
+            </div>
+            <div class="bx">&lt;footer&gt;</div>
+          </div>
+          <div class="wf soup">
+            <span class="cap r">div soup</span>
+            <div class="bx">&lt;div&gt; <span class="bx">&lt;div&gt;</span></div>
+            <div class="mid">
+              <div class="bx mn">&lt;div&gt;<span class="bx">&lt;div&gt;</span><span class="bx">&lt;div&gt;</span></div>
+              <div class="bx">&lt;div&gt;</div>
+            </div>
+            <div class="bx">&lt;div&gt;</div>
+          </div>
+        </div>
+        <div class="pre tree"><span class="b">h1</span> Наші послуги
+ ├─ <span class="b">h2</span> Вебдизайн
+ │   ├─ <span class="b">h3</span> Лендінги
+ │   └─ <span class="b">h3</span> Інтернет-магазини
+ └─ <span class="b">h2</span> Розробка</div>
+        <figcaption>Зовні обидві сторінки однакові. Праву браузер і читач екрана бачать як купу безіменних коробок.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Кожен блок сторінки названо за змістом: шапка, меню, головне, підвал. За цими назвами сторінку розуміють браузер, пошуковик і програма читання з екрана.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>header, nav, main, footer</li>
+          <li>Один h1 на сторінку</li>
+          <li>Заголовки без стрибків: після h2 не h4</li>
+          <li>button для дії</li>
+          <li>a для переходу</li>
+          <li>Розмір шрифту задає CSS, а не рівень заголовка</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Check the markup of the <span class="ph">[page name]</span> page: does it have header, nav, main and footer; is there exactly one h1 and do the headings go in order without skipping levels; are actions built with button and navigation with a? First show me the heading tree and a plain-language list of problems.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="self"><b>Перевірте самі:</b> дерево заголовків має читатися як зміст книжки.</p>
+        <p class="note">Блок div сам по собі нормальний. Погано, коли з div зроблено все, навіть кнопки.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s4">
+    <div class="st-head"><span class="num">4</span><div><h3>Доступність</h3><span class="tm">accessibility, WCAG</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <span class="cap">клавіатура</span>
+        <div class="focus-demo">
+          <span class="key">Tab</span><span class="arrow">→</span>
+          <span class="mb sec">Скасувати</span>
+          <span class="mb pri ring">Зберегти</span>
+          <span class="mb sec">Видалити</span>
+        </div>
+        <span class="cap">контраст на темному фоні</span>
+        <div class="swatches">
+          <div class="sw"><span class="aa" style="color:#8B949E">Aa</span><span class="ratio">6.15 : 1 ✓</span><span class="verdict">годиться для будь-якого тексту</span></div>
+          <div class="sw"><span class="aa" style="color:#6E7681">Aa</span><span class="ratio">4.12 : 1</span><span class="verdict">лише великий текст та іконки</span></div>
+          <div class="sw"><span class="aa" style="color:#484F58">Aa</span><span class="ratio">2.28 : 1 ✕</span><span class="verdict">не читається</span></div>
+        </div>
+        <div class="principles"><span>сприйнятний</span><span>керований</span><span>зрозумілий</span><span>надійний</span></div>
+        <figcaption>Чотири принципи WCAG. Мінімум контрасту: 4.5 : 1 для тексту, 3 : 1 для великого тексту, іконок і меж полів.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Сайтом користуються люди, які не бачать екран, не тримають мишку або погано розрізняють кольори. Більшість проблем знімає правильна розмітка і кілька правил дизайну.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Уся сторінка проходиться клавішею Tab</li>
+          <li>Фокус видно</li>
+          <li>alt у змістовних картинок</li>
+          <li>label у кожного поля</li>
+          <li>Контраст 4.5 : 1 і 3 : 1</li>
+          <li>Помилку описано словами, не лише червоним</li>
+          <li>lang="uk" у html</li>
+          <li>Посилання «Перейти до змісту»</li>
+          <li>Зона натиску від 24 × 24 px</li>
+          <li>Анімації вимикаються через prefers-reduced-motion</li>
+          <li>Збільшення до 200% без поломок</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Run an accessibility audit of the <span class="ph">[page name]</span> page. Go through it with the keyboard and check visible focus, alt text on images, labels on form fields, text contrast (4.5:1) and icon contrast (3:1), the lang attribute on html, and error messages. Run axe through Playwright. List the problems from most to least important and add a screenshot of the focus state on every interactive element. Wait for my OK before fixing anything.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="self"><b>Перевірте самі:</b> натисніть Tab кілька разів. Якщо не видно, де ви зараз, це баг. На Mac <code>Cmd + F5</code> вмикає VoiceOver: послухайте свою сторінку хвилину.</p>
+        <p class="note">Автоматична перевірка знаходить лише частину проблем, тому клавіатуру й читач екрана перевіряють руками. ARIA додають там, де звичайного HTML не вистачає; спершу беруть правильний тег.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s5">
+    <div class="st-head"><span class="num">5</span><div><h3>Адаптивність</h3><span class="tm">responsive</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="ruler">
+          <div class="rw"><span>320</span><i style="--w:320"></i></div>
+          <div class="rw"><span>375</span><i style="--w:375"></i></div>
+          <div class="rw"><span>390</span><i style="--w:390"></i></div>
+          <div class="rw"><span>768</span><i style="--w:768"></i></div>
+          <div class="rw"><span>1024</span><i style="--w:1024"></i></div>
+          <div class="rw"><span>1280</span><i style="--w:1280"></i></div>
+          <div class="rw"><span>1440</span><i style="--w:1440"></i></div>
+          <div class="rw"><span>1920+</span><i style="--w:1920"></i></div>
+          <div class="brk" aria-hidden="true"><span>860 px</span></div>
+        </div>
+        <figcaption>Ширини для перевірки в пікселях. Червона лінія показує приклад: верстка зламалася на 860 px, туди й ставлять брейкпоінт.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Сайт має добре виглядати на будь-якій ширині, зокрема між вашими макетами. Брейкпоінт (ширину, на якій верстка перебудовується) ставлять там, де вона починає ламатися. Підганяти його під конкретну модель телефона не треба.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>320 px без горизонтального скролу</li>
+          <li>Плавно тягнути вікно від 320 до 1920</li>
+          <li>Довгі слова й кнопки не вилазять</li>
+          <li>Картинки не розтягуються</li>
+          <li>Меню на телефоні</li>
+          <li>flex, grid, max-width, clamp() замість сотень px</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Take screenshots of the <span class="ph">[page name]</span> page at 320, 375, 390, 768, 1024, 1280, 1440 and 1920 px. Find horizontal scrolling, text that overflows its container, and places where the layout breaks between these widths. Suggest breakpoints where the layout actually breaks, not for specific devices.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="self"><b>Перевірте самі:</b> у Chrome відкрийте DevTools, натисніть <code>Cmd + Shift + M</code> і повільно тягніть край екрана.</p>
+        <p class="note">320 px узято з WCAG (критерій Reflow): на такій ширині контент читається без горизонтального скролу.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s6">
+    <div class="st-head"><span class="num">6</span><div><h3>Стани</h3><span class="tm">UI states</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <span class="cap">кнопка</span>
+        <div class="states">
+          <div class="st"><span class="mb pri">Зберегти</span><span class="tm">default</span></div>
+          <div class="st"><span class="mb pri hov">Зберегти</span><span class="tm">hover</span></div>
+          <div class="st"><span class="mb pri ring">Зберегти</span><span class="tm">focus</span></div>
+          <div class="st"><span class="mb pri act">Зберегти</span><span class="tm">active</span></div>
+          <div class="st"><span class="mb pri dis">Зберегти</span><span class="tm">disabled</span></div>
+          <div class="st"><span class="mb pri"><span class="spin"></span>Зберігаю</span><span class="tm">loading</span></div>
+        </div>
+        <span class="cap">поле email</span>
+        <div class="fields">
+          <div class="fld"><span class="lb">Порожнє</span><span class="in ph">name@studio.com</span></div>
+          <div class="fld bad"><span class="lb">Неправильне</span><span class="in">name@</span><span class="msg">Додайте домен після @</span></div>
+          <div class="fld bad"><span class="lb">Помилка сервера</span><span class="in">name@studio.com</span><span class="msg">Не вдалося надіслати. Спробуйте ще раз.</span></div>
+          <div class="fld good"><span class="lb">Успіх</span><span class="in">name@studio.com</span><span class="msg">Дякуємо, лист надіслано</span></div>
+        </div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Кожен елемент має кілька станів. Стан, якого немає в макеті, Claude придумає сам, тому краще показати йому всі.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>hover, focus, active</li>
+          <li>disabled, loading</li>
+          <li>Порожній список</li>
+          <li>Помилка завантаження</li>
+          <li>Найдовший текст</li>
+          <li>Форма: відправка, успіх, помилка</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Find every interactive element on the <span class="ph">[page name]</span> page and check the hover, focus, active, disabled and loading states, plus the empty and error states for lists and forms. Show me a grid of screenshots and a list of missing states. For each missing state, propose a design using our tokens.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="note">У Nimbus усі варіанти компонентів зібрані на <code>#/ui-kit</code>. Новий стан потрапляє туди в тому самому PR.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s7">
+    <div class="st-head"><span class="num">7</span><div><h3>Порядок у коді</h3><span class="tm">maintainability</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="cols2">
+          <div><span class="cap g">зрозуміло</span>
+<div class="pre">components/
+  Button
+  Header
+  Footer
+  Card
+pages/
+hooks/
+assets/</div></div>
+          <div><span class="cap r">загадка</span>
+<div class="pre">components/
+  Component1
+  NewComponent
+  ComponentFinal
+  ComponentFinal2
+  Test</div></div>
+        </div>
+        <div class="cols2">
+          <div class="pre"><span class="g">isMenuOpen</span>
+<span class="g">handleSubmit</span>
+<span class="g">fetchProjects</span>
+<span class="g">ProductCard</span></div>
+          <div class="pre"><span class="r">flag</span>
+<span class="r">func</span>
+<span class="r">getData2</span>
+<span class="r">Comp</span></div>
+        </div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Після вас цей код відкриє інша людина. Зрозумілі назви і папки заощадять їй дні.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Назви за змістом</li>
+          <li>Один компонент, одна задача</li>
+          <li>Кольори й відступи з токенів</li>
+          <li>Повтор без фанатизму</li>
+          <li>Без мертвого коду і console.log</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Review the folder structure and naming in src. Find unclear names (like Component1 or getData2), duplicates, raw color values instead of tokens, and dead code. Explain in plain language what should be fixed before handoff and what can stay.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="note">Два схожі шматки коду ще не привід робити універсальний компонент на 14 props.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ЕТАП C -->
+<section id="phase-c" class="phase ph-c">
+  <div class="phase-head"><span class="bar"></span><h2>Перевірити</h2><span>перед запуском</span></div>
+
+  <article class="station" id="s8">
+    <div class="st-head"><span class="num">8</span><div><h3>Сценарії і форми</h3><span class="tm">functional QA</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <span class="cap">навігація</span>
+        <div class="flow">
+          <span class="n">Логотип</span><span class="ar">→</span><span class="n">Меню</span><span class="ar">→</span><span class="n">Сторінка</span><span class="ar">→</span><span class="n">«Назад»</span><span class="ar">→</span><span class="n">/такої-немає</span><span class="ar">→</span><span class="n hot">404</span>
+        </div>
+        <span class="cap">форма</span>
+        <div class="flow">
+          <span class="n">Порожня</span><span class="ar">→</span><span class="n">Неправильний email</span><span class="ar">→</span><span class="n">Відправка</span><span class="ar">→</span><span class="n win">Успіх</span><span class="ar">або</span><span class="n hot">Помилка</span>
+        </div>
+        <figcaption>Кожну стрілку проходять руками або тестом.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Пройдіть сайт як відвідувач: клацніть усе, заповніть кожну форму неправильно, натисніть «Назад».</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Логотип веде на головну</li>
+          <li>Усі посилання і якорі</li>
+          <li>Кнопка «Назад» у браузері</li>
+          <li>Сторінка 404 з виходом</li>
+          <li>Форми: порожня, неправильна, успіх, помилка</li>
+          <li>Куди приходять листи з форм</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Write Playwright tests that go through the site like a visitor: click the logo, the menu and every link, open a URL that does not exist (expect a 404), and submit every form empty, with an invalid email, and filled in correctly. Run them and explain in plain language what failed.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="note">Перевірка форми в браузері допомагає людині не помилитися. Зловмисника вона не зупинить: дані захищає сервер, тобто бекенд.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s9">
+    <div class="st-head"><span class="num">9</span><div><h3>Браузери</h3><span class="tm">cross-browser</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="tabs">
+          <div class="tab"><div class="tab-top"><i></i><i></i><i></i></div><div class="tab-body"><b>Chrome</b><span>рушій Blink</span></div></div>
+          <div class="tab hot"><div class="tab-top"><i></i><i></i><i></i></div><div class="tab-body"><b>Safari</b><span>рушій WebKit</span><em>перевіряти і на iPhone</em></div></div>
+          <div class="tab"><div class="tab-top"><i></i><i></i><i></i></div><div class="tab-body"><b>Firefox</b><span>рушій Gecko</span></div></div>
+          <div class="tab"><div class="tab-top"><i></i><i></i><i></i></div><div class="tab-body"><b>Edge</b><span>рушій Blink</span></div></div>
+        </div>
+        <figcaption>Актуальні версії чотирьох браузерів. Chrome і Edge мають спільний рушій, тож найбільше відмінностей дають Safari і Firefox.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Ваш Chrome не єдиний браузер. Найчастіше сюрпризи дає Safari, особливо на iPhone.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Chrome</li>
+          <li>Safari на Mac та iPhone</li>
+          <li>Firefox</li>
+          <li>Edge</li>
+          <li>Шрифти, sticky, відео</li>
+          <li>Поля дати і select</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Run our Playwright tests in three engines: Chromium, WebKit (the Safari engine) and Firefox. Take screenshots of the main pages in each one and show me where they differ.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="self"><b>Перевірте самі:</b> WebKit у Playwright близький до Safari, але п'ять хвилин на справжньому iPhone він не замінить.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s10">
+    <div class="st-head"><span class="num">10</span><div><h3>Швидкість</h3><span class="tm">performance, Core Web Vitals</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="weights">
+          <div class="wt heavy"><span>hero-final-final-2.png · 8.4 MB</span><i></i></div>
+          <div class="wt light"><span>hero-1600.avif · ~250 KB (приклад після стиснення)</span><i></i></div>
+        </div>
+        <div class="vitals">
+          <div class="vt"><span class="mono">LCP</span><b>≤ 2.5 с</b><span>головний блок з'явився</span></div>
+          <div class="vt"><span class="mono">INP</span><b>≤ 200 мс</b><span>сторінка відповіла на дотик</span></div>
+          <div class="vt"><span class="mono">CLS</span><b>≤ 0.1</b><span>нічого не стрибає</span></div>
+        </div>
+        <figcaption>Добрі значення за Google (web.dev). Їх рахують на 75-му перцентилі реальних відвідувань.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Сторінка має з'являтися швидко і не стрибати під пальцем. Найчастіше її гальмують важкі картинки.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>WebP або AVIF</li>
+          <li>Картинки під ширину екрана</li>
+          <li>lazy loading нижче першого екрана</li>
+          <li>width і height у картинок</li>
+          <li>Лише потрібні шрифти</li>
+          <li>Сторонні скрипти: тільки потрібні</li>
+          <li>Стиснення Gzip або Brotli</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Check the performance of the <span class="ph">[page name]</span> page: run Lighthouse, find images over 300 KB, images without width and height, and unnecessary fonts and third-party scripts. Report LCP, CLS and TBT (Lighthouse does not measure INP; TBT is the closest lab metric) and tell me what to fix first.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="note">Це цілі якості. Не обіцяйте клієнту Lighthouse 100/100 на кожній сторінці.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s11">
+    <div class="st-head"><span class="num">11</span><div><h3>Пошук і запуск</h3><span class="tm">SEO baseline, launch</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <span class="cap">вкладка браузера</span>
+        <div class="browtab"><span class="fav">N</span>Тарифи · Nimbus<span class="tag">title</span></div>
+        <span class="cap">результат пошуку</span>
+        <div class="serp">
+          <div class="site"><span class="fav">N</span><span>Nimbus<span class="tag">favicon</span><small>nimbus.example.com › pricing</small></span></div>
+          <div class="t">Тарифи Nimbus: хмарне сховище для команд<span class="tag">title</span></div>
+          <div class="d">Порівняйте три тарифи, дізнайтеся ліміти сховища і почніть безкоштовно на 14 днів.<span class="tag">meta description</span></div>
+        </div>
+        <figcaption>Nimbus і його адреса вигадані для прикладу.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Так сайт виглядає в пошуку, у вкладці та в месенджері, коли ним діляться. Це теж ваш дизайн.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Свій title на кожній сторінці</li>
+          <li>meta description</li>
+          <li>Один h1</li>
+          <li>favicon та іконка для телефона</li>
+          <li>Картинка для поширення (Open Graph), якщо в scope</li>
+          <li>Сторінка 404</li>
+          <li>robots.txt і sitemap.xml</li>
+          <li>HTTPS і редирект з http</li>
+          <li>canonical, якщо є дублі сторінок</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Check every page before launch: title and meta description (unique on each page, not empty), a single h1, lang, favicon, social sharing image, 404 page, robots.txt, sitemap.xml, HTTPS and the redirect from http. Give me a table: page, what is there, what is missing.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="self"><b>Перевірте самі:</b> надішліть посилання на сайт собі в месенджер і подивіться на картку.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s12">
+    <div class="st-head"><span class="num">12</span><div><h3>Чиста збірка</h3><span class="tm">build, console</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+<div class="pre"><span class="m">$</span> npm install        <span class="g">✓</span>
+<span class="m">$</span> npm run build      <span class="g">✓</span>
+<span class="m">$</span> npm run lint       <span class="g">✓</span>
+<span class="m">$</span> npm test           <span class="g">✓</span></div>
+        <div class="consoles">
+          <div class="cons"><span class="hd">консоль: так здають</span><span class="ln ok">0 помилок, 0 попереджень</span></div>
+          <div class="cons"><span class="hd">консоль: новорічна ялинка</span><span class="ln w">Warning</span><span class="ln w">Warning</span><span class="ln e">Error</span><span class="ln w">Deprecated</span><span class="ln e">Failed</span></div>
+        </div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Перед здачею проєкт має зібратися з нуля без помилок, а консоль браузера має мовчати.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>npm install з нуля</li>
+          <li>npm run build без помилок</li>
+          <li>lint і тести зелені</li>
+          <li>Консоль без помилок</li>
+          <li>Без тестових даних і console.log</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Clone the project into a clean folder and run npm install, npm run build, lint and the tests. Then open every page and collect the errors and warnings from the browser console. Show me what failed and wait for my OK before fixing it.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="note">У репозиторії design-process-help перед кожним PR запускають <code>npm run typecheck && npm run build</code>.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ЕТАП D -->
+<section id="phase-d" class="phase ph-d">
+  <div class="phase-head"><span class="bar"></span><h2>Здати</h2><span>у день здачі</span></div>
+
+  <article class="station" id="s13">
+    <div class="st-head"><span class="num">13</span><div><h3>Репозиторій і README</h3><span class="tm">repository, README, .env.example</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="cols2">
+          <div><span class="cap">у репозиторії</span>
+<div class="pre"><span class="g">✓</span> README.md
+<span class="g">✓</span> package.json
+<span class="g">✓</span> .gitignore
+<span class="g">✓</span> .env.example
+<span class="g">✓</span> src/
+<span class="r">✕</span> node_modules/
+<span class="r">✕</span> .env
+<span class="r">✕</span> .DS_Store
+<span class="r">✕</span> тимчасові файли
+<span class="r">✕</span> ключі API</div></div>
+          <div><span class="cap">README</span>
+<div class="pre"><span class="b"># Nimbus</span>
+
+<span class="b">## Вимоги</span>
+Node.js 22
+
+<span class="b">## Запуск</span>
+npm install
+npm run dev
+
+<span class="b">## Збірка</span>
+npm run build
+
+<span class="b">## Змінні</span>
+див. .env.example</div></div>
+        </div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Клієнт має отримати репозиторій, який інша людина запустить без дзвінка вам. Архів website-final.zip для цього не годиться.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Репозиторій на GitHub, GitLab або Bitbucket</li>
+          <li>README з кроками запуску</li>
+          <li>.env.example без значень</li>
+          <li>Секретів немає і в історії git</li>
+          <li>Гілка main чиста</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Prepare the repository for handoff. Check that .env, node_modules, .DS_Store and any keys are not in git, including the history. Create .env.example with the variable names and no values. Write a README with requirements, installation, running, building and environment variables. Then follow the README steps in a clean folder and tell me whether everything started.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="note">Якщо ключ колись потрапив у git, видалити файл замало: ключ треба замінити на новий у сервісі, який його видав.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s14">
+    <div class="st-head"><span class="num">14</span><div><h3>Доступи і власність</h3><span class="tm">ownership, access</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="tbl-wrap">
+          <table class="acc">
+            <thead><tr><th>Сервіс</th><th>Власник</th><th>Де увійти</th><th>Хто платить</th></tr></thead>
+            <tbody>
+              <tr><td>Домен</td><td>клієнт</td><td>кабінет реєстратора</td><td>клієнт</td></tr>
+              <tr><td>Хостинг</td><td>клієнт</td><td>панель хостингу</td><td>клієнт</td></tr>
+              <tr><td>Репозиторій</td><td>клієнт</td><td>GitHub</td><td>клієнт</td></tr>
+              <tr><td>Аналітика</td><td>клієнт</td><td>кабінет аналітики</td><td>клієнт</td></tr>
+              <tr><td>Пошта для форм</td><td>клієнт</td><td>поштовий сервіс</td><td>клієнт</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="warn"><b>Не в документі:</b> паролі, коди відновлення, ключі API. Їх передають окремо і захищено, наприклад через менеджер паролів.</p>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Домен, хостинг і аналітика мають належати клієнту. У документі пишуть, хто власник і де увійти. Паролі туди не пишуть ніколи.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Власник кожного сервісу</li>
+          <li>Адреса входу</li>
+          <li>Хто продовжує оплату</li>
+          <li>Паролі передано окремо</li>
+          <li>Ваші доступи після здачі погоджено</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Write the "Access" section of HANDOVER.md: a table of the project's services (domain, hosting, repository, analytics, form email, third-party integrations) with the columns owner, sign-in URL and who pays for renewal. Do not write passwords, keys or recovery codes; mark them as "shared separately".</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s15">
+    <div class="st-head"><span class="num">15</span><div><h3>Інструкції для клієнта</h3><span class="tm">handover docs</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="howto">
+          <b>Як замінити фото на головній</b>
+          <ol>
+            <li>Підготуйте фото за параметрами нижче.</li>
+            <li>Відкрийте розділ «Головна» в адмінці.</li>
+            <li>Натисніть на фото і завантажте нове.</li>
+            <li>Перевірте сторінку на телефоні.</li>
+          </ol>
+          <div class="specs"><span>WebP</span><span>16:9</span><span>1600 px завширшки</span><span>оригінали: /brand/photos</span></div>
+        </div>
+        <figcaption>Параметри для прикладу. Беріть свої з макета. Кроки залежать від того, де клієнт редагує сайт.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Покажіть клієнту, як самому змінити текст і фото, щоб дрібні правки не йшли через вас.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Адреса сайту і дата здачі</li>
+          <li>Список сторінок і функцій</li>
+          <li>Де лежать логотипи, фото, тексти</li>
+          <li>Як змінити текст</li>
+          <li>Як замінити фото</li>
+          <li>Шрифти й фото з окремою ліцензією</li>
+          <li>Рішення: пункти меню, адресат форм, мови</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Write a client-facing section of HANDOVER.md called "What was delivered and how to edit it": the site URL, the handoff date, the list of pages and features, where the source files live, step-by-step instructions for "edit text" and "replace a photo" (format, aspect ratio, size), and the fonts and photos that have separate licenses. Keep it simple and free of jargon, and walk through one edit from start to finish.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="station" id="s16">
+    <div class="st-head"><span class="num">16</span><div><h3>Підтримка і прийняття</h3><span class="tm">support, sign-off</span></div></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="lanes">
+          <div class="lane fix"><b>Дефект</b><p>Не працює те, що було в scope.</p><span class="res">виправляємо</span></div>
+          <div class="lane new"><b>Нова робота</b><p>Цього не було в scope.</p><span class="res">нова оцінка і строк</span></div>
+        </div>
+        <div class="stamp"><b>Прийнято</b><span>клієнт отримав усе зі списку · дата · підпис</span></div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Домовтеся, що вважається помилкою, а що новою роботою. Потім попросіть клієнта письмово підтвердити, що він отримав усе зі списку.</p>
+        <h4>Що перевірити</h4>
+        <ul class="checks">
+          <li>Канал підтримки і строк</li>
+          <li>Що писати в запиті: сторінка, пристрій, скріншот</li>
+          <li>Відкриті питання: власник, крок, дата</li>
+          <li>Відомі обмеження</li>
+          <li>Про безпеку й бекапи лише після перевірки</li>
+          <li>Підтвердження прийняття</li>
+        </ul>
+        <h4>Скажіть Claude</h4>
+        <div class="prompt">
+          <p lang="en">Add to HANDOVER.md: how to request support and until what date, how a defect differs from new work, the open questions (owner, next step, date) and the known limitations. At the end, add a short acceptance statement in which the client confirms they received everything on the list.</p>
+          <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+        </div>
+        <p class="note">Прийняття підтверджує, що клієнт отримав результат зі списку. Гарантією того, як сайт чи платформа поводитимуться далі, воно не є.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- СКІЛИ -->
+<section id="skills" class="block">
+  <div class="sec-head">
+    <h2>Перевірки, які варто перетворити на скіли</h2>
+    <p>Скіл (навичка) зберігає інструкцію в папці проєкту. Ви пишете <code>/a11y-check</code>, і Claude робить перевірку щоразу однаково, без довгого запиту.</p>
+  </div>
+  <div class="skill-flow">
+    <span class="n cmd">/a11y-check</span><span class="ar">→</span><span class="n">.claude/skills/a11y-check/SKILL.md</span><span class="ar">→</span><span class="n">звіт англійською і скріншоти</span>
+  </div>
+  <p class="where">Скіл у <code>.claude/skills/&lt;назва&gt;/SKILL.md</code> проєкту отримує вся команда через git. Скіл у <code>~/.claude/skills/</code> працює лише у вас.</p>
+  <div class="skills">
+    <div class="sk ph-a"><span class="nmx">/brief-check</span><p>Бере посилання на макет і повертає список того, чого бракує: стани, контент, поведінка, токени.</p><span class="links">зупинки <a href="#s1">1</a>, <a href="#s2">2</a></span></div>
+    <div class="sk ph-b"><span class="nmx">/a11y-check</span><p>Клавіатура, фокус, alt, label, контраст, lang, тексти помилок. Запускає axe і додає скріншоти.</p><span class="links">зупинки <a href="#s3">3</a>, <a href="#s4">4</a></span></div>
+    <div class="sk ph-b"><span class="nmx">/responsive-check</span><p>Скріншоти на восьми ширинах, пошук горизонтального скролу і тексту за краєм.</p><span class="links">зупинка <a href="#s5">5</a></span></div>
+    <div class="sk ph-b"><span class="nmx">/states-check</span><p>Сітка станів для кожного інтерактивного елемента і список тих, яких бракує.</p><span class="links">зупинка <a href="#s6">6</a></span></div>
+    <div class="sk ph-c"><span class="nmx">/launch-check</span><p>Сценарії, браузери, Lighthouse, title і description, 404, favicon, консоль, збірка.</p><span class="links">зупинки <a href="#s8">8</a>–<a href="#s12">12</a></span></div>
+    <div class="sk ph-d"><span class="nmx">/handoff-pack</span><p>README, .env.example і HANDOVER.md з доступами, інструкціями та відкритими питаннями.</p><span class="links">зупинки <a href="#s13">13</a>–<a href="#s16">16</a></span></div>
+  </div>
+  <div class="skill-make">
+    <div class="ph-s">
+      <h3>Як створити скіл</h3>
+      <div class="prompt">
+        <p lang="en">Use skill-creator to create an /a11y-check skill in this project's .claude/skills. The skill checks a page I name: keyboard navigation, visible focus, alt text, labels, contrast (4.5:1 for text, 3:1 for icons), lang and error messages. It runs axe through Playwright and takes screenshots of the focus states. The report is in English, in plain language, ordered from most to least important. It fixes nothing without my OK. After creating it, test the skill on the settings page and show me the report.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+      </div>
+    </div>
+    <div>
+      <h3>Добрий скіл</h3>
+      <ul class="skill-rules">
+        <li><p>Спочатку звітує. <span>Виправляє тільки після вашого OK.</span></p></li>
+        <li><p>Робить одну задачу. <span>Великий скіл важче перевірити і виправити.</span></p></li>
+        <li><p>Пише англійською. <span>Від найважливішого, без жаргону.</span></p></li>
+        <li><p>Кожен висновок підкріплює доказом. <span>Скріншот, вивід команди або файл.</span></p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ЧЕКЛІСТ -->
+<section id="done" class="block">
+  <div class="sec-head">
+    <h2>Готово до здачі</h2>
+    <p>Позначайте пункти. Відмітки зберігаються лише у вашому браузері. Кнопка нижче збирає незакриті пункти в запит для Claude.</p>
+  </div>
+  <div class="progress">
+    <div class="row"><b id="total">0 з 0</b><span id="total-note">пунктів закрито</span></div>
+    <div class="track"><i id="total-bar"></i></div>
+  </div>
+  <div class="groups">
+    <div class="grp ph-a" data-name="Agree">
+      <div class="grp-h"><h3>Домовитись</h3><span class="cnt"></span></div>
+      <label data-en="Project scope written down and agreed"><input type="checkbox" id="d-a1"><span>Межі проєкту записані й погоджені</span></label>
+      <label data-en="Design, tokens and real content given to Claude"><input type="checkbox" id="d-a2"><span>Макет, токени і справжній контент передані Claude</span></label>
+      <label data-en="Open questions for the client written down"><input type="checkbox" id="d-a3"><span>Відкриті питання до клієнта записані</span></label>
+    </div>
+    <div class="grp ph-b" data-name="Build">
+      <div class="grp-h"><h3>Будувати</h3><span class="cnt"></span></div>
+      <label data-en="Semantic markup: header, nav, main, footer"><input type="checkbox" id="d-b1"><span>Семантична розмітка: header, nav, main, footer</span></label>
+      <label data-en="One h1, headings without skipped levels"><input type="checkbox" id="d-b2"><span>Один h1, заголовки без стрибків</span></label>
+      <label data-en="Keyboard navigation and visible focus"><input type="checkbox" id="d-b3"><span>Клавіатура і видимий фокус</span></label>
+      <label data-en="alt text on meaningful images, labels on form fields"><input type="checkbox" id="d-b4"><span>alt у змістовних картинок, label у полів</span></label>
+      <label data-en="Contrast 4.5:1 for text, 3:1 for icons"><input type="checkbox" id="d-b5"><span>Контраст 4.5 : 1 для тексту, 3 : 1 для іконок</span></label>
+      <label data-en="lang attribute on html"><input type="checkbox" id="d-b6"><span>lang у html</span></label>
+      <label data-en="No horizontal scrolling from 320 px up"><input type="checkbox" id="d-b7"><span>Без горизонтального скролу від 320 px</span></label>
+      <label data-en="Phone, tablet, desktop and large screen checked"><input type="checkbox" id="d-b8"><span>Телефон, планшет, десктоп, великий екран</span></label>
+      <label data-en="States: hover, focus, active, disabled, loading, empty, error"><input type="checkbox" id="d-b9"><span>Стани hover, focus, active, disabled, loading, empty, error</span></label>
+      <label data-en="Colors and spacing come from tokens"><input type="checkbox" id="d-b10"><span>Кольори й відступи з токенів</span></label>
+    </div>
+    <div class="grp ph-c" data-name="Check">
+      <div class="grp-h"><h3>Перевірити</h3><span class="cnt"></span></div>
+      <label data-en="Navigation, links, 404 page, browser Back button"><input type="checkbox" id="d-c1"><span>Навігація, посилання, 404, кнопка «Назад»</span></label>
+      <label data-en="Forms: empty, invalid, success, error"><input type="checkbox" id="d-c2"><span>Форми: порожня, неправильна, успіх, помилка</span></label>
+      <label data-en="Chrome, Safari, Firefox, Edge"><input type="checkbox" id="d-c3"><span>Chrome, Safari, Firefox, Edge</span></label>
+      <label data-en="Safari on a real iPhone"><input type="checkbox" id="d-c4"><span>Safari на справжньому iPhone</span></label>
+      <label data-en="Images compressed, no obvious performance problems"><input type="checkbox" id="d-c5"><span>Картинки стиснені, очевидних проблем швидкості немає</span></label>
+      <label data-en="title, description and favicon on every page"><input type="checkbox" id="d-c6"><span>title, description, favicon на кожній сторінці</span></label>
+      <label data-en="HTTPS and redirect from http"><input type="checkbox" id="d-c7"><span>HTTPS і редирект з http</span></label>
+      <label data-en="npm run build passes, lint and tests are green"><input type="checkbox" id="d-c8"><span>npm run build без помилок, lint і тести зелені</span></label>
+      <label data-en="No errors in the browser console"><input type="checkbox" id="d-c9"><span>Консоль браузера без помилок</span></label>
+    </div>
+    <div class="grp ph-d" data-name="Hand off">
+      <div class="grp-h"><h3>Здати</h3><span class="cnt"></span></div>
+      <label data-en=".env is not in git, .env.example exists"><input type="checkbox" id="d-d1"><span>.env не в git, є .env.example</span></label>
+      <label data-en="README with setup steps"><input type="checkbox" id="d-d2"><span>README з кроками запуску</span></label>
+      <label data-en="Repository handed over to the client"><input type="checkbox" id="d-d3"><span>Репозиторій переданий клієнту</span></label>
+      <label data-en="Production URL handed over"><input type="checkbox" id="d-d4"><span>Адреса робочого сайту передана</span></label>
+      <label data-en="Access and ownership handed over, passwords shared separately"><input type="checkbox" id="d-d5"><span>Доступи і власність передані, паролі окремо</span></label>
+      <label data-en="Editing instructions for the client"><input type="checkbox" id="d-d6"><span>Інструкції для редагування</span></label>
+      <label data-en="Open questions and limitations documented"><input type="checkbox" id="d-d7"><span>Відкриті питання й обмеження записані</span></label>
+      <label data-en="Scope delivered"><input type="checkbox" id="d-d8"><span>Scope виконано</span></label>
+      <label data-en="Client confirmed acceptance"><input type="checkbox" id="d-d9"><span>Клієнт підтвердив прийняття</span></label>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn-main" type="button" id="copy-open">Скопіювати незакриті як запит для Claude</button>
+    <button class="btn-ghost" type="button" id="reset">Зняти всі відмітки</button>
+    <span class="status" id="status" aria-live="polite"></span>
+  </div>
+  <textarea id="out" readonly hidden aria-label="Запит для Claude"></textarea>
+</section>
+
+<section id="sources" class="block">
+  <div class="sec-head"><h2>Джерела</h2></div>
+  <div class="srcs">
+      <p><a href="https://www.svensson.design/guides/website-handover-checklist/">Website handover checklist</a> <span>· Svensson Design</span></p>
+      <p><a href="https://frontendchecklist.io/checklists/launch-checklist">Launch checklist</a> <span>· Front-End Checklist</span></p>
+      <p><a href="https://web.dev/learn/accessibility">Learn Accessibility</a> <span>· web.dev</span></p>
+      <p><a href="https://web.dev/articles/vitals">Web Vitals</a> <span>· web.dev</span></p>
+      <p><a href="https://www.w3.org/WAI/WCAG22/Understanding/intro">Understanding WCAG 2.2</a> <span>· W3C</span></p>
+      <p><a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">Contrast (Minimum) 1.4.3</a> <span>· W3C</span></p>
+      <p><a href="https://www.w3.org/WAI/WCAG22/Understanding/reflow.html">Reflow 1.4.10</a> <span>· W3C</span></p>
+      <p><a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html">Target Size (Minimum) 2.5.8</a> <span>· W3C</span></p>
+      <p><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML">HTML: a good basis for accessibility</a> <span>· MDN</span></p>
+      <p><a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA">ARIA</a> <span>· MDN</span></p>
+      <p><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Media_queries">Media query fundamentals</a> <span>· MDN</span></p>
+      <p><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation">Client-side form validation</a> <span>· MDN</span></p>
+    </div>
+</section>
+
+</div>
+</main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-links" aria-label="Усі сторінки">
+      <a href="../prompts/">Запити</a>
+      <a href="../harness/">Харнес</a>
+      <a href="../map/">Карта фронтенду</a>
+      <a href="../learn/">Вчитися</a>
+      <a href="../presentation/">Презентація</a>
+      <a href="../3d/">Git у 3D</a>
+      <a href="../podcast/">Подкаст</a>
+      <a href="../app/">Nimbus</a>
+    </nav>
+    <p>Код і історія змін у репозиторії <a href="https://github.com/eleken-git/design-process-help">github.com/eleken-git/design-process-help</a>.</p>
+  </div>
+</footer>
+<script>
+(function(){
+  function flash(btn, text){
+    if(!btn.dataset.html) btn.dataset.html = btn.innerHTML;
+    btn.textContent = text;
+    btn.classList.add('done');
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function(){ btn.innerHTML = btn.dataset.html; btn.classList.remove('done'); }, 1800);
+  }
+  function selectNode(node){
+    try{
+      var range = document.createRange(); range.selectNodeContents(node);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    }catch(e){}
+  }
+  function writeClipboard(text){
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+    }catch(e){}
+    return Promise.reject();
+  }
+
+  // запити на зупинках
+  document.querySelectorAll('.prompt').forEach(function(box){
+    var p = box.querySelector('p'), btn = box.querySelector('.copy');
+    btn.addEventListener('click', function(){
+      writeClipboard(p.innerText.trim()).then(function(){ flash(btn, 'Скопійовано'); })
+        .catch(function(){ selectNode(p); flash(btn, 'Виділено, натисніть ⌘C'); });
+    });
+  });
+
+  // чекліст
+  var KEY = 'frontend-map-done-v1', state = {};
+  try{ state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){ state = {}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  var groups = [].slice.call(document.querySelectorAll('#done .grp'));
+  var boxes = [].slice.call(document.querySelectorAll('#done input[type=checkbox]'));
+  var status = document.getElementById('status');
+  var out = document.getElementById('out');
+
+  function render(){
+    var all = 0, done = 0;
+    groups.forEach(function(g){
+      var bs = g.querySelectorAll('input'), n = 0;
+      bs.forEach(function(b){ if(b.checked) n++; });
+      g.querySelector('.cnt').textContent = n + ' / ' + bs.length;
+      all += bs.length; done += n;
+    });
+    document.getElementById('total').textContent = done + ' з ' + all;
+    document.getElementById('total-note').textContent = done === all ? 'усе закрито, можна здавати' : 'пунктів закрито';
+    document.getElementById('total-bar').style.width = (all ? done / all * 100 : 0) + '%';
+  }
+  boxes.forEach(function(b){
+    if(state[b.id]) b.checked = true;
+    b.addEventListener('change', function(){ state[b.id] = b.checked; save(); render(); });
+  });
+  render();
+
+  function buildPrompt(){
+    var parts = [];
+    groups.forEach(function(g){
+      var items = [];
+      g.querySelectorAll('label').forEach(function(l){
+        if(!l.querySelector('input').checked) items.push('- ' + (l.dataset.en || l.querySelector('span').textContent));
+      });
+      if(items.length) parts.push(g.dataset.name + ':\n' + items.join('\n'));
+    });
+    if(!parts.length) return '';
+    return 'Check the project against the items below before we hand it to the client. For each item, say done, not done, or cannot verify, and give evidence (a screenshot, command output or a file path). Do not fix anything until I say OK.\n\n' + parts.join('\n\n');
+  }
+
+  var copyBtn = document.getElementById('copy-open');
+  copyBtn.addEventListener('click', function(){
+    var text = buildPrompt();
+    if(!text){ out.hidden = true; status.textContent = 'Усі пункти закриті, копіювати нічого.'; return; }
+    out.value = text;
+    writeClipboard(text).then(function(){
+      out.hidden = true; status.textContent = 'Скопійовано. Вставте в чат із Claude.';
+    }).catch(function(){
+      out.hidden = false; out.focus(); out.select();
+      status.textContent = 'Скопіювати не вдалося. Текст виділено нижче, натисніть ⌘C.';
+    });
+  });
+
+  var resetBtn = document.getElementById('reset'), armed = null;
+  resetBtn.addEventListener('click', function(){
+    if(!armed){
+      resetBtn.textContent = 'Точно зняти всі?';
+      resetBtn.classList.add('warnme');
+      armed = setTimeout(function(){ armed = null; resetBtn.textContent = 'Зняти всі відмітки'; resetBtn.classList.remove('warnme'); }, 4000);
+      return;
+    }
+    clearTimeout(armed); armed = null;
+    boxes.forEach(function(b){ b.checked = false; });
+    state = {}; save(); render();
+    resetBtn.textContent = 'Зняти всі відмітки'; resetBtn.classList.remove('warnme');
+    out.hidden = true; status.textContent = 'Відмітки знято.';
+  });
+  // зміст сторінки: збоку на широкому екрані, за кнопкою «Зміст» на вузькому
+  var tocNav = document.querySelector('.toc');
+  var tocBtn = document.getElementById('toc-btn');
+  if(tocNav && tocBtn){
+    var siteNav = document.querySelector('.site-nav'), tocBar = document.querySelector('.toc-bar');
+    var tocLabel = tocBtn.querySelector('.toc-v');
+    var tocLinks = [].slice.call(tocNav.querySelectorAll('a[href^="#"]'));
+    var tocTargets = tocLinks.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+    var tocActive = null;
+    tocNav.classList.add('js');
+    var stickyH = function(){
+      return (siteNav ? siteNav.offsetHeight : 0) + (tocBar && tocBar.offsetParent !== null ? tocBar.offsetHeight : 0);
+    };
+    var measure = function(){ document.documentElement.style.setProperty('--jump-h', stickyH() + 'px'); };
+    var keepInView = function(a){
+      if(!a || tocNav.scrollHeight <= tocNav.clientHeight) return;
+      var top = a.offsetTop, pad = 48;
+      if(top < tocNav.scrollTop + pad) tocNav.scrollTop = top - pad;
+      else if(top + a.offsetHeight > tocNav.scrollTop + tocNav.clientHeight - pad) tocNav.scrollTop = top + a.offsetHeight - tocNav.clientHeight + pad;
+    };
+    var spy = function(force){
+      var line = stickyH() + 24, idx = null;
+      tocTargets.forEach(function(el, i){ if(el && el.getBoundingClientRect().top <= line) idx = i; });
+      if(idx !== null && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = tocTargets.length - 1;
+      var a = idx === null ? null : tocLinks[idx];
+      if(a === tocActive && !force) return;
+      tocActive = a;
+      tocLinks.forEach(function(l){ if(l === a) l.setAttribute('aria-current', 'location'); else l.removeAttribute('aria-current'); });
+      [].forEach.call(tocNav.querySelectorAll(':scope > ol > li'), function(li){ li.classList.toggle('cur', !!a && li.contains(a)); });
+      var b = a && a.querySelector('b'), txt = a && a.querySelector('span');
+      tocLabel.textContent = a ? (b ? b.textContent + '. ' : '') + txt.textContent : '';
+      keepInView(a);
+    };
+    var openToc = function(on){
+      tocNav.classList.toggle('open', !!on);
+      tocBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+      if(on) keepInView(tocActive);
+    };
+    tocBtn.addEventListener('click', function(){ openToc(tocBtn.getAttribute('aria-expanded') !== 'true'); });
+    document.addEventListener('click', function(e){
+      if(tocBtn.getAttribute('aria-expanded') !== 'true' || e.target.closest('#toc-btn')) return;
+      if(e.target.closest('.toc a') || !e.target.closest('.toc')) openToc(false);
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && tocBtn.getAttribute('aria-expanded') === 'true'){ openToc(false); tocBtn.focus(); }
+    });
+    var ticking = false;
+    window.addEventListener('scroll', function(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){ ticking = false; spy(); });
+    }, {passive: true});
+    window.addEventListener('resize', function(){
+      measure();
+      if(window.innerWidth >= 1180) openToc(false);
+      spy(true);
+    });
+    window.addEventListener('load', function(){ measure(); spy(true); });
+    measure();
+    spy(true);
+  }
+
+})();
+</script>
+</body>
+</html>

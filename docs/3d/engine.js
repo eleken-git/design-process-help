@@ -108,7 +108,8 @@ let scene = null;
 const camera = new THREE.PerspectiveCamera(42, 16 / 9, 0.1, 200);
 const camTarget = new THREE.Vector3();
 function resize() {
-  const w = window.innerWidth, h = window.innerHeight;
+  const st = document.getElementById('stage');
+  const w = st.clientWidth || window.innerWidth, h = st.clientHeight || window.innerHeight;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.setSize(w, h, false);
   camera.aspect = w / h; camera.updateProjectionMatrix();
 }
@@ -344,7 +345,6 @@ function onFsChange() {
 }
 document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
 btnFull.onclick = toggleFullscreen;
-$('btnHome').onclick = () => { location.href = '../'; };
 
 // клік по відео — пауза/плей; подвійний — повний екран (два кліки повертають стан гри, як у YouTube)
 if (!CAPTURE) {

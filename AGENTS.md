@@ -10,7 +10,7 @@ explanations go to [`README.md`](README.md) and [`PRACTICE.md`](PRACTICE.md).
 
 A teaching repo for UX/UI designers who design in code through an AI agent and learn to work in pairs
 through branches and Pull Requests. It contains a practice app (Nimbus), a slide deck, animated 3D
-episodes about Git, a podcast player and a reading page about agent harnesses. The audience is
+episodes about Git, a podcast player, a prompt library, a frontend map and a designer harness page. The audience is
 designers, not engineers: they type requests in plain language and you do the git and the code.
 
 ## Language policy (strict)
@@ -84,16 +84,24 @@ refresh the public preview — not in every PR.
 
 | Path | What it is |
 | --- | --- |
-| `docs/index.html` | landing with three tabs: home with cards for every section (`#home`, default), frontend map (`#frontend`), the "Верстак" designer harness (`#harness`) |
+| `docs/index.html` | home: a search box that opens `prompts/?q=…`, three entries (prompts, harness, map), a learning row; also redirects old tab hashes (`/#s4`, `/#harness`, `/#ask`…) |
+| `docs/prompts/` | prompt library; it fetches `map/` and `harness/` at runtime and lists every `.prompt` found there |
+| `docs/harness/` | the designer harness ("Верстак" is the template repo name): file tree, six setup prompts, five people, five materials + `notebooklm/` source texts |
+| `docs/map/` | frontend map: 16 stations, prompts, the hand-off checklist (`localStorage` key `frontend-map-done-v1`) |
+| `docs/learn/` | learning route: deck → 3D episodes (`3d/?ep=<id>`) → podcast → Nimbus exercises |
 | `docs/presentation/` | the slide deck |
 | `docs/3d/` | the 3D player: `engine.js`, `backlog.js`, `episodes/<id>.js` + `<id>.mp3` |
 | `docs/podcast/` | podcast player, episodes are `.m4a` files next to `index.html` |
-| `docs/harness/` | reading page about agent harnesses + `notebooklm/` source texts |
 | `docs/app/` | built practice app, produced by `npm run build:pages` |
 
-Every page keeps the same GitHub Dark palette, a `← design-process-help` breadcrumb back to the landing,
-and its own `<style>` block. There is no shared CSS file across `docs/` pages on purpose: a designer can
-open one file and see everything that page uses.
+Every page keeps the same GitHub Dark palette and its own `<style>` block. There is no shared CSS or JS
+file across `docs/` pages on purpose: a designer can open one file and see everything that page uses.
+
+**The site nav is copied into every page** (`<header class="site-nav">` + the `/* спільне меню сайту */`
+CSS block + the `.skip-link`): Запити, Харнес, Карта, Вчитися. Change it in all pages in one PR;
+`tests/site-nav.spec.ts` fails when the copies drift or a page gets a horizontal scroll at 375 px.
+A prompt is a `.prompt` block on the map or harness page; the prompt library picks it up automatically.
+Design and plan of this structure: `specs/2026-09-29-site-ux-design.md`, `specs/2026-09-29-site-ux-plan.md`.
 
 ## 3D episodes
 
@@ -138,6 +146,7 @@ scripts/           compose-music.py (episode tracks), serve-docs.mjs (Range-capa
 src/tokens/        CSS variables: colors, spacing, typography
 src/components/    shared components, each with .tsx + .module.css + index.ts
 src/screens/       one folder per screen, local components inside
-tests/             Playwright: app.spec, landing.spec, player.spec, deck.spec, 3d-episodes.spec
+tests/             Playwright: app, landing, site-nav, prompts, player, deck, 3d-episodes
+specs/             design specs and implementation plans (English)
 docs/              GitHub Pages site (see the table above)
 ```

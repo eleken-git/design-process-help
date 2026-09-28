@@ -2,115 +2,1027 @@
 <html lang="uk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Будуємо харнес · design-process-help</title>
-<meta name="description" content="Чотири матеріали про те, як зробити роботу з AI-агентом передбачуваною: правила для агента, специфікації перед кодом, навички і процес. Простими словами для дизайнерів.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Харнес · design-process-help</title>
+<meta name="description" content="Харнес для дизайнерів, які роблять фронтенд із Claude: які файли покласти в проєкт, як зібрати шаблон «Верстак» за шість запитів, робочий день, ворота якості і п'ять матеріалів, на яких це побудовано.">
 <style>
 :root{
-  /* та сама палітра GitHub Dark, що й на лендінгу, у презентації, 3D-плеєрі та подкасті */
+  /* палітра GitHub Dark, як на інших сторінках design-process-help */
   color-scheme:dark;
-  --bg:#0D1117;--surface:#161B22;--border:#30363D;--border-muted:#21262D;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
   --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
-  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--orange:#F78166;--yellow:#D29922;
-  --hover:rgba(110,118,129,.12);
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;--btn-text:#FFFFFF;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
-  --r:6px;--r-lg:8px;
 }
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+    --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+    --text:#1F2328;--muted:#59636E;--faint:#818B98;
+    --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+    --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+    --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+  }
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#FFFFFF;--surface:#F6F8FA;--surface-2:#EAEEF2;--border:#D0D7DE;--border-muted:#D8DEE4;
+  --text:#1F2328;--muted:#59636E;--faint:#818B98;
+  --blue:#0969DA;--green:#1A7F37;--purple:#8250DF;--yellow:#9A6700;--red:#CF222E;--orange:#BC4C00;
+  --hover:rgba(175,184,193,.2);--ok-bg:rgba(26,127,55,.08);--bad-bg:rgba(207,34,46,.06);
+  --btn:#0969DA;--btn-hover:#0550AE;--btn-active:#033D8B;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1117;--surface:#161B22;--surface-2:#1C2128;--border:#30363D;--border-muted:#21262D;
+  --text:#E6EDF3;--muted:#8B949E;--faint:#6E7681;
+  --blue:#58A6FF;--green:#3FB950;--purple:#A371F7;--yellow:#D29922;--red:#F85149;--orange:#F78166;
+  --hover:rgba(110,118,129,.14);--ok-bg:rgba(63,185,80,.12);--bad-bg:rgba(248,81,73,.1);
+  --btn:#1F6FEB;--btn-hover:#1158C7;--btn-active:#0D419D;
+}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,p,ul,ol,figure,pre{margin:0}
+ul,ol{padding:0;list-style:none}
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
-h1,h2,h3,p,ul{margin:0}
-a:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:var(--r)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+code{font:.88em var(--mono);padding:.1em .35em;border-radius:4px;background:var(--hover)}
+pre code{padding:0;background:none;font-size:inherit}
 
-.wrap{max-width:1040px;margin:0 auto;padding:40px 24px 80px}
-.page{display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px;align-items:start}
-.content{min-width:0;max-width:760px}
-.crumb-home{display:inline-block;font:12px var(--mono);color:var(--muted);margin-bottom:36px}
-.crumb-home:hover{color:var(--text);text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:24px}
 
-header{padding-bottom:28px;margin-bottom:8px;border-bottom:1px solid var(--border-muted)}
-.kicker{font:12px var(--mono);color:var(--faint);margin-bottom:12px}
-header h1{font-size:36px;line-height:1.15;letter-spacing:-.02em;margin-bottom:14px}
-header p{color:var(--muted);max-width:60ch}
-header p+p{margin-top:10px}
-header b{color:var(--text);font-weight:600}
+/* шапка */
+.top{padding-block:36px 40px}
+.crumb{display:inline-block;font:12px var(--mono);color:var(--muted)}
+.crumb:hover{color:var(--text);text-decoration:none}
+.kicker{font:12px var(--mono);color:var(--faint);margin:32px 0 12px}
+h1{font-size:46px;line-height:1.08;letter-spacing:-.028em;text-wrap:balance}
+.lede{margin-top:18px;max-width:60ch;color:var(--muted);font-size:17px;line-height:1.55}
+.lede+.lede{margin-top:10px}
+.lede b{color:var(--text);font-weight:600}
 
-/* бічна навігація: липка, підсвічує розділ, який зараз на екрані */
-.side{position:sticky;top:24px;display:grid;gap:2px}
-.side .lbl{font:12px var(--mono);color:var(--faint);padding:0 12px;margin-bottom:6px}
-.side a{display:grid;gap:1px;padding:8px 12px;border-left:2px solid transparent;border-radius:0 var(--r) var(--r) 0;color:var(--muted);font-size:14px;line-height:1.35}
-.side a b{font-weight:600;color:var(--text)}
-.side a span{font:11.5px var(--mono);color:var(--faint)}
-.side a:hover{color:var(--text);background:var(--hover);text-decoration:none}
-.side a.active{border-left-color:var(--blue);background:var(--hover)}
-.side a.active b{color:var(--text)}
-.side .back{margin-top:14px;padding:8px 12px;font:12px var(--mono);color:var(--muted)}
-.side .back:hover{color:var(--text)}
+section{scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
+.block{padding-block:48px;border-top:1px solid var(--border-muted)}
+.sec-head{display:grid;gap:8px;margin-bottom:26px}
+.sec-head h2{font-size:28px;line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
+.sec-head p{color:var(--muted);max-width:64ch}
 
-/* матеріал */
-.item{padding:40px 0;border-bottom:1px solid var(--border-muted);scroll-margin-top:24px}
-.item:last-of-type{border-bottom:0}
-.src{display:flex;align-items:center;gap:8px;font:12px var(--mono);color:var(--muted);margin-bottom:10px}
-.src i{width:8px;height:8px;border-radius:50%;background:var(--dot,var(--blue));flex:none}
-.item h2{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin-bottom:16px}
-.item h3{font-size:13px;font-weight:600;color:var(--muted);margin:22px 0 8px}
-.item h3:first-of-type{margin-top:0}
-.item p{max-width:66ch}
-.item ul{padding-left:20px;max-width:66ch;display:grid;gap:8px}
-.item li::marker{color:var(--faint)}
-.us{margin-top:22px;padding:14px 16px;border-left:3px solid var(--dot,var(--blue));background:var(--surface);border-radius:0 var(--r-lg) var(--r-lg) 0;color:var(--text);max-width:66ch}
-.us b{font-weight:600}
-.open{display:inline-flex;align-items:center;gap:8px;margin-top:20px;height:36px;padding:0 14px;border:1px solid var(--border);border-radius:999px;color:var(--text);font-size:13px;font-weight:600}
-.open:hover{border-color:var(--faint);background:var(--hover);text-decoration:none}
-.open svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* кольори етапів */
+.ph-a{--c:var(--yellow)}
+.ph-b{--c:var(--blue)}
+.ph-c{--c:var(--purple)}
+.ph-d{--c:var(--green)}
 
-.item.karpathy{--dot:var(--blue)}
-.item.agents{--dot:var(--yellow)}
-.item.sdd{--dot:var(--purple)}
-.item.speckit{--dot:var(--green)}
-.item.superpowers{--dot:var(--orange)}
-.item code{font:13px var(--mono);color:var(--text)}
+/* карта метро */
+.metro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.line{position:relative;border:1px solid var(--border);border-radius:8px;background:var(--surface);padding:16px 16px 18px}
+.line:not(:last-child)::after{content:"→";position:absolute;right:-18px;top:22px;width:14px;text-align:center;color:var(--faint);font-size:13px}
+.line-head{display:grid;gap:2px;padding-bottom:12px;margin-bottom:12px;border-bottom:3px solid var(--c)}
+.line-head b{font-size:18px;letter-spacing:-.01em}
+.line-head span{font:12px var(--mono);color:var(--muted)}
+.stops{position:relative;display:grid;gap:2px}
+.stops::before{content:"";position:absolute;left:13px;top:18px;bottom:18px;width:4px;border-radius:2px;background:var(--c)}
+.stops a{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:12px;padding:6px 0;color:var(--text)}
+.stops a:hover{text-decoration:none}
+.stops a:hover .nm{text-decoration:underline}
+.dot{width:30px;height:30px;border-radius:50%;border:4px solid var(--c);background:var(--bg);display:grid;place-items:center;font:700 11px var(--mono);color:var(--text)}
+.stops .end .dot{background:var(--c);color:var(--bg);font-size:13px}
+.nm{display:block;font-weight:600;font-size:14px;line-height:1.3}
+.tm{display:block;font:11.5px var(--mono);color:var(--muted)}
 
-footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border-muted);color:var(--faint);font-size:13px}
-footer a{color:var(--muted)}
+/* етапи і зупинки */
+.phase{padding-block:56px 8px;border-top:1px solid var(--border-muted)}
+.phase-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.phase-head .bar{width:40px;height:6px;border-radius:3px;background:var(--c)}
+.phase-head h2{font-size:32px;line-height:1.15;letter-spacing:-.02em}
+.phase-head span{font:13px var(--mono);color:var(--muted)}
+.station{padding-block:36px;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
+.station:last-child{border-bottom:0}
+.st-head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.num{flex:none;width:42px;height:42px;border-radius:50%;border:4px solid var(--c);display:grid;place-items:center;font:700 14px var(--mono)}
+.st-head h3{font-size:23px;line-height:1.2;letter-spacing:-.012em;text-wrap:balance}
+.st-head .tm{font-size:12px}
+.st-body{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:32px;align-items:start}
+.pic{min-width:0;display:grid;gap:14px;padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.pic figcaption{font-size:13px;color:var(--muted)}
+.st-text{min-width:0;display:grid;gap:14px}
+.eli{font-size:18px;line-height:1.5;font-weight:500;max-width:52ch;text-wrap:pretty}
+.st-text h4{margin-top:6px;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks li{font-size:13px;line-height:1.35;padding:5px 10px;border:1px solid var(--border);border-radius:999px;background:var(--bg)}
+.prompt{border:1px solid var(--border);border-left:3px solid var(--c);border-radius:0 8px 8px 0;background:var(--surface);padding:14px 16px}
+.prompt p{font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.prompt .ph{color:var(--c);font-weight:600}
+.copy{margin-top:10px;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:600 12.5px var(--sans);cursor:pointer}
+.copy:hover{border-color:var(--faint)}
+.copy.done{color:var(--green);border-color:var(--green)}
+.copy svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.self{font-size:14px;color:var(--muted);max-width:60ch}
+.self b{color:var(--text);font-weight:600}
+.note{font-size:13.5px;color:var(--muted);padding-left:12px;border-left:2px solid var(--border);max-width:60ch}
 
-@media (max-width:820px){
-  .page{grid-template-columns:1fr;gap:24px}
-  .side{position:static;display:flex;flex-wrap:wrap;gap:4px 12px}
-  .side .lbl,.side .back,.side a span{display:none}
-  .side a{padding:6px 0;border-left:0;border-bottom:2px solid transparent;border-radius:0}
-  .side a.active{background:none;border-bottom-color:var(--blue)}
+/* спільне для картинок */
+.cap{font:600 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+.pre{font:12.5px/1.65 var(--mono);background:var(--bg);border:1px solid var(--border-muted);border-radius:6px;padding:12px 14px;overflow-x:auto;white-space:pre;color:var(--text)}
+.g{color:var(--green)}.r{color:var(--red)}.y{color:var(--yellow)}.b{color:var(--blue)}.p{color:var(--purple)}.m{color:var(--muted)}
+
+/* 1. межі */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two ul{display:grid}
+.two li{display:flex;gap:8px;font-size:13.5px;line-height:1.35;padding:6px 0;border-bottom:1px dashed var(--border-muted)}
+.two li:last-child{border-bottom:0}
+.two .ok li::before{content:"✓";color:var(--green);font-weight:700}
+.two .no li::before{content:"✕";color:var(--red);font-weight:700}
+.two .ok .cap{color:var(--green)}.two .no .cap{color:var(--red)}
+.two .cap{margin-bottom:6px;display:block}
+
+/* 3. семантика */
+.wire{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.wf{display:grid;gap:6px;padding:10px;border-radius:6px;background:var(--bg);border:1px solid var(--border-muted)}
+.wf .cap{margin-bottom:2px}
+.bx{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;padding:6px 7px;border:1.5px solid var(--c);border-radius:4px;font:11px/1.3 var(--mono);color:var(--c);min-height:30px}
+.wf .mid{display:grid;grid-template-columns:1fr 34%;gap:6px}
+.wf .mn{flex-direction:column;align-items:stretch;min-height:92px}
+.wf .mn .bx{min-height:24px}
+.soup .bx{border-color:var(--faint);border-style:dashed;color:var(--faint)}
+.tree{font-size:13px}
+
+/* 4. доступність */
+.focus-demo{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.key{display:inline-grid;place-items:center;min-width:46px;height:30px;padding:0 8px;border:1px solid var(--border);border-bottom-width:3px;border-radius:6px;background:var(--bg);font:600 12px var(--mono)}
+.arrow{color:var(--faint);font-family:var(--mono)}
+.mb{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:6px;font:600 13px var(--sans);white-space:nowrap}
+.mb.sec{border:1px solid var(--border);background:var(--surface-2);color:var(--text)}
+.mb.pri{background:var(--btn);color:var(--btn-text)}
+.mb.ring{outline:2px solid var(--blue);outline-offset:3px}
+.swatches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sw{display:grid;gap:2px;padding:12px;border-radius:6px;background:#0D1117;border:1px solid #30363D}
+.sw .aa{font-size:30px;font-weight:700;line-height:1.1}
+.sw .ratio{font:600 12.5px var(--mono);color:#E6EDF3}
+.sw .verdict{font-size:12px;line-height:1.35;color:#E6EDF3}
+.principles{display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--muted)}
+.principles span{padding:3px 8px;border-radius:4px;background:var(--bg);border:1px solid var(--border-muted)}
+
+/* 6. стани */
+.states{display:flex;flex-wrap:wrap;gap:14px 10px}
+.st{display:grid;gap:6px;justify-items:start}
+.st .tm{font-size:11px}
+.mb.hov{background:var(--btn-hover)}
+.mb.act{background:var(--btn-active);transform:translateY(1px)}
+.mb.dis{opacity:.4}
+.spin{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#FFFFFF}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld{display:grid;gap:4px;font-size:12.5px}
+.fld .lb{font-weight:600}
+.fld .in{height:32px;display:flex;align-items:center;padding:0 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:13px}
+.fld .in.ph{color:var(--faint)}
+.fld.bad .in{border-color:var(--red)}
+.fld.bad .msg{color:var(--red)}
+.fld.good .in{border-color:var(--green)}
+.fld.good .msg{color:var(--green)}
+.fld .msg{line-height:1.35}
+
+/* 7. код */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cols2>div:not(.pre){display:grid;gap:6px;min-width:0;align-content:start}
+.cols2>.pre{min-width:0}
+.cap.g{color:var(--green)}.cap.r{color:var(--red)}
+
+/* 8. сценарії */
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.flow .n{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:13px;white-space:nowrap}
+.flow .n.hot{border-color:var(--red);color:var(--red);font-family:var(--mono);font-weight:600}
+.flow .n.win{border-color:var(--green);color:var(--green)}
+.flow .ar{color:var(--faint);font-family:var(--mono);font-size:12px}
+
+/* 9. браузери */
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tab{border:1px solid var(--border);border-radius:8px;background:var(--bg);overflow:hidden}
+.tab-top{display:flex;gap:4px;align-items:center;height:20px;padding:0 8px;background:var(--surface-2)}
+.tab-top i{width:6px;height:6px;border-radius:50%;background:var(--faint)}
+.tab-body{display:grid;gap:2px;padding:12px 10px}
+.tab-body b{font-size:14px}
+.tab-body span{font:11.5px var(--mono);color:var(--muted)}
+.tab.hot{border-color:var(--c)}
+.tab.hot .tab-body em{font-style:normal;font-size:11.5px;line-height:1.3;color:var(--c);margin-top:4px}
+
+/* 10. швидкість */
+.weights{display:grid;gap:10px}
+.wt{display:grid;gap:4px}
+.wt span{font:12px var(--mono);color:var(--muted)}
+.wt i{display:block;height:14px;border-radius:3px}
+.wt.heavy i{width:100%;background:var(--red)}
+.wt.light i{width:3%;min-width:8px;background:var(--green)}
+.vitals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.vt{display:grid;gap:2px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
+.vt .mono{font-size:12px;font-weight:700;color:var(--c)}
+.vt b{font-size:22px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.vt span{font-size:12px;line-height:1.35;color:var(--muted)}
+
+/* 14. доступи */
+.tbl-wrap{overflow-x:auto}
+.acc{width:100%;border-collapse:collapse;font-size:13px;min-width:380px}
+.acc th{text-align:left;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--border)}
+.acc td{padding:7px 8px;border-bottom:1px solid var(--border-muted)}
+.acc td:nth-child(2){color:var(--green);font-weight:600}
+.warn{padding:10px 12px;border:1px dashed var(--red);border-radius:6px;background:var(--bad-bg);font-size:13px;line-height:1.45}
+.warn b{color:var(--red)}
+
+/* скіли */
+.skill-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+.skill-flow .n{padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);font:13px var(--mono)}
+.skill-flow .n.cmd{border-color:var(--blue);color:var(--blue);font-weight:700}
+.skill-flow .ar{color:var(--faint);font-family:var(--mono)}
+.where{font-size:14px;color:var(--muted);max-width:70ch;margin-bottom:26px}
+.skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sk{display:grid;gap:8px;align-content:start;padding:16px;border:1px solid var(--border);border-top:3px solid var(--c);border-radius:8px;background:var(--surface)}
+.sk .nmx{font:700 15px var(--mono)}
+.sk p{font-size:14px;color:var(--muted)}
+.sk .links{font-size:12.5px;color:var(--faint)}
+.sk .links a{font-family:var(--mono)}
+.skill-make{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;margin-top:32px;align-items:start}
+.skill-make h3{font-size:19px;margin-bottom:12px}
+.skill-rules{display:grid;gap:12px}
+.skill-rules li{display:grid;grid-template-columns:22px 1fr;font-size:14.5px}
+.skill-rules li::before{content:"✓";color:var(--green);font-weight:700}
+.skill-rules li span{color:var(--muted)}
+.ph-s{--c:var(--blue)}
+
+/* чекліст */
+.progress{display:grid;gap:8px;margin-bottom:20px;max-width:560px}
+.progress .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.progress b{font-size:22px;font-variant-numeric:tabular-nums}
+.progress span{font-size:13px;color:var(--muted)}
+.track{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--green);border-radius:4px}
+@media (prefers-reduced-motion: no-preference){.track i{transition:width .25s ease}}
+.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grp{padding:16px 18px 8px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.grp-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:10px;margin-bottom:4px;border-bottom:3px solid var(--c)}
+.grp-h h3{font-size:17px}
+.grp-h span{font:600 12.5px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.grp label{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;padding:8px 0;font-size:14px;line-height:1.4;border-bottom:1px dashed var(--border-muted);cursor:pointer}
+.grp label:last-child{border-bottom:0}
+.grp input{width:16px;height:16px;margin:2px 0 0;accent-color:var(--c);cursor:pointer}
+.grp input:checked+span{color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px}
+.btn-main,.btn-ghost{height:36px;padding:0 16px;border-radius:6px;font:600 13.5px var(--sans);cursor:pointer}
+.btn-main{border:0;background:var(--btn);color:var(--btn-text)}
+.btn-main:hover{background:var(--btn-hover)}
+.btn-ghost{border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.btn-ghost:hover{border-color:var(--faint)}
+.btn-ghost.warnme{border-color:var(--red);color:var(--red)}
+.status{font-size:13px;color:var(--muted)}
+#out{display:block;width:100%;min-height:180px;margin-top:14px;padding:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:12.5px/1.55 var(--mono);resize:vertical}
+
+/* підвал */
+footer{padding-block:32px 56px;border-top:1px solid var(--border-muted);color:var(--muted);font-size:13px}
+footer h2{font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 28px;margin-bottom:24px}
+.srcs a{color:var(--text)}
+.srcs span{color:var(--faint)}
+
+@media (max-width:920px){
+  .metro{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .line::after{display:none}
+  .formula{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .f-step::after{display:none}
+  .st-body,.skill-make{grid-template-columns:1fr}
+  .skills{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rules{grid-template-columns:1fr;gap:14px}
 }
 @media (max-width:640px){
-  header h1{font-size:28px}
+  .wrap{padding-inline:16px}
+  h1{font-size:36px}
+  .phase-head h2{font-size:26px}
+  .metro,.formula,.skills,.groups,.srcs{grid-template-columns:1fr}
+  .pack{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vitals{grid-template-columns:1fr}
+  .wire,.cols2,.consoles,.lanes,.fields{grid-template-columns:1fr}
+  .swatches{grid-template-columns:1fr}
+  .pic{padding:16px}
+  .eli{font-size:17px}
+}
+@media (max-width:400px){.two{grid-template-columns:1fr}}
+[hidden]{display:none!important}
+img{max-width:100%}
+
+
+
+/* зміст сторінки: збоку від 1180 px, вужче за кнопкою «Зміст» під меню */
+.toc-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:340px;height:34px;padding:0 10px 0 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:13px var(--sans);cursor:pointer}
+.toc-btn:hover{background:var(--surface-2)}
+.toc-k{flex:none;color:var(--muted);font-weight:600}
+.toc-v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.toc-v:empty{display:none}
+.toc-btn svg{flex:none;margin-left:auto;color:var(--muted)}
+.toc-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+.toc{display:none}
+.toc-title{margin:0 0 10px 12px;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.toc>ol{border-left:1px solid var(--border-muted)}
+.toc ol ol{margin:2px 0 6px}
+.toc a{display:flex;align-items:baseline;gap:9px;margin-left:-1px;padding:5px 10px 5px 12px;border-left:2px solid transparent;border-radius:0 6px 6px 0;color:var(--muted);font-size:13.5px;line-height:1.35}
+.toc a:hover{color:var(--text);background:var(--hover);text-decoration:none}
+.toc ol ol a{padding-left:22px;font-size:13px}
+.toc a i{flex:none;align-self:center;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.toc a b{flex:none;min-width:16px;font:600 11px var(--mono);color:var(--faint);text-align:right}
+.toc li.cur>a{color:var(--text)}
+.toc a[aria-current]{color:var(--text);font-weight:600;border-left-color:var(--c,var(--blue));background:var(--hover)}
+.toc a[aria-current] b{color:var(--text)}
+.toc.js li:not(.cur)>ol{display:none}
+
+@media (min-width:1180px){
+  .wrap{max-width:1368px}
+  .panel.has-toc{display:grid;grid-template-columns:208px minmax(0,1fr);gap:48px;align-items:start}
+  .panel-main{min-width:0}
+  .toc{display:block;position:sticky;top:var(--jump-h,48px);max-height:calc(100vh - var(--jump-h,48px));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-block:36px 32px}
+  .toc-btn{display:none}
+}
+@media (max-width:1179px){
+  .toc.open{display:block;position:fixed;z-index:20;top:calc(var(--jump-h,48px) + 6px);right:max(24px,calc((100vw - 1072px) / 2));width:min(340px,calc(100vw - 48px));max-height:calc(100dvh - var(--jump-h,48px) - 24px);overflow-y:auto;overscroll-behavior:contain;padding:14px 12px 12px 8px;border:1px solid var(--border);border-radius:10px;background:var(--surface);box-shadow:0 16px 40px rgba(1,4,9,.4)}
+  .toc.open .toc-title{margin-left:14px}
+}
+@media (max-width:640px){
+  .toc-btn{flex:1 1 100%;max-width:none;margin-left:0}
+  .toc.open{left:16px;right:16px;width:auto}
+}
+
+/* харнес: кольори людей */
+.hz{--c:var(--blue)}
+.p-hunt{--c:var(--yellow)}.p-hash{--c:var(--blue)}.p-karp{--c:var(--purple)}.p-osm{--c:var(--green)}.p-yeg{--c:var(--orange)}
+.person .st-head{flex-wrap:wrap}
+.num.ini{font-size:12px}
+.verdict{margin-left:auto;flex:none;padding:3px 10px;border:1px solid var(--c);border-radius:999px;color:var(--c);font:600 12px var(--mono);white-space:nowrap}
+
+/* харнес: шари навколо моделі */
+.rings-pic{padding:24px}
+.ring{display:grid;gap:10px;padding:12px 14px 14px;border:1.5px solid var(--rc);border-radius:14px}
+.r4,.r2{background:var(--bg)}.r3,.r1{background:var(--surface)}
+.r4{--rc:var(--yellow)}.r3{--rc:var(--purple)}.r2{--rc:var(--green)}.r1{--rc:var(--blue)}
+.rl{font:700 11.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--rc)}
+.ri{font-size:13px;color:var(--muted)}
+.core{display:grid;justify-items:center;gap:2px;padding:18px;border-radius:10px;background:var(--surface-2);font-size:20px;font-weight:700}
+.core span{font:400 12px var(--mono);color:var(--muted)}
+
+/* харнес: сходинки, файли, порівняння, сесії */
+.ladder{display:grid;gap:6px}
+.rung{display:grid;gap:2px;padding:9px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
+.rung.s2{margin-left:8%}
+.rung.s3{margin-left:16%;border-color:var(--c)}
+.rung em{font:600 11px var(--mono);font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.rung b{font-size:14px}
+.rung span{font:12px var(--mono);color:var(--muted)}
+.ladder.big .rung{padding:12px 16px}
+.ladder.big .rung b{font-size:15.5px}
+.ladder.big .rung span{font:13.5px var(--sans)}
+.files3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.f3{display:grid;gap:2px;padding:10px;border:1px solid var(--border);border-radius:6px;background:var(--bg)}
+.f3 .mono{font-size:12.5px;font-weight:700}
+.f3 b{font-size:12px;font-weight:500;color:var(--muted)}
+.f3.hl{border-color:var(--c)}
+.f3.dim{opacity:.55}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs>div{display:grid;gap:6px;align-content:start;min-width:0}
+.bubble{padding:10px 12px;border-radius:12px 12px 12px 2px;background:var(--surface-2);font-size:13.5px}
+.vs .m,.vs .g{font-size:12.5px}
+.formula-mini{padding:8px;border:1px dashed var(--border);border-radius:6px;text-align:center;font-size:15px;color:var(--muted)}
+.formula-mini b{color:var(--c)}
+.sessions{display:flex;gap:8px}
+.ses{flex:1;padding:10px 6px;border:1.5px dashed var(--faint);border-radius:6px;color:var(--faint);font:12.5px var(--mono);text-align:center}
+.ses.gone::after{content:" ✕"}
+.ses.live{border-style:solid;border-color:var(--c);color:var(--text)}
+.state{padding:10px 12px;border-radius:6px;background:var(--c);color:var(--bg);font:700 13px var(--mono);text-align:center}
+.stack{display:grid;gap:8px;margin-top:36px;max-width:820px}
+.sl{display:grid;grid-template-columns:100px 140px minmax(0,1fr);align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-left:4px solid var(--c);border-radius:8px;background:var(--surface)}
+.sl .who{font:600 12px var(--mono);color:var(--c)}
+.sl b{font-size:15px}
+.sl span:last-child{font-size:13.5px;color:var(--muted)}
+.sl.result{--c:var(--text);background:var(--surface-2)}
+
+/* харнес: постійне і змінне */
+.uni{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.uni-col{display:grid;gap:6px;align-content:start;padding:18px;border:1px solid var(--border);border-top:3px solid var(--uc);border-radius:8px;background:var(--surface)}
+.uni-col.keep{--uc:var(--blue)}.uni-col.vary{--uc:var(--yellow)}
+.uni-col h3{font-size:18px}
+.uni-col p{font-size:14px;color:var(--muted)}
+.uni-col ul{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.uni-col li{padding:4px 9px;border:1px solid var(--border);border-radius:4px;background:var(--bg);font:12.5px var(--mono)}
+.where2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:24px}
+.where2 b{display:block;font-size:15px}
+.where2 p{margin-top:4px;font-size:14px;color:var(--muted)}
+
+/* харнес: дерево файлів */
+.explorer{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:start}
+.ftree{padding:12px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font:13px/1.2 var(--mono);overflow-x:auto}
+.ftree .row{display:flex;align-items:center;min-height:26px;white-space:pre}
+.ftree .pfx{color:var(--faint)}
+.ftree .dir{padding:3px 6px;color:var(--muted)}
+.ftree button{display:inline-flex;align-items:center;gap:7px;padding:3px 7px;border:0;border-radius:4px;background:none;color:var(--text);font:inherit;cursor:pointer}
+.ftree button:hover{background:var(--hover)}
+.ftree button[aria-pressed="true"]{background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--blue)}
+.ftree i,.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}
+i.k{background:var(--blue)}i.v{background:var(--yellow)}
+.legend{display:flex;gap:16px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.fdetail{position:sticky;top:calc(var(--jump-h,48px) + 12px);min-width:0;display:grid;gap:12px;padding:20px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.fdetail h3{font:700 19px var(--mono)}
+.fmeta{display:flex;flex-wrap:wrap;gap:6px}
+.fmeta span{padding:3px 9px;border:1px solid var(--border);border-radius:999px;font-size:12.5px;color:var(--muted)}
+.fmeta span:first-child{color:var(--blue);border-color:var(--blue)}
+.fmeta span.v:first-child{color:var(--yellow);border-color:var(--yellow)}
+.fdetail p{font-size:15px}
+
+/* харнес: робочий день */
+.loop{display:grid;gap:8px;max-width:820px}
+.ls{display:grid;grid-template-columns:28px 76px minmax(0,1fr);align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.ls .k,.gate .k{font:700 12px var(--mono);color:var(--muted)}
+.actor{justify-self:start;padding:2px 8px;border-radius:4px;font:600 11.5px var(--mono)}
+.actor.you{color:var(--yellow);background:color-mix(in srgb,var(--yellow) 14%,transparent)}
+.actor.cl{color:var(--blue);background:color-mix(in srgb,var(--blue) 14%,transparent)}
+.actor.gw{color:var(--purple);background:color-mix(in srgb,var(--purple) 14%,transparent)}
+.ls p{font-size:15px}
+.ls p .mono{display:block;font-size:12px;color:var(--muted)}
+.branch{margin-left:40px;padding:6px 12px;border-left:2px dashed var(--red);color:var(--red);font-size:13.5px}
+.again{padding:6px 14px;color:var(--muted);font-size:14px}
+.loop-note{margin-top:16px}
+
+/* харнес: помилка → правило, ворота, збірка, чого не брати */
+.rules-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start}
+.rtbl{width:100%;min-width:420px;border-collapse:collapse;font-size:14px}
+.rtbl th{padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.rtbl td{padding:9px 10px;border-bottom:1px solid var(--border-muted);vertical-align:top}
+.rtbl td.mono{font-size:12.5px;color:var(--c)}
+.rule-prompt{margin-top:24px;max-width:820px}
+.gates-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:center}
+.gates{border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.gate{display:grid;grid-template-columns:24px minmax(0,190px) minmax(0,1fr);align-items:baseline;gap:12px;padding:10px 14px;border-top:1px solid var(--border-muted);background:var(--surface)}
+.gate:first-child{border-top:0}
+.gate .mono{font-size:13px;font-weight:600}
+.gate span:last-child{font-size:13.5px;color:var(--muted)}
+.pull{max-width:24ch;padding-left:18px;border-left:4px solid var(--purple);font-size:24px;line-height:1.35;font-weight:600;letter-spacing:-.012em;text-wrap:balance}
+.bsteps{display:grid;gap:28px;max-width:860px}
+.bstep{display:grid;grid-template-columns:42px minmax(0,1fr);gap:16px;align-items:start}
+.bstep>div{display:grid;gap:12px;min-width:0}
+.bstep h3{padding-top:8px;font-size:19px;line-height:1.3}
+.newproj{display:grid;gap:10px;max-width:860px;margin-top:32px;padding:18px;border:1px dashed var(--border);border-radius:8px}
+.skip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sk-no{display:grid;gap:4px;padding:16px 18px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.sk-no b{font-size:15.5px}
+.sk-no b::before{content:"✕ ";color:var(--red)}
+.sk-no p{font-size:14px;color:var(--muted)}
+
+/* підвал */
+.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:10px}
+.foot-links a{color:var(--text)}
+
+@media (max-width:920px){
+  .explorer,.rules-grid,.gates-grid{grid-template-columns:1fr}
+  .fdetail{position:static}
+  .where2{grid-template-columns:1fr;gap:14px}
+}
+@media (max-width:640px){
+  .uni,.vs,.skip,.files3,.hub-grid{grid-template-columns:1fr}
+  .sl{grid-template-columns:1fr;gap:2px}
+  .ls{grid-template-columns:24px minmax(0,1fr)}
+  .ls .actor,.ls p{grid-column:2}
+  .gate{grid-template-columns:24px minmax(0,1fr)}
+  .gate span:last-child{grid-column:2}
+  .verdict{margin-left:0}
+  .pull{font-size:20px}
+  .rings-pic{padding:14px}
+  .ring{padding:10px}
+  .branch{margin-left:24px}
+}
+
+/* рядок з кнопкою «Зміст» під меню, лише на вузьких екранах */
+.toc-bar{position:sticky;top:var(--nav-h,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--border-muted)}
+.toc-bar .wrap{display:flex;padding-block:8px}
+.toc-bar .toc-btn{margin-left:0}
+.stats{margin-top:12px;font:12px var(--mono);color:var(--faint)}
+@media (min-width:1180px){.toc-bar{display:none}}
+@media (max-width:1179px){.toc.open{right:auto;left:max(24px,calc((100vw - 1072px) / 2))}}
+@media (max-width:640px){.toc.open{left:16px;right:16px}}
+
+/* п'ять матеріалів */
+#h-materials{--r:6px;--r-lg:8px}
+#h-materials .item{padding:40px 0;border-bottom:1px solid var(--border-muted);scroll-margin-top:calc(var(--jump-h,48px) + 8px)}
+#h-materials .item:last-of-type{border-bottom:0}
+#h-materials .src{display:flex;align-items:center;gap:8px;font:12px var(--mono);color:var(--muted);margin-bottom:10px}
+#h-materials .src i{width:8px;height:8px;border-radius:50%;background:var(--dot,var(--blue));flex:none}
+#h-materials .item h2{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin-bottom:16px}
+#h-materials .item h3{font-size:13px;font-weight:600;color:var(--muted);margin:22px 0 8px}
+#h-materials .item h3:first-of-type{margin-top:0}
+#h-materials .item p{max-width:66ch}
+#h-materials .item ul{padding-left:20px;max-width:66ch;display:grid;gap:8px}
+#h-materials .item li::marker{color:var(--faint)}
+#h-materials .us{margin-top:22px;padding:14px 16px;border-left:3px solid var(--dot,var(--blue));background:var(--surface);border-radius:0 var(--r-lg) var(--r-lg) 0;color:var(--text);max-width:66ch}
+#h-materials .us b{font-weight:600}
+#h-materials .open{display:inline-flex;align-items:center;gap:8px;margin-top:20px;height:36px;padding:0 14px;border:1px solid var(--border);border-radius:999px;color:var(--text);font-size:13px;font-weight:600}
+#h-materials .open:hover{border-color:var(--faint);background:var(--hover);text-decoration:none}
+#h-materials .open svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+#h-materials .item.karpathy{--dot:var(--blue)}
+#h-materials .item.agents{--dot:var(--yellow)}
+#h-materials .item.sdd{--dot:var(--purple)}
+#h-materials .item.speckit{--dot:var(--green)}
+#h-materials .item.superpowers{--dot:var(--orange)}
+#h-materials .item code{font:13px var(--mono);color:var(--text)}
+#h-materials .item:first-child{padding-top:8px}
+#h-materials .nlm{margin-top:24px;color:var(--faint);font-size:13px}
+#h-materials .nlm code{font-size:12px}
+/* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
+:root{--nav-h:52px}
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100;padding:8px 12px;border-radius:6px;background:var(--surface);color:var(--text);font:13px var(--sans);text-decoration:none}
+.skip-link:focus{top:10px}
+.site-nav{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;height:var(--nav-h);padding:0 20px;background:var(--bg);border-bottom:1px solid var(--border-muted);font-family:var(--sans)}
+.site-logo{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-width:0;color:var(--text);font:600 13px var(--mono);text-decoration:none;white-space:nowrap}
+.site-logo:hover{color:var(--text);text-decoration:none}
+.site-mark{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:var(--text);color:var(--bg);font:700 14px/1 var(--sans)}
+.site-nav nav{display:flex;gap:2px;max-width:100%;padding:3px;overflow-x:auto;scrollbar-width:none;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.site-nav nav::-webkit-scrollbar{display:none}
+.site-nav nav a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:7px;color:var(--muted);font:500 13px var(--sans);white-space:nowrap;text-decoration:none}
+.site-nav nav a:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14));text-decoration:none}
+.site-nav nav a[aria-current="page"]{background:var(--surface-2,#1C2128);color:var(--text);box-shadow:inset 0 0 0 1px var(--border)}
+.site-nav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.site-gh{justify-self:end;display:grid;place-items:center;width:32px;height:32px;border-radius:8px;color:var(--muted)}
+.site-gh:hover{color:var(--text);background:var(--hover,rgba(110,118,129,.14))}
+.site-gh svg{width:18px;height:18px;fill:currentColor}
+@media (max-width:640px){
+  .site-nav{grid-template-columns:auto minmax(0,1fr);padding:0 12px}
+  .site-name,.site-gh{display:none}
+  .site-nav nav{justify-self:end}
+  .site-nav nav a{padding:0 9px}
 }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <a class="crumb-home" href="../" title="На головну design-process-help">← design-process-help</a>
-
-  <div class="page">
-  <nav class="side" aria-label="Матеріали">
-    <p class="lbl">Матеріали</p>
-    <a href="#karpathy"><b>LLM Wiki</b><span>Karpathy</span></a>
-    <a href="#agents"><b>AGENTS.md</b><span>agents.md</span></a>
-    <a href="#sdd"><b>SDD</b><span>genkovich/sdd</span></a>
-    <a href="#speckit"><b>Spec Kit</b><span>github/spec-kit</span></a>
-    <a href="#superpowers"><b>Superpowers</b><span>obra/superpowers</span></a>
-    <a class="back" href="../">← на головну</a>
+<a class="skip-link" href="#main">Перейти до змісту</a>
+<header class="site-nav">
+  <a class="site-logo" href="../" aria-label="design-process-help, на головну"><span class="site-mark" aria-hidden="true">d</span><span class="site-name">design-process-help</span></a>
+  <nav aria-label="Розділи сайту">
+    <a href="../prompts/">Запити</a>
+    <a href="../harness/" aria-current="page">Харнес</a>
+    <a href="../map/">Карта</a>
+    <a href="../learn/">Вчитися</a>
   </nav>
+  <a class="site-gh" href="https://github.com/eleken-git/design-process-help" aria-label="Репозиторій на GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+</header>
+<div class="toc-bar">
+  <div class="wrap">
+    <button type="button" class="toc-btn" id="toc-btn" aria-expanded="false" aria-controls="toc-harness">
+      <span class="toc-k">Зміст</span><span class="toc-v"></span>
+      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
 
-  <div class="content">
-  <header>
-    <p class="kicker">Корисна інформація</p>
-    <h1>Будуємо харнес</h1>
-    <p><b>Харнес</b> — це все, що стоїть навколо AI-агента і робить його передбачуваним: файл із правилами, який він читає на старті (у нас це <code>AGENTS.md</code>), домовленість «спершу опис, потім код», тест перед виправленням, навички, що спрацьовують самі. Без харнесу агент — балакучий чат. З харнесом — колега, який працює за твоїми правилами.</p>
-    <p>Нижче пʼять матеріалів, на яких побудований і цей репозиторій. Кожен описаний простими словами: що це, головне і що з нього брати нам. Оригінали англійською, читати їх не обовʼязково.</p>
-  </header>
+<div class="wrap">
+<main class="panel has-toc" id="main">
 
+<!-- ЗМІСТ ВЕРСТАКА -->
+<nav class="toc" id="toc-harness" aria-label="Зміст верстака">
+  <p class="toc-title">Зміст</p>
+  <ol>
+    <li><a href="#h-what"><span>Що таке харнес</span></a></li>
+    <li><a href="#h-people"><span>П'ять людей</span></a>
+      <ol>
+        <li class="p-hunt"><a href="#h-huntley"><i></i><span>Geoffrey Huntley</span></a></li>
+        <li class="p-hash"><a href="#h-hashimoto"><i></i><span>Mitchell Hashimoto</span></a></li>
+        <li class="p-karp"><a href="#h-karpathy"><i></i><span>Andrej Karpathy</span></a></li>
+        <li class="p-osm"><a href="#h-osmani"><i></i><span>Addy Osmani</span></a></li>
+        <li class="p-yeg"><a href="#h-yegge"><i></i><span>Steve Yegge</span></a></li>
+      </ol>
+    </li>
+    <li><a href="#h-universal"><span>Постійне і змінне</span></a></li>
+    <li><a href="#h-tree"><span>Структура верстака</span></a></li>
+    <li><a href="#h-loop"><span>Робочий день</span></a></li>
+    <li><a href="#h-rules"><span>Помилка стає правилом</span></a></li>
+    <li><a href="#h-gates"><span>Ворота якості</span></a></li>
+    <li><a href="#h-build"><span>Зібрати за шість запитів</span></a></li>
+    <li><a href="#h-skip"><span>Що не брати на старті</span></a></li>
+    <li><a href="#h-materials"><span>П'ять матеріалів</span></a></li>
+    <li><a href="#h-sources"><span>Джерела</span></a></li>
+  </ol>
+</nav>
+
+<div class="panel-main">
+
+<header class="top">
+  <h1>Харнес</h1>
+  <p class="lede">Харнес — усе, що стоїть навколо Claude і робить його передбачуваним: правила, пам'ять у файлах, скіли й перевірки. <b>Верстак</b> — ваш шаблон-репозиторій, у якому харнес уже зібраний: з нього починається кожен клієнтський проєкт.</p>
+  <p class="lede">Тут практики п'ятьох інженерів, адаптовані під дизайнера, який здає фронтенд клієнту.</p>
+</header>
+
+<!-- ЩО ТАКЕ ХАРНЕС -->
+<section id="h-what" class="block">
+  <div class="sec-head">
+    <h2>Що таке харнес</h2>
+    <p>Агент складається з моделі й харнесу. Цю формулу Viv Trivedy наводить Addy Osmani: харнес охоплює все, що не є самою моделлю. Модель ви не змінюєте. Харнес змінюєте щодня.</p>
+  </div>
+  <figure class="pic rings-pic">
+    <div class="ring r4"><span class="rl">Межі</span><span class="ri">дозволи · hooks · ваше OK перед злиттям</span>
+      <div class="ring r3"><span class="rl">Перевірки</span><span class="ri">lint · typecheck · build · Playwright · axe</span>
+        <div class="ring r2"><span class="rl">Інструменти</span><span class="ri">скіли · MCP (наприклад, Figma) · браузер · git</span>
+          <div class="ring r1"><span class="rl">Контекст</span><span class="ri">AGENTS.md · DESIGN.md · FRONTEND.md · specs/ · план</span>
+            <div class="core">Claude<span>модель</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption>Шари харнесу за статтею Addy Osmani, спрощено для фронтенду. Claude у центрі, усе навколо можна налаштувати.</figcaption>
+  </figure>
+</section>
+
+<!-- ЛЮДИ -->
+<section id="h-people" class="block">
+  <div class="sec-head">
+    <h2>П'ять людей, п'ять ідей</h2>
+    <p>Від кожного беремо одну ідею, яку дизайнер може застосувати вже в наступному проєкті.</p>
+  </div>
+
+  <article class="station person p-hunt" id="h-huntley">
+    <div class="st-head"><span class="num ini">GH</span><div><h3>Geoffrey Huntley</h3><span class="tm">Ralph · how-to-ralph-wiggum</span></div><span class="verdict">беремо структуру</span></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="flow">
+          <span class="n">specs/</span><span class="ar">→</span><span class="n">план</span><span class="ar">→</span><span class="n win">одна задача</span><span class="ar">→</span><span class="n">тести</span><span class="ar">→</span><span class="n">коміт</span><span class="ar">→</span><span class="n">чистий контекст</span><span class="ar">↺</span>
+        </div>
+<div class="pre">project/
+├── loop.sh
+├── PROMPT_plan.md
+├── PROMPT_build.md
+├── AGENTS.md
+├── IMPLEMENTATION_PLAN.md
+├── specs/
+└── src/</div>
+        <figcaption>Структура з репозиторію Huntley. loop.sh просто запускає Claude знову і знову.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Пам'ять агента живе у файлах: специфікації, план і AGENTS.md. Кожен запуск бере одну задачу, перевіряє її тестами, комітить і починає з чистого контексту.</p>
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Файл у specs/ на кожну сторінку</li>
+          <li>План із маленьких задач</li>
+          <li>Одна задача за сесію</li>
+          <li>«Сплануй» окремо від «збудуй»</li>
+          <li>План можна викинути й перегенерувати</li>
+        </ul>
+        <p class="note">Тести, збірку й lint Huntley називає зворотним тиском (backpressure): вони не пускають сиру роботу в коміт. Туди ж він додає оцінку іншою моделлю за критеріями «так/ні», тож так можна перевіряти й вигляд сторінки.</p>
+        <p class="self"><a href="https://github.com/ghuntley/how-to-ralph-wiggum">github.com/ghuntley/how-to-ralph-wiggum</a></p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station person p-hash" id="h-hashimoto">
+    <div class="st-head"><span class="num ini">MH</span><div><h3>Mitchell Hashimoto</h3><span class="tm">співзасновник HashiCorp, автор терміналу Ghostty</span></div><span class="verdict">беремо звичку</span></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="ladder">
+          <div class="rung s1"><b>помилка</b><span>Claude зробив div замість button</span></div>
+          <div class="rung s2"><b>рядок в AGENTS.md</b><span>Use &lt;button&gt; for actions</span></div>
+          <div class="rung s3"><b>скрипт або тест</b><span>lint падає на div з onClick</span></div>
+        </div>
+<div class="pre">AGENTS.md у Ghostty, ~40 рядків
+├── Commands
+├── libghostty-vt
+├── Directory Structure
+└── Issue and PR Guidelines</div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Кожна помилка агента стає правилом або перевіркою, щоб більше не повторитися. Hashimoto пише, що кожен рядок у його AGENTS.md з'явився після поганої поведінки агента.</p>
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Помилка вдруге: рядок в AGENTS.md</li>
+          <li>Помилка втретє: скрипт або тест</li>
+          <li>Новий скрипт згадати в AGENTS.md</li>
+          <li>Короткий файл: команди, папки, заборони</li>
+        </ul>
+        <p class="note">Це він називає harness engineering у статті My AI Adoption Journey (5 лютого 2026). Інструменти, які він дописує для агента, прості: скрипт для скріншотів, запуск лише потрібних тестів.</p>
+        <p class="self"><a href="https://mitchellh.com/writing/my-ai-adoption-journey">My AI Adoption Journey</a> · <a href="https://github.com/ghostty-org/ghostty/blob/main/AGENTS.md">AGENTS.md у Ghostty</a></p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station person p-karp" id="h-karpathy">
+    <div class="st-head"><span class="num ini">AK</span><div><h3>Andrej Karpathy</h3><span class="tm">один із засновників OpenAI, колишній директор з AI у Tesla</span></div><span class="verdict">беремо цикл</span></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="files3">
+          <div class="f3"><span class="mono">program.md</span><b>пише людина</b></div>
+          <div class="f3 hl"><span class="mono">train.py</span><b>змінює агент</b></div>
+          <div class="f3 dim"><span class="mono">prepare.py</span><b>ніхто не чіпає</b></div>
+        </div>
+        <div class="flow"><span class="n">зміна</span><span class="ar">→</span><span class="n">5 хв експерименту</span><span class="ar">→</span><span class="n">метрика</span><span class="ar">→</span><span class="n win">лишити</span><span class="ar">або</span><span class="n hot">відкотити</span></div>
+        <span class="cap">для фронтенду</span>
+        <div class="flow"><span class="n">DESIGN.md + FRONTEND.md</span><span class="ar">→</span><span class="n">сторінка</span><span class="ar">→</span><span class="n">браузер</span><span class="ar">→</span><span class="n">ворота якості</span><span class="ar">→</span><span class="n win">прийняти</span><span class="ar">або</span><span class="n hot">виправити</span></div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Людина пише інструкцію program.md. Агент змінює лише один файл, запускає експеримент, міряє результат однією цифрою і лишає зміну або відкочує її.</p>
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Чітке «готово», яке можна виміряти</li>
+          <li>Агент змінює обмежену частину</li>
+          <li>Прийняти або відкотити</li>
+          <li>Людина покращує інструкцію</li>
+        </ul>
+        <p class="note">В autoresearch кожен експеримент триває 5 хвилин, тож за годину їх близько дванадцяти. Проєкт про навчання моделей, не про фронтенд. Для сайту метрикою стають ворота якості: тести проходять, скріншоти відповідають макету.</p>
+        <p class="self"><a href="https://github.com/karpathy/autoresearch">github.com/karpathy/autoresearch</a></p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station person p-osm" id="h-osmani">
+    <div class="st-head"><span class="num ini">AO</span><div><h3>Addy Osmani</h3><span class="tm">багато років очолював інженерні команди Chrome у Google</span></div><span class="verdict">беремо ворота</span></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="vs">
+          <div class="vs-a"><span class="cap">прохання в промпті</span><p class="bubble" lang="en">Please check the contrast.</p><span class="m">Claude може забути</span></div>
+          <div class="vs-b"><span class="cap">перевірка</span>
+<div class="pre"><span class="m">$</span> npm run test:a11y
+<span class="r">✕ 3 порушення контрасту</span>
+<span class="r">✕ поле без label</span></div><span class="g">обійти не вийде</span></div>
+        </div>
+        <div class="formula-mini"><b>агент</b> = <b>модель</b> + <b>харнес</b></div>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Правило в промпті Claude може пропустити. Перевірку в хуку чи тесті пропустити не вийде. Тому якість переносять із прохань у перевірки.</p>
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>Короткий AGENTS.md</li>
+          <li>У кожного правила є причина</li>
+          <li>Hooks для обов'язкових кроків</li>
+          <li>Десять добрих інструментів замість п'ятдесяти</li>
+          <li>Коли все добре, перевірки мовчать</li>
+        </ul>
+        <p class="note">Добрий AGENTS.md, за словами Osmani, це «Pilot's checklist, not style guide» (Agent Harness Engineering, 19 квітня 2026). Він радить додавати правило лише після реальної помилки.</p>
+        <p class="self"><a href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a></p>
+      </div>
+    </div>
+  </article>
+
+  <article class="station person p-yeg" id="h-yegge">
+    <div class="st-head"><span class="num ini">SY</span><div><h3>Steve Yegge</h3><span class="tm">багато років працював в Amazon і Google</span></div><span class="verdict">поки ні</span></div>
+    <div class="st-body">
+      <figure class="pic">
+        <div class="sessions">
+          <div class="ses gone">сесія 1</div><div class="ses gone">сесія 2</div><div class="ses live">сесія 3</div>
+        </div>
+        <div class="state">стан роботи в git</div>
+        <figcaption>Сесії закриваються, стан лишається. У Gas Town це Beads, у верстаку файл plan/progress.md.</figcaption>
+      </figure>
+      <div class="st-text">
+        <p class="eli">Сесія тимчасова, робота постійна. Стан задач лежить у git, тому нова сесія Claude продовжує з місця, де зупинилася попередня.</p>
+        <h4>Що взяти дизайнеру</h4>
+        <ul class="checks">
+          <li>progress.md: що зроблено і що далі</li>
+          <li>Нова сесія читає його першою</li>
+          <li>Передача роботи перед закриттям сесії</li>
+        </ul>
+        <p class="note">Gas Town керує 20–30 екземплярами Claude Code одночасно. Сам Yegge у Welcome to Gas Town (1 січня 2026) попереджає, що система дорога і розрахована на тих, хто вже глибоко працює з агентами. На старті беремо лише ідею передачі.</p>
+        <p class="self"><a href="https://yegge.ai/essays/welcome-to-gas-town/">Welcome to Gas Town</a></p>
+      </div>
+    </div>
+  </article>
+
+  <div class="stack" aria-label="Як ідеї складаються у верстак">
+    <div class="sl p-hunt"><span class="who">Huntley</span><b>Структура</b><span>specs/, план, AGENTS.md, одна задача за раз</span></div>
+    <div class="sl p-hash"><span class="who">Hashimoto</span><b>Правила</b><span>ростуть із кожної повторної помилки</span></div>
+    <div class="sl p-osm"><span class="who">Osmani</span><b>Ворота якості</b><span>lint, typecheck, build, браузер, доступність</span></div>
+    <div class="sl p-karp"><span class="who">Karpathy</span><b>Цикл</b><span>зробив → виміряв → прийняв або виправив</span></div>
+    <div class="sl p-yeg"><span class="who">Yegge</span><b>Передача</b><span>progress.md між сесіями</span></div>
+    <div class="sl result"><span class="who">разом</span><b>Верстак</b><span>той самий для кожного клієнтського проєкту</span></div>
+  </div>
+</section>
+
+<!-- ПОСТІЙНЕ І ЗМІННЕ -->
+<section id="h-universal" class="block">
+  <div class="sec-head">
+    <h2>Що переходить з проєкту в проєкт</h2>
+    <p>Верстак універсальний, бо ділиться на дві частини. Постійна їде з вами в кожен проєкт. Змінна з'являється заново для кожного клієнта.</p>
+  </div>
+  <div class="uni">
+    <div class="uni-col keep">
+      <h3>Постійне: верстак</h3>
+      <p>Однакове для всіх клієнтів. Покращується після кожного проєкту.</p>
+      <ul><li>AGENTS.md</li><li>CLAUDE.md</li><li>FRONTEND.md</li><li>PROMPT_plan.md</li><li>PROMPT_build.md</li><li>.claude/skills/</li><li>.claude/settings.json</li><li>tests/</li><li>package.json scripts</li></ul>
+    </div>
+    <div class="uni-col vary">
+      <h3>Змінне: проєкт</h3>
+      <p>Нове щоразу. Заповнюєте ви, план і код пише Claude.</p>
+      <ul><li>PROJECT.md</li><li>DESIGN.md</li><li>specs/</li><li>plan/</li><li>HANDOFF.md</li><li>src/</li><li>public/</li></ul>
+    </div>
+  </div>
+  <div class="where2">
+    <div><b>Шаблон на GitHub</b><p>Кнопка «Use this template» створює новий репозиторій з усім верстаком. Так верстак отримує вся команда.</p></div>
+    <div><b>Папка ~/.claude</b><p>CLAUDE.md і skills/ звідти працюють у всіх ваших проєктах. Підходить для особистих звичок.</p></div>
+    <div><b>Мова файлів</b><p>Файли, які читає Claude (AGENTS.md, FRONTEND.md, PROMPT_*.md, скіли), пишемо англійською, як і запити. HANDOFF.md пишемо мовою клієнта.</p></div>
+  </div>
+</section>
+
+<!-- СТРУКТУРА -->
+<section id="h-tree" class="block">
+  <div class="sec-head">
+    <h2>Структура верстака</h2>
+    <p>Натисніть файл, щоб побачити, що в ньому, хто його пише і коли він змінюється.</p>
+  </div>
+  <div class="explorer">
+    <div>
+      <div class="ftree" role="group" aria-label="Файли верстака">
+        <div class="row"><span class="dir">verstak/</span></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="agents" aria-pressed="true"><i class="k"></i>AGENTS.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="claude" aria-pressed="false"><i class="k"></i>CLAUDE.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="project" aria-pressed="false"><i class="v"></i>PROJECT.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="design" aria-pressed="false"><i class="v"></i>DESIGN.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="frontend" aria-pressed="false"><i class="k"></i>FRONTEND.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="handoff" aria-pressed="false"><i class="v"></i>HANDOFF.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="pplan" aria-pressed="false"><i class="k"></i>PROMPT_plan.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="pbuild" aria-pressed="false"><i class="k"></i>PROMPT_build.md</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="specs" aria-pressed="false"><i class="v"></i>specs/</button></div>
+        <div class="row"><span class="pfx">│   ├── </span><span class="dir">pages/</span></div>
+        <div class="row"><span class="pfx">│   └── </span><span class="dir">features/</span></div>
+        <div class="row"><span class="pfx">├── </span><span class="dir">plan/</span></div>
+        <div class="row"><span class="pfx">│   ├── </span><button type="button" data-f="plan" aria-pressed="false"><i class="v"></i>IMPLEMENTATION_PLAN.md</button></div>
+        <div class="row"><span class="pfx">│   └── </span><button type="button" data-f="progress" aria-pressed="false"><i class="v"></i>progress.md</button></div>
+        <div class="row"><span class="pfx">├── </span><span class="dir">.claude/</span></div>
+        <div class="row"><span class="pfx">│   ├── </span><button type="button" data-f="skills" aria-pressed="false"><i class="k"></i>skills/</button></div>
+        <div class="row"><span class="pfx">│   │   ├── </span><span class="dir">build-page/</span></div>
+        <div class="row"><span class="pfx">│   │   ├── </span><span class="dir">frontend-qa/</span></div>
+        <div class="row"><span class="pfx">│   │   └── </span><span class="dir">client-handoff/</span></div>
+        <div class="row"><span class="pfx">│   └── </span><button type="button" data-f="settings" aria-pressed="false"><i class="k"></i>settings.json</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="tests" aria-pressed="false"><i class="k"></i>tests/</button></div>
+        <div class="row"><span class="pfx">│   ├── </span><span class="dir">accessibility/</span></div>
+        <div class="row"><span class="pfx">│   ├── </span><span class="dir">visual/</span></div>
+        <div class="row"><span class="pfx">│   └── </span><span class="dir">e2e/</span></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="src" aria-pressed="false"><i class="v"></i>src/ і public/</button></div>
+        <div class="row"><span class="pfx">├── </span><button type="button" data-f="pkg" aria-pressed="false"><i class="k"></i>package.json</button></div>
+        <div class="row"><span class="pfx">└── </span><button type="button" data-f="readme" aria-pressed="false"><i class="v"></i>README.md</button></div>
+      </div>
+      <div class="legend"><span><i class="k"></i> постійне</span><span><i class="v"></i> змінне</span></div>
+    </div>
+    <div class="fdetail" id="fdetail" aria-live="polite">
+      <h3 id="fd-name">AGENTS.md</h3>
+      <div class="fmeta"><span id="fd-layer">постійне</span><span id="fd-who">пишуть: ви і Claude</span><span id="fd-when">змінюється: коли помилка повторилась</span></div>
+      <p id="fd-text">Правила для Claude: команди, папки, заборони. Коротко, як чекліст пілота. У кожного рядка є причина: помилка, яка вже траплялася.</p>
+<div class="pre" id="fd-code" lang="en"># AGENTS.md
+## Commands
+npm run dev | build | lint | typecheck | test:e2e
+
+## Rules
+- Styles come from tokens only: var(--…)
+- &lt;button&gt; for actions, &lt;a&gt; for navigation
+- One task per session, then commit
+- Never say "done" before all gates pass</div>
+      <p id="fd-link" class="self" hidden></p>
+    </div>
+  </div>
+</section>
+
+<!-- РОБОЧИЙ ДЕНЬ -->
+<section id="h-loop" class="block">
+  <div class="sec-head">
+    <h2>Робочий день з верстаком</h2>
+    <p>Цикл Huntley, пристосований для дизайнера. Ви вирішуєте на кроках 1, 3 і 7, решту робить Claude.</p>
+  </div>
+  <ol class="loop">
+    <li class="ls"><span class="k">1</span><span class="actor you">Ви</span><p>Пишете специфікацію сторінки<span class="mono">specs/pages/pricing.md</span></p></li>
+    <li class="ls"><span class="k">2</span><span class="actor cl">Claude</span><p>Планує і нічого не будує<span class="mono">PROMPT_plan.md → plan/IMPLEMENTATION_PLAN.md</span></p></li>
+    <li class="ls"><span class="k">3</span><span class="actor you">Ви</span><p>Читаєте план і кажете OK</p></li>
+    <li class="ls"><span class="k">4</span><span class="actor cl">Claude</span><p>Бере одну найважливішу задачу<span class="mono">PROMPT_build.md</span></p></li>
+    <li class="ls"><span class="k">5</span><span class="actor gw">Ворота</span><p>Перевіряють роботу<span class="mono">lint · typecheck · build · Playwright · axe · скріншоти</span></p></li>
+    <li class="branch">✕ щось упало: Claude виправляє, ворота запускаються знову</li>
+    <li class="ls"><span class="k">6</span><span class="actor cl">Claude</span><p>Комітить, оновлює план і журнал<span class="mono">plan/progress.md</span></p></li>
+    <li class="ls"><span class="k">7</span><span class="actor you">Ви</span><p>Дивитеся скріншоти й PR, зливаєте</p></li>
+    <li class="again">↺ Нова сесія з чистим контекстом читає progress.md і бере наступну задачу з кроку 4.</li>
+  </ol>
+  <p class="note loop-note">Huntley запускає цей цикл скриптом, без людини. На старті краще одна задача за сесію і ваше OK на кроках 3 і 7.</p>
+</section>
+
+<!-- ПОМИЛКА → ПРАВИЛО -->
+<section id="h-rules" class="block p-hash">
+  <div class="sec-head">
+    <h2>Помилка стає правилом</h2>
+    <p>Звичка Hashimoto у трьох сходинках. Так верстак стає кращим після кожного проєкту.</p>
+  </div>
+  <div class="rules-grid">
+    <div class="ladder big">
+      <div class="rung s1"><em>1-й раз</em><b>Виправили в розмові</b><span>Claude пояснив і переробив</span></div>
+      <div class="rung s2"><em>2-й раз</em><b>Рядок у FRONTEND.md або AGENTS.md</b><span>Claude читає його в кожній сесії</span></div>
+      <div class="rung s3"><em>3-й раз</em><b>Автоматична перевірка</b><span>тест, правило lint або hook</span></div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="rtbl">
+        <thead><tr><th>Що сталося</th><th>Що додаємо</th><th>Куди</th></tr></thead>
+        <tbody>
+          <tr><td>Погана семантика</td><td>правило про landmarks і заголовки</td><td class="mono">FRONTEND.md</td></tr>
+          <tr><td>Забутий мобільний стан</td><td>скріншот-тест на 375 px</td><td class="mono">tests/visual</td></tr>
+          <tr><td>div замість button</td><td>правило jsx-a11y у lint</td><td class="mono">npm run lint</td></tr>
+          <tr><td>Не перевірили Safari</td><td>прогін тестів у WebKit</td><td class="mono">ворота здачі</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="prompt rule-prompt">
+    <p lang="en">You made the same mistake again: <span class="ph">[what happened]</span>. Fix it, then add a one-line rule to FRONTEND.md so it does not happen again. If this mistake has happened three times, propose an automated check (a test, a lint rule or a hook) instead of another rule.</p>
+    <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button>
+  </div>
+</section>
+
+<!-- ВОРОТА -->
+<section id="h-gates" class="block">
+  <div class="sec-head">
+    <h2>Ворота якості</h2>
+    <p>Робота вважається готовою, коли проходить усі ворота. Коли все гаразд, ворота мовчать; коли ні, пояснюють, що саме зламалось. Так Osmani описує добрі перевірки.</p>
+  </div>
+  <div class="gates-grid">
+    <ol class="gates">
+      <li class="gate"><span class="k">1</span><span class="mono">npm run lint</span><span>помилки коду, div з onClick, пропущені alt</span></li>
+      <li class="gate"><span class="k">2</span><span class="mono">npm run typecheck</span><span>неправильні типи і props</span></li>
+      <li class="gate"><span class="k">3</span><span class="mono">npm run build</span><span>чи збирається сайт для продакшну</span></li>
+      <li class="gate"><span class="k">4</span><span class="mono">Playwright e2e</span><span>логотип, меню, форми, 404</span></li>
+      <li class="gate"><span class="k">5</span><span class="mono">axe</span><span>контраст, label, ролі</span></li>
+      <li class="gate"><span class="k">6</span><span class="mono">скріншоти 320 → 1920</span><span>горизонтальний скрол, текст за краєм</span></li>
+      <li class="gate"><span class="k">7</span><span class="mono">консоль</span><span>помилки і попередження</span></li>
+      <li class="gate"><span class="k">8</span><span class="mono">посилання</span><span>биті адреси</span></li>
+      <li class="gate"><span class="k">9</span><span class="mono">Lighthouse</span><span>LCP, CLS, вага картинок</span></li>
+    </ol>
+    <p class="pull">Claude може сперечатися з промптом. З тестом, що падає, сперечатися складніше.</p>
+  </div>
+</section>
+
+<!-- ЗІБРАТИ -->
+<section id="h-build" class="block">
+  <div class="sec-head">
+    <h2>Зберіть верстак за шість запитів</h2>
+    <p>Один раз, у новому порожньому репозиторії. Потім кожен клієнтський проєкт починається з цього шаблону.</p>
+  </div>
+  <ol class="bsteps">
+    <li class="bstep"><span class="num">1</span><div>
+      <h3>Каркас шаблону</h3>
+      <div class="prompt"><p lang="en">Create a template repository called verstak for frontend client projects. Add this structure: AGENTS.md, CLAUDE.md (one line that imports AGENTS.md), PROJECT.md, DESIGN.md, FRONTEND.md, HANDOFF.md, PROMPT_plan.md, PROMPT_build.md, specs/pages, specs/features, plan/IMPLEMENTATION_PLAN.md, plan/progress.md, .claude/skills, .claude/settings.json, tests/accessibility, tests/visual, tests/e2e and README.md. Fill each file with a short template and a comment on what goes there. Do not add any client-specific content.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">2</span><div>
+      <h3>AGENTS.md</h3>
+      <div class="prompt"><p lang="en">Write AGENTS.md for this template. Keep it under 60 lines, like a pilot's checklist: the commands (dev, build, lint, typecheck, test:e2e), the folder structure, and hard rules (styles come from tokens only, button for actions and a for navigation, one task per session, never commit to main, run every quality gate before saying done). Every rule must be something I can check.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">3</span><div>
+      <h3>FRONTEND.md зі стандартом якості</h3>
+      <div class="prompt"><p lang="en">Write FRONTEND.md as our quality standard. Cover these areas: semantic HTML, accessibility (WCAG 2.2 AA basics), responsive layout from 320 px, UI states, maintainable code, performance (Core Web Vitals), browsers, SEO basics and a clean build. For each area, write three to six short rules that can be checked, and name the command or test that verifies each one.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+      <p class="self">Зміст для цього файлу вже є: 16 зупинок на сторінці <a href="../map/#map">«Карта фронтенду»</a>.</p>
+    </div></li>
+    <li class="bstep"><span class="num">4</span><div>
+      <h3>Запити для планування і будування</h3>
+      <div class="prompt"><p lang="en">Write PROMPT_plan.md and PROMPT_build.md. Plan mode: read AGENTS.md, PROJECT.md, DESIGN.md, FRONTEND.md and specs/, compare them with src/, and write a prioritized list of small tasks to plan/IMPLEMENTATION_PLAN.md; plan only, do not implement anything. Build mode: read plan/progress.md first, pick the single most important task, implement it, run every quality gate, commit only when they pass, then update the plan and plan/progress.md.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">5</span><div>
+      <h3>Ворота якості і hook</h3>
+      <div class="prompt"><p lang="en">Set up the quality gates: npm scripts for lint (with jsx-a11y rules), typecheck, build and test:e2e; Playwright tests with axe for accessibility, screenshots at 320, 375, 768, 1024, 1440 and 1920 px, a console-error check and a broken-link check. Add a Stop hook in .claude/settings.json that runs typecheck and lint and sends any failure back to you. Then make each gate fail once on purpose and show me the output, so I know it works.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+    </div></li>
+    <li class="bstep"><span class="num">6</span><div>
+      <h3>Три скіли</h3>
+      <div class="prompt"><p lang="en">Use skill-creator to create three skills in .claude/skills: build-page (turns a spec from specs/pages into a page that uses our tokens), frontend-qa (runs every quality gate and reports problems in plain English with screenshots, most important first) and client-handoff (prepares README, .env.example and HANDOFF.md). None of them may fix, publish or merge anything without my OK.</p>
+        <button class="copy" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Скопіювати запит</button></div>
+      <p class="self">Більше ідей для скілів є на карті фронтенду, у розділі <a href="../map/#skills">«Перевірки, які варто перетворити на скіли»</a>.</p>
+    </div></li>
+  </ol>
+  <div class="newproj">
+    <span class="cap">новий клієнт</span>
+    <div class="flow"><span class="n">Use this template</span><span class="ar">→</span><span class="n">PROJECT.md</span><span class="ar">→</span><span class="n">DESIGN.md</span><span class="ar">→</span><span class="n">specs/</span><span class="ar">→</span><span class="n">PROMPT_plan.md</span><span class="ar">→</span><span class="n win">робочий день</span></div>
+  </div>
+</section>
+
+<!-- НЕ БРАТИ -->
+<section id="h-skip" class="block">
+  <div class="sec-head">
+    <h2>Що не брати на старті</h2>
+  </div>
+  <div class="skip">
+    <div class="sk-no"><b>Десятки паралельних агентів</b><p>Gas Town дорогий і складний. Yegge сам попереджає, що система не для початківців.</p></div>
+    <div class="sk-no"><b>Цикл на всю ніч без нагляду</b><p>Спершу одна задача за сесію і ваше OK. Автоматичний цикл має сенс, коли ворота вже ловлять ваші типові помилки.</p></div>
+    <div class="sk-no"><b>Чужий starter kit на 12k зірок</b><p>У ньому чужі правила, які виросли з чужих помилок. Ваш верстак росте з ваших проєктів.</p></div>
+    <div class="sk-no"><b>AGENTS.md на сотні рядків</b><p>Osmani радить короткий файл, у якому кожне правило має причину.</p></div>
+  </div>
+</section>
+
+<!-- П'ЯТЬ МАТЕРІАЛІВ -->
+<section id="h-materials" class="block">
+  <div class="sec-head">
+    <h2>П'ять матеріалів</h2>
+    <p>На цих матеріалах побудований і цей репозиторій. Кожен переказаний простими словами: що це, головне і що з нього брати нам. Оригінали англійською, читати їх не обов'язково.</p>
+  </div>
+  <div class="mats">
   <article class="item karpathy" id="karpathy">
     <p class="src"><i></i>Andrej Karpathy · gist</p>
     <h2>LLM Wiki: агент сам веде базу знань</h2>
@@ -192,27 +1104,183 @@ footer a{color:var(--muted)}
     <p class="us"><b>Для нас.</b> Саме ці навички працюють у цьому репозиторії: брейншторм перед лого, системний пошук причини, коли зникала музика. Це відповідь на питання «чому Claude питає, а не робить одразу».</p>
     <a class="open" href="https://github.com/obra/superpowers/blob/main/README.md" target="_blank" rel="noopener">Читати оригінал<svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
   </article>
+  </div>
+  <p class="nlm">Файли для NotebookLM з переказом кожного матеріалу і промптами для подкасту — у репозиторії, папка <code>docs/harness/notebooklm/</code>: <a href="https://github.com/eleken-git/design-process-help">github.com/eleken-git/design-process-help</a>.</p>
+</section>
 
-  <footer>Файли для NotebookLM з переказом кожного матеріалу і промптами для подкасту — у репозиторії, папка <code>docs/harness/notebooklm/</code>: <a href="https://github.com/eleken-git/design-process-help">github.com/eleken-git/design-process-help</a>.</footer>
+<!-- ДЖЕРЕЛА -->
+<section id="h-sources" class="block">
+  <div class="sec-head"><h2>Джерела</h2></div>
+  <div class="srcs">
+    <p><a href="https://github.com/ghuntley/how-to-ralph-wiggum">how-to-ralph-wiggum</a> <span>· Geoffrey Huntley</span></p>
+    <p><a href="https://mitchellh.com/writing/my-ai-adoption-journey">My AI Adoption Journey</a> <span>· Mitchell Hashimoto, 5.02.2026</span></p>
+    <p><a href="https://github.com/ghostty-org/ghostty/blob/main/AGENTS.md">AGENTS.md</a> <span>· Ghostty</span></p>
+    <p><a href="https://github.com/karpathy/autoresearch">autoresearch</a> <span>· Andrej Karpathy</span></p>
+    <p><a href="https://addyosmani.com/blog/agent-harness-engineering/">Agent Harness Engineering</a> <span>· Addy Osmani, 19.04.2026</span></p>
+    <p><a href="https://yegge.ai/essays/welcome-to-gas-town/">Welcome to Gas Town</a> <span>· Steve Yegge, 1.01.2026</span></p>
   </div>
-  </div>
+</section>
+
+</div>
 </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-links" aria-label="Усі сторінки">
+      <a href="../prompts/">Запити</a>
+      <a href="../harness/">Харнес</a>
+      <a href="../map/">Карта фронтенду</a>
+      <a href="../learn/">Вчитися</a>
+      <a href="../presentation/">Презентація</a>
+      <a href="../3d/">Git у 3D</a>
+      <a href="../podcast/">Подкаст</a>
+      <a href="../app/">Nimbus</a>
+    </nav>
+    <p>Код і історія змін у репозиторії <a href="https://github.com/eleken-git/design-process-help">github.com/eleken-git/design-process-help</a>.</p>
+  </div>
+</footer>
 <script>
-(() => {
-  // підсвітка пункту навігації для розділу, що зараз на екрані
-  const links = [...document.querySelectorAll('.side a[href^="#"]')];
-  const items = links.map((a) => document.getElementById(a.getAttribute('href').slice(1)));
-  let frame = 0;
-  const update = () => {
-    frame = 0;
-    const line = innerHeight / 3;
-    let current = 0;
-    items.forEach((el, i) => { if (el && el.getBoundingClientRect().top <= line) current = i; });
-    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) current = items.length - 1;
-    links.forEach((a, i) => a.classList.toggle('active', i === current));
+(function(){
+  function flash(btn, text){
+    if(!btn.dataset.html) btn.dataset.html = btn.innerHTML;
+    btn.textContent = text;
+    btn.classList.add('done');
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function(){ btn.innerHTML = btn.dataset.html; btn.classList.remove('done'); }, 1800);
+  }
+  function selectNode(node){
+    try{
+      var range = document.createRange(); range.selectNodeContents(node);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    }catch(e){}
+  }
+  function writeClipboard(text){
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+    }catch(e){}
+    return Promise.reject();
+  }
+
+  // запити на зупинках
+  document.querySelectorAll('.prompt').forEach(function(box){
+    var p = box.querySelector('p'), btn = box.querySelector('.copy');
+    btn.addEventListener('click', function(){
+      writeClipboard(p.innerText.trim()).then(function(){ flash(btn, 'Скопійовано'); })
+        .catch(function(){ selectNode(p); flash(btn, 'Виділено, натисніть ⌘C'); });
+    });
+  });
+
+  // зміст сторінки: збоку на широкому екрані, за кнопкою «Зміст» на вузькому
+  var tocNav = document.querySelector('.toc');
+  var tocBtn = document.getElementById('toc-btn');
+  if(tocNav && tocBtn){
+    var siteNav = document.querySelector('.site-nav'), tocBar = document.querySelector('.toc-bar');
+    var tocLabel = tocBtn.querySelector('.toc-v');
+    var tocLinks = [].slice.call(tocNav.querySelectorAll('a[href^="#"]'));
+    var tocTargets = tocLinks.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+    var tocActive = null;
+    tocNav.classList.add('js');
+    var stickyH = function(){
+      return (siteNav ? siteNav.offsetHeight : 0) + (tocBar && tocBar.offsetParent !== null ? tocBar.offsetHeight : 0);
+    };
+    var measure = function(){ document.documentElement.style.setProperty('--jump-h', stickyH() + 'px'); };
+    var keepInView = function(a){
+      if(!a || tocNav.scrollHeight <= tocNav.clientHeight) return;
+      var top = a.offsetTop, pad = 48;
+      if(top < tocNav.scrollTop + pad) tocNav.scrollTop = top - pad;
+      else if(top + a.offsetHeight > tocNav.scrollTop + tocNav.clientHeight - pad) tocNav.scrollTop = top + a.offsetHeight - tocNav.clientHeight + pad;
+    };
+    var spy = function(force){
+      var line = stickyH() + 24, idx = null;
+      tocTargets.forEach(function(el, i){ if(el && el.getBoundingClientRect().top <= line) idx = i; });
+      if(idx !== null && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = tocTargets.length - 1;
+      var a = idx === null ? null : tocLinks[idx];
+      if(a === tocActive && !force) return;
+      tocActive = a;
+      tocLinks.forEach(function(l){ if(l === a) l.setAttribute('aria-current', 'location'); else l.removeAttribute('aria-current'); });
+      [].forEach.call(tocNav.querySelectorAll(':scope > ol > li'), function(li){ li.classList.toggle('cur', !!a && li.contains(a)); });
+      var b = a && a.querySelector('b'), txt = a && a.querySelector('span');
+      tocLabel.textContent = a ? (b ? b.textContent + '. ' : '') + txt.textContent : '';
+      keepInView(a);
+    };
+    var openToc = function(on){
+      tocNav.classList.toggle('open', !!on);
+      tocBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+      if(on) keepInView(tocActive);
+    };
+    tocBtn.addEventListener('click', function(){ openToc(tocBtn.getAttribute('aria-expanded') !== 'true'); });
+    document.addEventListener('click', function(e){
+      if(tocBtn.getAttribute('aria-expanded') !== 'true' || e.target.closest('#toc-btn')) return;
+      if(e.target.closest('.toc a') || !e.target.closest('.toc')) openToc(false);
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && tocBtn.getAttribute('aria-expanded') === 'true'){ openToc(false); tocBtn.focus(); }
+    });
+    var ticking = false;
+    window.addEventListener('scroll', function(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){ ticking = false; spy(); });
+    }, {passive: true});
+    window.addEventListener('resize', function(){
+      measure();
+      if(window.innerWidth >= 1180) openToc(false);
+      spy(true);
+    });
+    window.addEventListener('load', function(){ measure(); spy(true); });
+    measure();
+    spy(true);
+  }
+
+  // дерево файлів верстака
+  var FILES = {
+    agents:{name:'AGENTS.md', keep:1, who:'ви і Claude', when:'коли помилка повторилась', text:'Правила для Claude: команди, папки, заборони. Коротко, як чекліст пілота. У кожного рядка є причина: помилка, яка вже траплялася.', code:'# AGENTS.md\n## Commands\nnpm run dev | build | lint | typecheck | test:e2e\n\n## Rules\n- Styles come from tokens only: var(--…)\n- <button> for actions, <a> for navigation\n- One task per session, then commit\n- Never say "done" before all gates pass'},
+    claude:{name:'CLAUDE.md', keep:1, who:'один раз', when:'майже ніколи', text:'Один рядок, який підключає AGENTS.md. Так правила однакові для Claude та інших агентів.', code:'# CLAUDE.md\n@AGENTS.md'},
+    project:{name:'PROJECT.md', keep:0, who:'ви', when:'на старті проєкту', text:'Хто клієнт, що за продукт, межі проєкту, стек, дедлайн. Приклад нижче вигаданий.', code:'# PROJECT.md\nClient: Nimbus, cloud storage for teams\nGoal: marketing site, 5 pages\nIn scope: pages, responsive, forms, deploy\nOut of scope: backend, CMS, copywriting\nStack: Vite + React + TypeScript\nDeadline: 2026-11-15'},
+    design:{name:'DESIGN.md', keep:0, who:'ви', when:'коли змінюється макет', text:'Дизайн-мова проєкту: кадри Figma, токени, сітка, брейкпоінти, анімації.', code:'# DESIGN.md\nFigma: [link to frames]\nTokens: src/tokens (colors, spacing, type)\nGrid: 12 columns, 24 px gutter, max 1200 px\nBreakpoints: where the layout breaks\nMotion: 150–250 ms, respect prefers-reduced-motion'},
+    frontend:{name:'FRONTEND.md', keep:1, who:'ви і Claude', when:'після повторної помилки', text:'Ваш стандарт якості: 16 зупинок з карти фронтенду у вигляді правил, які можна перевірити.', code:'# FRONTEND.md\n## Accessibility\n- Every control is reachable with Tab\n- Text contrast >= 4.5:1, icons >= 3:1\n- Verified by: npm run test:a11y\n\n## Responsive\n- No horizontal scroll from 320 px\n- Verified by: tests/visual', link:['../map/#map', 'Відкрити карту фронтенду']},
+    handoff:{name:'HANDOFF.md', keep:0, who:'Claude за вашим запитом', when:'у день здачі', text:'Пакет для клієнта мовою клієнта: доступи без паролів, інструкції, відкриті питання, прийняття.', code:'# HANDOFF.md\n## Access (no passwords)\n## What was delivered\n## How to edit text and photos\n## Open questions\n## Acceptance', link:['../map/#s13', 'Зупинки 13–16 на карті']},
+    pplan:{name:'PROMPT_plan.md', keep:1, who:'один раз', when:'рідко', text:'Стартовий запит для режиму планування: прочитати все, порівняти з кодом, записати план. Нічого не будувати.', code:'Read AGENTS.md, PROJECT.md, DESIGN.md,\nFRONTEND.md and specs/. Compare them with src/.\nWrite a prioritized list of small tasks\nto plan/IMPLEMENTATION_PLAN.md.\nPlan only. Do not implement anything.'},
+    pbuild:{name:'PROMPT_build.md', keep:1, who:'один раз', when:'рідко', text:'Стартовий запит для режиму будування: одна найважливіша задача, ворота якості, коміт, оновлений план.', code:'Read plan/progress.md first.\nPick the single most important task\nfrom plan/IMPLEMENTATION_PLAN.md.\nImplement it and run every quality gate.\nCommit only when they pass.\nUpdate the plan and plan/progress.md.'},
+    specs:{name:'specs/', keep:0, who:'ви, Claude допомагає', when:'до планування', text:'Один файл на сторінку або функцію: що бачить людина, стани, крайні випадки, коли задача готова.', code:'# specs/pages/pricing.md\nGoal: visitor picks a plan in under a minute\nSections: hero, 3 plan cards, FAQ, CTA\nStates: loading prices, price API error\nEdge cases: longest plan name, 5 FAQ items\nDone when: all gates pass, matches Figma frame'},
+    plan:{name:'IMPLEMENTATION_PLAN.md', keep:0, who:'Claude', when:'після кожної задачі', text:'Список маленьких задач за пріоритетом. Claude пише його в режимі планування. Якщо план пішов не туди, його перегенеровують.', code:'- [x] Tokens and base layout\n- [ ] Pricing cards: 3 plans, hover, focus\n- [ ] Price API error state\n- [ ] FAQ accordion with keyboard support'},
+    progress:{name:'progress.md', keep:0, who:'Claude', when:'наприкінці кожної сесії', text:'Журнал передачі між сесіями: що зроблено, що далі, де застрягли. Нова сесія читає його першим.', code:'## 2026-10-02\nDone: pricing cards, focus states\nNext: price API error state\nBlocked: FAQ copy missing, asked the designer'},
+    skills:{name:'.claude/skills/', keep:1, who:'Claude за вашим запитом', when:'коли перевірка повторюється', text:'Три скіли верстака: build-page збирає сторінку зі специфікації, frontend-qa проходить ворота якості і звітує, client-handoff готує здачу.', code:'.claude/skills/frontend-qa/SKILL.md\n---\nname: frontend-qa\ndescription: Run every quality gate on a page\n  and report problems in plain English.\n---', link:['../map/#skills', 'Інші ідеї скілів на карті']},
+    settings:{name:'.claude/settings.json', keep:1, who:'Claude за вашим запитом', when:'рідко', text:'Дозволи і hooks. Hook спрацьовує сам: коли Claude закінчує відповідь, скрипт запускає typecheck і lint. Якщо щось падає, скрипт виходить з кодом 2, і Claude бачить помилку.', code:'{\n  "hooks": {\n    "Stop": [{\n      "hooks": [{\n        "type": "command",\n        "command": "scripts/gates.sh"\n      }]\n    }]\n  }\n}'},
+    tests:{name:'tests/', keep:1, who:'Claude', when:'після кожної нової помилки', text:'Playwright: accessibility з axe, visual зі скріншотами на ширинах, e2e зі сценаріями відвідувача. Тести пише Claude, скріншоти дивитеся ви.', code:'tests/\n  accessibility/  axe on every page\n  visual/         screenshots 320 → 1920\n  e2e/            logo, menu, forms, 404'},
+    src:{name:'src/ і public/', keep:0, who:'Claude', when:'щодня', text:'Код і файли сайту. Сюди пише Claude, результат ви дивитеся в браузері.', code:'src/\n  tokens/\n  components/\n  pages/\npublic/\n  favicon.svg\n  robots.txt'},
+    pkg:{name:'package.json', keep:1, who:'Claude', when:'рідко', text:'Команди воріт в одному місці, щоб Claude і люди запускали їх однаково.', code:'"scripts": {\n  "dev": "vite",\n  "build": "vite build",\n  "lint": "eslint .",\n  "typecheck": "tsc --noEmit",\n  "test:e2e": "playwright test"\n}'},
+    readme:{name:'README.md', keep:0, who:'Claude', when:'перед здачею', text:'Як запустити проєкт без дзвінка вам: вимоги, встановлення, запуск, збірка, змінні середовища.', code:'# Nimbus\n## Requirements\nNode.js 22\n## Run\nnpm install\nnpm run dev\n## Build\nnpm run build', link:['../map/#s13', 'Зупинка 13 на карті']}
   };
-  const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-  addEventListener('scroll', schedule, { passive: true }); addEventListener('resize', schedule); update();
+  var tree = document.querySelector('.ftree');
+  if(tree){
+    var box = document.getElementById('fdetail');
+    var fd = {};
+    ['name','layer','who','when','text','code','link'].forEach(function(k){ fd[k] = document.getElementById('fd-' + k); });
+    tree.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-f]');
+      var f = b && FILES[b.dataset.f];
+      if(!f) return;
+      tree.querySelectorAll('button[data-f]').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      fd.name.textContent = f.name;
+      fd.layer.textContent = f.keep ? 'постійне' : 'змінне';
+      fd.layer.className = f.keep ? '' : 'v';
+      fd.who.textContent = 'пише: ' + f.who;
+      fd.when.textContent = 'змінюється: ' + f.when;
+      fd.text.textContent = f.text;
+      fd.code.textContent = f.code;
+      fd.link.textContent = '';
+      if(f.link){
+        var a = document.createElement('a');
+        a.href = f.link[0]; a.textContent = f.link[1] + ' →';
+        fd.link.appendChild(a);
+      }
+      fd.link.hidden = !f.link;
+      if(window.matchMedia && window.matchMedia('(max-width: 920px)').matches) box.scrollIntoView({block:'nearest'});
+    });
+  }
+
 })();
 </script>
 </body>

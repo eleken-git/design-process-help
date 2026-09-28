@@ -14,18 +14,6 @@ test.describe('лендінг-хаб docs/', () => {
     expect(html).toContain('href="harness/"');
   });
 
-  test('GET /harness/ → 200, пʼять матеріалів з лінками на оригінали і бічна навігація', async ({ page }) => {
-    const errors: string[] = [];
-    page.on('pageerror', (e) => errors.push(e.message));
-    await page.goto(BASE + '/harness/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Будуємо харнес');
-    await expect(page.locator('article.item')).toHaveCount(5);
-    await expect(page.locator('nav.side a[href^="#"]')).toHaveCount(5);
-    for (const href of ['gist.github.com/karpathy/442a6bf555914893e9891c11519de94f', 'agents.md', 'github.com/genkovich/sdd', 'github.com/github/spec-kit', 'github.com/obra/superpowers']) {
-      await expect(page.locator(`a.open[href*="${href}"]`)).toHaveCount(1);
-    }
-    expect(errors, 'помилки JS').toEqual([]);
-  });
 
   test('GET /podcast/ → 200, плеєр з аудіо і кнопкою плей', async ({ page }) => {
     const errors: string[] = [];
@@ -73,37 +61,48 @@ test.describe('лендінг-хаб docs/', () => {
   });
 });
 
-test.describe('хлібні крихти назад на лендінг', () => {
-  test('презентація: окрема крихта "← design-process-help" у сайдбарі веде на "../"', async ({ page }) => {
-    await page.goto(BASE + '/presentation/');
-    const link = page.locator('a.crumb-home');
-    await expect(link).toHaveAttribute('href', '../');
-    await link.click();
-    await expect(page).toHaveURL(BASE + '/');
+test.describe('головна', () => {
+  test('пошук веде в запити, три входи і рядок «Вчитися» в одному екрані', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(BASE + '/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Дизайн у коді з Claude');
+    await expect(page.locator('a.entry')).toHaveCount(3);
+    for (const href of ['prompts/', 'harness/', 'map/']) await expect(page.locator(`a.entry[href="${href}"]`)).toHaveCount(1);
+    for (const href of ['presentation/', '3d/', 'podcast/', 'app/', 'learn/']) await expect(page.locator(`main a[href="${href}"]`)).toHaveCount(1);
+    const learnBottom = await page.locator('.learn-row').evaluate((n) => n.getBoundingClientRect().bottom);
+    expect(learnBottom, 'рядок «Вчитися» видно без прокрутки').toBeLessThanOrEqual(900);
+    await page.getByRole('searchbox').fill('доступність');
+    await page.getByRole('searchbox').press('Enter');
+    await expect(page).toHaveURL(/\/prompts\/\?q=/);
+    expect(errors, 'помилки JS').toEqual([]);
   });
 
-  test('3D-плеєр: кнопка 🏠 веде на "../" і не ламає інші кнопки керування', async ({ page }) => {
+  test('на 375 px входи стоять один під одним, без горизонтального скролу', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/');
+    const xs = await page.locator('a.entry').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().x)));
+    expect(new Set(xs).size).toBe(1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  });
+});
+
+test.describe('шлях назад на головну', () => {
+  for (const path of ['/presentation/', '/podcast/', '/harness/', '/map/']) {
+    test(`${path}: лого в меню веде на головну`, async ({ page }) => {
+      await page.goto(BASE + path);
+      await page.locator('a.site-logo').click();
+      await expect(page).toHaveURL(BASE + '/');
+    });
+  }
+
+  test('3D-плеєр: лого в меню веде на головну, кнопки керування на місці', async ({ page }) => {
     await page.goto(BASE + '/3d/');
     await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.ready, null, { timeout: 60_000 });
-    await expect(page.locator('#btnHome')).toBeVisible();
     await expect(page.locator('#btnPlay')).toBeVisible();
-    await page.locator('#btnHome').click();
-    await expect(page).toHaveURL(BASE + '/');
-  });
-
-  test('подкаст: крихта "← design-process-help" веде на "../"', async ({ page }) => {
-    await page.goto(BASE + '/podcast/');
-    const link = page.locator('a.crumb-home');
-    await expect(link).toHaveAttribute('href', '../');
-    await link.click();
-    await expect(page).toHaveURL(BASE + '/');
-  });
-
-  test('харнес: крихта "← design-process-help" веде на "../"', async ({ page }) => {
-    await page.goto(BASE + '/harness/');
-    const link = page.locator('a.crumb-home');
-    await expect(link).toHaveAttribute('href', '../');
-    await link.click();
+    await expect(page.locator('#btnEp')).toBeVisible();
+    await page.locator('a.site-logo').click();
     await expect(page).toHaveURL(BASE + '/');
   });
 
@@ -120,55 +119,34 @@ test.describe('хлібні крихти назад на лендінг', () => 
   });
 });
 
-test.describe('головна: вкладки «Головна», «Карта фронтенду», «Верстак»', () => {
-  test('за замовчуванням відкрита «Головна» з двома головними картками і рештою матеріалів, без помилок JS', async ({ page }) => {
+test.describe('карта і харнес окремими сторінками', () => {
+  test('/map/: 16 зупинок, 17 запитів, зміст збоку, без помилок JS', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
-    await page.goto(BASE + '/');
-    await expect(page.getByRole('tab')).toHaveCount(3);
-    await expect(page.getByRole('tab', { name: 'Головна' })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Дизайн у коді, крок за кроком');
-    await expect(page.locator('#home .feature')).toHaveCount(2);
-    for (const href of ['presentation/', '3d/', 'app/', 'podcast/', 'harness/']) {
-      await expect(page.locator(`#home a.hub-card[href="${href}"]`)).toHaveCount(1);
-    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(BASE + '/map/#s4');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Карта фронтенду');
+    await expect(page.locator('.station')).toHaveCount(16);
+    await expect(page.locator('.prompt p[lang="en"]')).toHaveCount(17);
+    const toc = page.locator('#toc-map');
+    await expect(toc).toBeVisible();
+    await expect(toc.locator('a[aria-current]')).toHaveAttribute('href', '#s4');
+    await expect(toc.locator('a[href="#s5"]')).toBeVisible();          // зупинки поточного етапу розгорнуті
+    await expect(toc.locator('a[href="#s13"]')).toBeHidden();          // інші етапи згорнуті
     expect(errors, 'помилки JS').toEqual([]);
   });
 
-  test('картка «Карта фронтенду» відкриває карту з 16 зупинками і запитами англійською', async ({ page }) => {
-    await page.goto(BASE + '/');
-    await page.locator('#home a.feature[href="#frontend"]').click();
-    await expect(page.getByRole('tab', { name: 'Карта фронтенду' })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Карта фронтенду');
-    await expect(page.locator('#frontend .station')).toHaveCount(16);
-    await expect(page.locator('#frontend .prompt p[lang="en"]')).toHaveCount(17);
-    await expect(page).toHaveURL(/#frontend$/);
+  test('/map/: чекліст бере відмітки, зроблені до переїзду', async ({ page }) => {
+    await page.goto(BASE + '/map/');
+    await page.evaluate(() => localStorage.setItem('frontend-map-done-v1', JSON.stringify({ 'd-a1': true })));
+    await page.reload();
+    await expect(page.locator('#total')).toHaveText('1 з 31');
+    await expect(page.locator('#d-a1')).toBeChecked();
   });
 
-  test('вкладка «Верстак»: пʼять людей, дерево файлів перемикає опис', async ({ page }) => {
-    await page.goto(BASE + '/');
-    await page.getByRole('tab', { name: 'Харнес «Верстак»' }).click();
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Верстак');
-    await expect(page.locator('#harness .person')).toHaveCount(5);
-    await expect(page.locator('#home')).toBeHidden();
-    await expect(page).toHaveURL(/#harness$/);
-    await page.locator('.ftree button[data-f="settings"]').click();
-    await expect(page.locator('#fd-name')).toHaveText('.claude/settings.json');
-    await expect(page.locator('.ftree button[aria-pressed="true"]')).toHaveCount(1);
-    await expect(page.locator('#fd-code')).toContainText('"Stop"');
-  });
-
-  test('посилання #harness відкриває верстак, посилання з верстака на карту перемикає вкладку', async ({ page }) => {
-    await page.goto(BASE + '/#harness');
-    await expect(page.getByRole('tab', { name: 'Харнес «Верстак»' })).toHaveAttribute('aria-selected', 'true');
-    await page.locator('#h-build a[href="#map"]').click();
-    await expect(page.getByRole('tab', { name: 'Карта фронтенду' })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('#map')).toBeVisible();
-  });
-
-  test('чекліст рахує відмітки і збирає незакриті пункти в запит англійською', async ({ page, context }) => {
+  test('/map/: чекліст збирає незакриті пункти в запит англійською', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
-    await page.goto(BASE + '/#done');
+    await page.goto(BASE + '/map/#done');
     await expect(page.locator('#total')).toHaveText('0 з 31');
     await page.locator('#d-a1').check();
     await expect(page.locator('#total')).toHaveText('1 з 31');
@@ -180,13 +158,111 @@ test.describe('головна: вкладки «Головна», «Карта �
     expect(text).not.toContain('Project scope written down and agreed');
   });
 
-  test('на 375 px жодна вкладка не скролиться вбік', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(BASE + '/');
-    for (const name of ['Головна', 'Карта фронтенду', 'Харнес «Верстак»']) {
-      await page.getByRole('tab', { name }).click();
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      expect(overflow, `горизонтальний скрол у вкладці «${name}»`).toBeLessThanOrEqual(0);
+  test('/harness/: дерево файлів, 5 людей, 5 матеріалів з лінками на оригінали', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/harness/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Харнес');
+    await expect(page.locator('.person')).toHaveCount(5);
+    await expect(page.locator('article.item')).toHaveCount(5);
+    for (const href of ['gist.github.com/karpathy/442a6bf555914893e9891c11519de94f', 'agents.md', 'github.com/genkovich/sdd', 'github.com/github/spec-kit', 'github.com/obra/superpowers']) {
+      await expect(page.locator(`a.open[href*="${href}"]`)).toHaveCount(1);
     }
+    await page.locator('.ftree button[data-f="settings"]').click();
+    await expect(page.locator('#fd-name')).toHaveText('.claude/settings.json');
+    await expect(page.locator('.ftree button[aria-pressed="true"]')).toHaveCount(1);
+    await expect(page.locator('#fd-code')).toContainText('"Stop"');
+    expect(errors, 'помилки JS').toEqual([]);
+  });
+
+  test('/harness/: посилання на карту ведуть на сторінку карти', async ({ page }) => {
+    await page.goto(BASE + '/harness/');
+    await page.locator('#h-build a[href="../map/#map"]').click();
+    await expect(page).toHaveURL(/\/map\/#map$/);
+    await expect(page.locator('#map')).toBeVisible();
+  });
+
+  test('/harness/ на телефоні: зміст відкривається кнопкою і закривається після вибору', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/harness/');
+    const btn = page.locator('#toc-btn');
+    await expect(page.locator('#toc-harness')).toBeHidden();
+    await btn.click();
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    await page.locator('#toc-harness a[href="#h-gates"]').click();
+    await expect(page.locator('#toc-harness')).toBeHidden();
+    await expect(btn).toContainText('Ворота якості');
+  });
+
+  test('на 375 px карта і харнес не скроляться вбік', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    for (const path of ['/map/', '/harness/']) {
+      await page.goto(BASE + path);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow, `горизонтальний скрол на ${path}`).toBeLessThanOrEqual(0);
+    }
+  });
+});
+
+test.describe('сторінка «Вчитися»', () => {
+  test('чотири кроки по порядку і пряме посилання на кожен 3D-епізод', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.goto(BASE + '/learn/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Вчитися');
+    await expect(page.locator('.step')).toHaveCount(4);
+    await expect(page.locator('.step h2')).toHaveText(['Презентація', 'Git у 3D', 'Подкаст', 'Вправи в Nimbus']);
+    for (const ep of ['conflict', 'file-states', 'pull-request', 'protected-main', 'merge-vs-rebase']) {
+      await expect(page.locator(`a[href="../3d/?ep=${ep}"]`)).toHaveCount(1);
+    }
+    for (const href of ['../presentation/', '../podcast/', '../app/']) await expect(page.locator(`main a[href="${href}"]`).first()).toBeVisible();
+    await expect(page.locator('a[href="https://github.com/eleken-git/design-process-help/blob/main/PRACTICE.md"]')).toHaveCount(1);
+    expect(errors, 'помилки JS').toEqual([]);
+  });
+
+  test('посилання на епізод відкриває саме його', async ({ page }) => {
+    await page.goto(BASE + '/learn/');
+    await page.locator('a[href="../3d/?ep=protected-main"]').click();
+    await page.waitForFunction(() => (window as any).__deck && (window as any).__deck.episode === 'protected-main', null, { timeout: 60_000 });
+  });
+});
+
+test.describe('карта і харнес на широкому екрані і під липкими панелями', () => {
+  test('на 1440 px колонка змісту широка, як була у вкладках', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    for (const path of ['/map/', '/harness/']) {
+      await page.goto(BASE + path);
+      const w = await page.locator('.panel-main').evaluate((n) => n.getBoundingClientRect().width);
+      expect(w, `ширина колонки на ${path}`).toBeGreaterThanOrEqual(1000);
+    }
+  });
+
+  test('1024 px: липка панель опису файлу не ховається під рядок «Зміст»', async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 800 });
+    await page.goto(BASE + '/harness/');
+    await page.locator('.ftree button[data-f="agents"]').click();
+    await page.evaluate(() => {
+      const tree = document.getElementById('h-tree')!;
+      window.scrollTo(0, tree.getBoundingClientRect().top + window.scrollY + 260);
+    });
+    await page.waitForTimeout(400);
+    const barBottom = await page.locator('.toc-bar').evaluate((n) => n.getBoundingClientRect().bottom);
+    const panelTop = await page.locator('#fdetail').evaluate((n) => n.getBoundingClientRect().top);
+    expect(panelTop).toBeGreaterThanOrEqual(barBottom);
+  });
+
+  test('375 px: старе посилання harness/#karpathy не ховає заголовок під панелями', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(BASE + '/harness/#karpathy');
+    await page.waitForTimeout(1500);
+    const barBottom = await page.locator('.toc-bar').evaluate((n) => n.getBoundingClientRect().bottom);
+    const top = await page.locator('#karpathy .src').evaluate((n) => n.getBoundingClientRect().top);
+    expect(top).toBeGreaterThanOrEqual(barBottom);
+  });
+
+  test('/harness/: виноски в матеріалах мають заокруглені кути', async ({ page }) => {
+    await page.goto(BASE + '/harness/');
+    const r = await page.locator('#h-materials .us').first().evaluate((n) => getComputedStyle(n).borderTopRightRadius);
+    expect(r).not.toBe('0px');
   });
 });
