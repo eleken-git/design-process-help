@@ -251,3 +251,13 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Files: `docs/harness/index.html`, `tests/landing.spec.ts`, `specs/2026-09-29-site-ux-design.md`.
 - Tests: `npm run typecheck && npm run build && npm run test:e2e` green (76).
 - Opened: https://github.com/eleken-git/design-process-help/pull/18
+
+### 2026-09-29 — Site nav in the Nimbus shell (PR #19)
+
+- Built: the root `index.html` (Vite entry) shows the shared site nav (`#hub-nav`, current item
+  "Вчитися", logo to `../`) instead of the "← design-process-help" crumb, only when served under
+  `/app/`. It is not sticky, so the app's own sticky top bar keeps working. Goes live with the
+  `docs/app/` rebuild in the next PR.
+- Files: `index.html`, `tests/landing.spec.ts`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green (78).
+- Opened: https://github.com/eleken-git/design-process-help/pull/19

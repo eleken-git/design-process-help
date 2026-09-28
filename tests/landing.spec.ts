@@ -119,6 +119,24 @@ test.describe('шлях назад на головну', () => {
   });
 });
 
+test.describe('меню сайту в оболонці Nimbus', () => {
+  test('під /app/ оболонка показує спільне меню з поточним «Вчитися»', async ({ page }) => {
+    await page.goto('http://127.0.0.1:5173/app/');
+    const nav = page.locator('#hub-nav');
+    await expect(nav).toBeVisible();
+    await expect(nav.locator('nav[aria-label="Розділи сайту"] a')).toHaveText(['Запити', 'Харнес', 'Карта', 'Вчитися']);
+    await expect(nav.locator('a[aria-current="page"]')).toHaveText('Вчитися');
+    await expect(nav.locator('a.site-logo')).toHaveAttribute('href', '../');
+    await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
+  });
+
+  test('при локальній розробці меню сайту сховане', async ({ page }) => {
+    await page.goto('http://127.0.0.1:5173/');
+    await expect(page.locator('#hub-nav')).toBeHidden();
+    await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
+  });
+});
+
 test.describe('карта і харнес окремими сторінками', () => {
   test('/map/: 16 зупинок, 17 запитів, зміст збоку, без помилок JS', async ({ page }) => {
     const errors: string[] = [];
