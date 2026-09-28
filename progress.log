@@ -217,3 +217,16 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Tests: `npm run typecheck && npm run build` green; `npm run test:e2e` green.
 - Merged: https://github.com/eleken-git/design-process-help/pull/15
 - Notes / follow-ups: requested in an artifact comment on the "Усі матеріали" tab.
+
+### 2026-09-29 — Table of contents on the landing tabs (PR #16)
+
+- Built: the sticky bar's horizontal section links (cut off at the right edge) are replaced by a table of
+  contents in the "Карта фронтенду" and "Верстак" tabs. From 1180 px it is a sticky left sidebar (the
+  page widens to 1368 px) with scrollspy: the section on screen gets `aria-current`, and the stations of
+  the current phase (or the five people) expand. Below 1180 px a "Зміст" button in the sticky bar shows
+  the current section and opens the same list as a dropdown; it closes on a link click, outside click or
+  Esc. `--jump-h` holds the bar height so `scroll-margin-top` fits the two-row bar on phones.
+- Files: `docs/index.html`, `tests/landing.spec.ts`.
+- Tests: `npm run typecheck && npm run build` green; `tests/landing.spec.ts` green, new TOC test.
+- Opened: https://github.com/eleken-git/design-process-help/pull/16
+- Notes / follow-ups: requested from two screenshots of the cut-off link bar.
