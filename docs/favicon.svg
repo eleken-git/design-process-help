@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Знак design-process-help для вкладки браузера: «d» на плитці, як у меню сайту.
+       Колір перемикається під тему браузера: темна плитка у світлій темі, світла — у темній. -->
+  <style>
+    .tile{fill:#1F2328}.ink{stroke:#FFFFFF}
+    @media (prefers-color-scheme:dark){.tile{fill:#E6EDF3}.ink{stroke:#0D1117}}
+  </style>
+  <rect class="tile" width="32" height="32" rx="7.5"/>
+  <g class="ink" fill="none" stroke-width="3.6">
+    <circle cx="15.5" cy="18.5" r="5"/>
+    <path d="M21.5 6.5v18.8"/>
+  </g>
+</svg>

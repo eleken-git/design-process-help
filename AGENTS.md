@@ -100,6 +100,8 @@ file across `docs/` pages on purpose: a designer can open one file and see every
 **The site nav is copied into every page** (`<header class="site-nav">` + the `/* спільне меню сайту */`
 CSS block + the `.skip-link`): Запити, Харнес, Карта, Вчитися. Change it in all pages in one PR;
 `tests/site-nav.spec.ts` fails when the copies drift or a page gets a horizontal scroll at 375 px.
+The favicon is the nav mark ("d" on a tile): `docs/favicon.svg` (colors follow the browser theme) plus
+`favicon-32.png` and `apple-touch-icon.png`. A new page copies the three `<link>` tags after `<title>`.
 A prompt is a `.prompt` block on the map or harness page; the prompt library picks it up automatically.
 Design and plan of this structure: `specs/2026-09-29-site-ux-design.md`, `specs/2026-09-29-site-ux-plan.md`.
 

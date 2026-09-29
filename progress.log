@@ -303,3 +303,15 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Files: `docs/index.html`, `tests/landing.spec.ts`, `AGENTS.md`, `README.md`.
 - Tests: `npm run typecheck && npm run build && npm run test:e2e` green (81).
 - Opened: https://github.com/eleken-git/design-process-help/pull/23
+
+### 2026-09-29 — Site favicon (docs/favicon)
+
+- Built: a favicon for every `docs/` page, picked by the user (option A of five on a comparison sheet):
+  the nav mark, a bold geometric "d" on a rounded tile. `docs/favicon.svg` flips with the browser theme
+  (dark tile + white "d" in light UI, light tile + dark "d" in dark UI); `favicon-32.png` (light tile,
+  for browsers without SVG icons) and `apple-touch-icon.png` (180 px, full-bleed square, iOS rounds it)
+  were rendered from that SVG with Playwright. Each page links the three icons right after `<title>`.
+  `docs/app/` keeps no favicon: Nimbus is its own brand, an "N" icon would be a separate PR.
+- Files: `docs/favicon.svg`, `docs/favicon-32.png`, `docs/apple-touch-icon.png`, the 8 `docs/*/index.html`
+  pages, `tests/site-nav.spec.ts` (new "значок сайту у вкладці" group), `AGENTS.md`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green (89).
