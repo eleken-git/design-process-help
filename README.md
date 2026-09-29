@@ -63,7 +63,7 @@ npm run dev        # http://localhost:5173
 .
 ├── README.md, PRACTICE.md         ← для тебе, українською
 ├── AGENTS.md, progress.log        ← для агента, англійською (CLAUDE.md відсилає до AGENTS.md)
-├── docs/index.html                ← головна GitHub Pages: пошук запиту, три входи, рядок «Вчитися»
+├── docs/index.html                ← головна GitHub Pages: три входи, рядок «Вчитися»
 ├── docs/prompts/, harness/, map/, learn/ ← запити, харнес, карта фронтенду, маршрут навчання
 ├── docs/presentation/index.html   ← презентація
 ├── docs/3d/                       ← Git у 3D: епізоди, музика, спільний плеєр
@@ -225,7 +225,7 @@ git push
 1. GitHub → Settings → Rules → New branch ruleset для `main`: Require a pull request (1 approval) · Require review from Code Owners · Require status checks: `build` · Block force pushes.
 2. Settings → General → Pull Requests: залишити лише **Allow squash merging**, увімкнути **Automatically delete head branches**.
 3. У `.github/CODEOWNERS` вписати реальні GitHub-логіни.
-4. Settings → Pages → Deploy from a branch → `main` / `docs` — на корені відкриється головна з пошуком запиту і входами в запити, харнес, карту фронтенду і навчання.
+4. Settings → Pages → Deploy from a branch → `main` / `docs` — на корені відкриється головна з входами в запити, харнес, карту фронтенду і навчання.
 5. Після будь-якої зміни в `src/`, яку варто показати на лендінгу: `npm run build:pages` оновлює `docs/app/` і закомітити цей результат разом зі змінами. Не запускай цю команду в кожному PR — лише коли свідомо оновлюєш публічне прев'ю.
 
 ## 10. Чого не робимо зараз
