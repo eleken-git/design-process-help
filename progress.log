@@ -283,3 +283,13 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Tests: `npm run typecheck && npm run build && npm run test:e2e` green (81).
 - Notes / follow-ups: after merge, rebuild `docs/app/` (`npm run build:pages`) in its own PR and drop
   the `app/` skip in the "320 і 375 px" test of `tests/site-nav.spec.ts`.
+
+### 2026-09-29 — docs/app rebuilt with the phone-ready top bar
+
+- Built: PR #21 (Nimbus top bar fits phones) merged on the user's request; `npm run build:pages` so the
+  published preview gets it. The "320 і 375 px" test in `tests/site-nav.spec.ts` no longer skips
+  `app/`, so every site page, the app included, is checked for horizontal scroll (it failed with
+  133 px on the old build, passes on the new one).
+- Files: `docs/app/index.html`, `docs/app/assets/*`, `tests/site-nav.spec.ts`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green (81).
+- Merged: https://github.com/eleken-git/design-process-help/pull/21
