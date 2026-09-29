@@ -56,7 +56,6 @@ test.describe('спільне меню', () => {
       await page.goto(BASE + p.path);
       const clipped = await page.locator('header.site-nav nav').evaluate((n) => n.scrollWidth - n.clientWidth);
       if (width === 375) expect(clipped, `меню обрізане на /${p.path}`).toBeLessThanOrEqual(0);
-      if (p.path === 'app/') continue; // верхня панель самого Nimbus (src/) ще не адаптивна — окрема задача
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow, `горизонтальний скрол на /${p.path} при ${width} px`).toBeLessThanOrEqual(0);
     }
