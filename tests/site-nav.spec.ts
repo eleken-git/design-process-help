@@ -62,6 +62,26 @@ test.describe('спільне меню', () => {
   });
 });
 
+test.describe('значок сайту у вкладці', () => {
+  const ICONS: [string, string][] = [
+    ['link[rel="icon"][type="image/svg+xml"]', 'favicon.svg'],
+    ['link[rel="icon"][sizes="32x32"]', 'favicon-32.png'],
+    ['link[rel="apple-touch-icon"]', 'apple-touch-icon.png'],
+  ];
+  // у Nimbus свій бренд, тому app/ сюди не входить
+  for (const p of PAGES.filter((p) => p.path !== 'app/')) {
+    test(`favicon на /${p.path}`, async ({ page, request }) => {
+      await page.goto(BASE + p.path);
+      for (const [sel, file] of ICONS) {
+        const href = await page.locator(`head ${sel}`).evaluate((l) => (l as HTMLLinkElement).href);
+        expect(href, `/${p.path}: ${sel}`).toBe(BASE + file);
+        const res = await request.get(href);
+        expect(res.status(), `статус ${file}`).toBe(200);
+      }
+    });
+  }
+});
+
 test.describe('старі посилання з головної', () => {
   const cases: [string, RegExp][] = [
     ['#s7', /\/map\/#s7$/],
