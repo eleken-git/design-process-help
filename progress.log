@@ -293,3 +293,13 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Files: `docs/app/index.html`, `docs/app/assets/*`, `tests/site-nav.spec.ts`.
 - Tests: `npm run typecheck && npm run build && npm run test:e2e` green (81).
 - Merged: https://github.com/eleken-git/design-process-help/pull/21
+
+### 2026-09-29 — Home page without the prompt search (docs/home-no-search)
+
+- Built: removed the "Що треба зробити?" search form and its CSS (and the now-unused `.sr` helper)
+  from `docs/index.html`; the three entries sit right under the lede (32 px, 24 px on phones). Search
+  and filters stay on `docs/prompts/`. The landing test now asserts there is no searchbox; AGENTS.md
+  and README.md no longer mention a search on the home page.
+- Files: `docs/index.html`, `tests/landing.spec.ts`, `AGENTS.md`, `README.md`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green (81).
+- Opened: https://github.com/eleken-git/design-process-help/pull/23

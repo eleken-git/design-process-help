@@ -62,7 +62,7 @@ test.describe('лендінг-хаб docs/', () => {
 });
 
 test.describe('головна', () => {
-  test('пошук веде в запити, три входи і рядок «Вчитися» в одному екрані', async ({ page }) => {
+  test('без пошуку: три входи і рядок «Вчитися» в одному екрані', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -73,9 +73,7 @@ test.describe('головна', () => {
     for (const href of ['presentation/', '3d/', 'podcast/', 'app/', 'learn/']) await expect(page.locator(`main a[href="${href}"]`)).toHaveCount(1);
     const learnBottom = await page.locator('.learn-row').evaluate((n) => n.getBoundingClientRect().bottom);
     expect(learnBottom, 'рядок «Вчитися» видно без прокрутки').toBeLessThanOrEqual(900);
-    await page.getByRole('searchbox').fill('доступність');
-    await page.getByRole('searchbox').press('Enter');
-    await expect(page).toHaveURL(/\/prompts\/\?q=/);
+    await expect(page.getByRole('searchbox')).toHaveCount(0);
     expect(errors, 'помилки JS').toEqual([]);
   });
 

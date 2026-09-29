@@ -66,24 +66,14 @@ a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
 code{font:.88em var(--mono);padding:.1em .35em;border-radius:4px;background:var(--hover)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .wrap{max-width:1040px;margin:0 auto;padding-inline:24px}
 
-/* головна: пошук запиту, три входи, рядок навчання */
+/* головна: три входи, рядок навчання */
 .home{padding-block:56px 48px}
 .home h1{font-size:40px;line-height:1.1;letter-spacing:-.025em;text-wrap:balance}
 .lede{margin-top:12px;max-width:60ch;color:var(--muted);font-size:17px;line-height:1.55}
-.find{display:flex;gap:8px;max-width:600px;margin:28px 0 36px}
-.find-field{position:relative;flex:1;min-width:0}
-.find-field svg{position:absolute;left:13px;top:50%;width:18px;height:18px;transform:translateY(-50%);fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;pointer-events:none}
-.find input{width:100%;height:44px;padding:0 14px 0 40px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:15px var(--sans)}
-.find input::placeholder{color:var(--faint)}
-.find input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(56,139,253,.25)}
-.find button{flex:none;height:44px;padding:0 18px;border:0;border-radius:8px;background:var(--btn);color:var(--btn-text);font:600 14px var(--sans);cursor:pointer}
-.find button:hover{background:var(--btn-hover)}
-.find button:active{background:var(--btn-active)}
 
-.entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.entries{display:grid;margin-top:32px;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .entry{display:grid;grid-template-rows:auto auto 1fr auto auto;gap:8px;padding:22px;border:1px solid var(--border);border-top:3px solid var(--hc);border-radius:10px;background:var(--surface);color:var(--text)}
 .entry:hover{border-color:var(--faint);border-top-color:var(--hc);text-decoration:none}
 .entry .ic{display:grid;place-items:center;width:36px;height:36px;border-radius:8px;background:var(--hover);color:var(--hc)}
@@ -124,8 +114,7 @@ footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:va
   .home{padding-block:32px 36px}
   .home h1{font-size:32px}
   .lede{font-size:16px}
-  .find{margin:22px 0 28px}
-  .find button{padding:0 14px}
+  .entries{margin-top:24px}
 }
 @media (max-width:360px){.learn-list{grid-template-columns:1fr}}
 /* спільне меню сайту: однакове на всіх сторінках docs/, зміни переносити в кожну */
@@ -169,12 +158,6 @@ footer{padding-block:28px 48px;border-top:1px solid var(--border-muted);color:va
 <main class="home" id="main">
   <h1>Дизайн у коді з Claude</h1>
   <p class="lede">Довідник для дизайнерів: готові запити, харнес і карта перевірок фронтенду.</p>
-
-  <form class="find" action="prompts/" method="get" role="search">
-    <label class="sr" for="q">Що треба зробити?</label>
-    <div class="find-field"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" name="q" placeholder="Що треба зробити? Наприклад, «перевірити доступність»" autocomplete="off"></div>
-    <button type="submit">Знайти</button>
-  </form>
 
   <div class="entries">
     <a class="entry e-prompts" href="prompts/">

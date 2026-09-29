@@ -84,7 +84,7 @@ refresh the public preview — not in every PR.
 
 | Path | What it is |
 | --- | --- |
-| `docs/index.html` | home: a search box that opens `prompts/?q=…`, three entries (prompts, harness, map), a learning row; also redirects old tab hashes (`/#s4`, `/#harness`, `/#ask`…) |
+| `docs/index.html` | home: three entries (prompts, harness, map), a learning row; also redirects old tab hashes (`/#s4`, `/#harness`, `/#ask`…) |
 | `docs/prompts/` | prompt library; it fetches `map/` and `harness/` at runtime and lists every `.prompt` found there |
 | `docs/harness/` | the designer harness ("Верстак" is the template repo name): file tree, six setup prompts, five people, five materials + `notebooklm/` source texts |
 | `docs/map/` | frontend map: 16 stations, prompts, the hand-off checklist (`localStorage` key `frontend-map-done-v1`) |
