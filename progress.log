@@ -271,3 +271,15 @@ files load fully every session and get followed more closely. Rules live in `AGE
 - Files: `docs/app/index.html`, `tests/site-nav.spec.ts`, `tests/landing.spec.ts`.
 - Tests: `npm run typecheck && npm run build && npm run test:e2e` green (79).
 - Opened: https://github.com/eleken-git/design-process-help/pull/20
+
+### 2026-09-29 — Nimbus top bar fits phones (fix/app-topbar-mobile)
+
+- Built: at ≤640 px the app shell hides the code-path label (`src/screens/<screen>/`), tightens the
+  tabs (`--space-2` padding and gap) and lets them scroll inside the bar; the shell padding drops to
+  `--space-4`. The Dashboard header wraps so its two buttons move under the title at 320 px. No
+  horizontal page scroll on `#/dashboard`, `#/settings`, `#/ui-kit` at 375 and 320 px (was 133 px at
+  375). Desktop is pixel-identical to `main` at 1280 and 700 px.
+- Files: `src/App.module.css`, `src/screens/dashboard/Dashboard.module.css`, `tests/app.spec.ts`.
+- Tests: `npm run typecheck && npm run build && npm run test:e2e` green (81).
+- Notes / follow-ups: after merge, rebuild `docs/app/` (`npm run build:pages`) in its own PR and drop
+  the `app/` skip in the "320 і 375 px" test of `tests/site-nav.spec.ts`.
